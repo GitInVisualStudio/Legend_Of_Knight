@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils
 {
-    struct Vector
+    public struct Vector
     {
         private float[] values;
 
@@ -44,5 +44,57 @@ namespace Legend_Of_Knight.Utils
                 values[i] = p[i];
             }
         }
+
+        public float Length
+        {
+            get
+            {
+                float value = 0;
+                foreach (float f in values)
+                    value += f * f;
+                return (float)Math.Sqrt(value);
+            }
+        }
+
+        public void Normalize()
+        {
+            this /= Length;
+        }
+
+        public static Vector operator +(Vector v1, Vector v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] += v2[i];
+            return v1;
+        }
+
+        public static Vector operator -(Vector v1, Vector v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] -= v2[i];
+            return v1;
+        }
+
+        public static Vector operator *(Vector v1, Vector v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] *= v2[i];
+            return v1;
+        }
+
+        public static Vector operator *(Vector v1, float v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] *= v2;
+            return v1;
+        }
+
+        public static Vector operator /(Vector v1, float v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] /= v2;
+            return v1;
+        }
+
     }
 }

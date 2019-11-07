@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Legend_Of_Knight.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Entities
 {
-    abstract class Entity
+    public abstract class Entity
     {
         private Vector position;
         private Vector velocity;
@@ -14,7 +15,7 @@ namespace Legend_Of_Knight.Entities
         private BoundingBox box;
         private Animation anim;
 
-        internal Vector Position
+        public Vector Position
         {
             get
             {
@@ -27,7 +28,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal Vector Velocity
+        public Vector Velocity
         {
             get
             {
@@ -40,7 +41,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal Vector Rotation
+        public Vector Rotation
         {
             get
             {
@@ -79,7 +80,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal BoundingBox Box
+        public BoundingBox Box
         {
             get
             {
@@ -92,7 +93,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal Animation Anim
+        public Animation Anim
         {
             get
             {
