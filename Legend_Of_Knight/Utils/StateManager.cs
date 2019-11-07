@@ -12,6 +12,17 @@ namespace Legend_Of_Knight.Utils
         private static Graphics g;
         private static Color color;
         private static Font font = new Font("Arial", 12);
+        private static float scaleX, scaleY;
+        private static float rotation;
+        private static State state;
+
+        public static float ScaleX => scaleX;
+        public static float ScaleY => scaleY;
+        public static float Rotation => rotation;
+        public static Font Font => font;
+        public static Graphics Graphics => g;
+        private static State CurrentState => state;
+
 
         public static void Update(Graphics g)
         {
@@ -33,6 +44,34 @@ namespace Legend_Of_Knight.Utils
             g.DrawRectangle(new Pen(new SolidBrush(color)), x, y, width, height);
         }
 
+        public static void Rotate(float angle)
+        {
+            g.RotateTransform(angle);
+        }
+
+        public static void Scale(float x, float y)
+        {
+            g.ScaleTransform(x, y);
+        }
+
+        public static void Scale(float x)
+        {
+            Scale(x, x);
+        }
+
+        public static void Push()
+        {
+            state = new State();
+        }
+
+        public static void Pop()
+        {
+            state = state.LastState;
+            rotation = state.Rotation;
+            scaleX = state.ScaleX;
+            scaleY = state.ScaleY;
+        }
+
         public static float GetStringWidth(string s)
         {
             return GetStringSize(s).Width;
@@ -50,12 +89,32 @@ namespace Legend_Of_Knight.Utils
 
         public static void Color(int r, int g, int b)
         {
-            StateManager.Color(r, g, b, 255);
+            Color(r, g, b, 255);
         }
 
         public static void Color(int r, int g, int b, int a)
         {
             color = System.Drawing.Color.FromArgb(a, r, g, b);
+        }
+
+        private class State
+        {
+            private State state;
+            private float rotation;
+            private float scaleX, scaleY;
+
+            public float Rotation { get => rotation; set => rotation = value; }
+            public float ScaleX { get => scaleX; set => scaleX = value; }
+            public float ScaleY { get => scaleY; set => scaleY = value; }
+            public State LastState { get => state; set => state = value; }
+
+            public State()
+            {
+                ScaleX = StateManager.ScaleX;
+                ScaleY = StateManager.ScaleY;
+                Rotation = StateManager.Rotation;
+                LastState = CurrentState;
+            }
         }
     }
 }

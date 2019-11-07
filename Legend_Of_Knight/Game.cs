@@ -12,7 +12,7 @@ namespace Legend_Of_Knight
     public class Game : Form
     {
         /// <summary>
-        /// Frames per Second and Ticks per Second
+        /// frames per Second and ticks per Second
         /// </summary>
         public const float FPS = 240.0f, TPS = 30.0f; 
         public const int WIDTH = 1280, HEIGHT = 720;
@@ -27,7 +27,7 @@ namespace Legend_Of_Knight
 
         private void Init()
         {
-            Name = NAME;
+            Text = NAME;
             Width = WIDTH;
             Height = HEIGHT;
             DoubleBuffered = true; //Verhindert Flackern
@@ -69,7 +69,6 @@ namespace Legend_Of_Knight
             base.OnPaint(e);
             //TODO: calculate the partialTicks, set new Graphics instance
             float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds);
-            Console.WriteLine(partialTicks);
             StateManager.Update(e.Graphics);
             onRender(partialTicks);
         }
