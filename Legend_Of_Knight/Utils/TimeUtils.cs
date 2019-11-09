@@ -11,7 +11,7 @@ namespace Legend_Of_Knight.Utils
     public class TimeUtils
     {
         private static Stopwatch delay = new Stopwatch();
-        private static Dictionary<string, TimeUtils> helpers = new Dictionary<string, TimeUtils>();
+        private static Dictionary<string, TimeUtils> utils = new Dictionary<string, TimeUtils>();
 
         private double time;
 
@@ -37,11 +37,11 @@ namespace Legend_Of_Knight.Utils
 
         public static bool Check(float milli, [CallerMemberName] string memberName = "")
         {
-            if (!helpers.Keys.Contains(memberName))
+            if (!utils.Keys.Contains(memberName))
             {
-                helpers.Add(memberName, new TimeUtils());
+                utils.Add(memberName, new TimeUtils());
             }
-            return helpers[memberName].Check(milli, true);
+            return utils[memberName].Check(milli, true);
         }
     }
 }
