@@ -1,4 +1,5 @@
 ﻿using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Utils.Animations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,6 +21,7 @@ namespace Legend_Of_Knight
         private Timer renderTimer, tickTimer;
         private Stopwatch watch;
         private InputManager inputManager;
+        private AnimationHandler animationHandler;
 
         public InputManager InputManager => inputManager;
 
@@ -53,6 +55,8 @@ namespace Legend_Of_Knight
             MouseMove += Game_MouseMove;
             KeyDown += Game_KeyDown;
             KeyUp += Game_KeyUp;
+
+            animationHandler = new AnimationHandler();
 
             renderTimer.Start();
             tickTimer.Start();
@@ -109,7 +113,7 @@ namespace Legend_Of_Knight
 
         public void onTick()
         {
-            
+            animationHandler.Update();   
         }
     }
 }
