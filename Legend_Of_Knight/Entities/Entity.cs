@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Legend_Of_Knight.Utils;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -10,9 +11,12 @@ namespace Legend_Of_Knight.Entities
     {
         private Vector position;
         private Vector velocity;
-        private Vector rotation;
+        private float rotation;
         private BoundingBox box;
         private Animation anim;
+
+        public event EventHandler<Vector> Moved;
+        public event EventHandler<float> Rotated;
 
         internal Vector Position
         {
@@ -40,7 +44,10 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal Vector Rotation
+        /// <summary>
+        /// Drehwinkel im Bogenmaß
+        /// </summary>
+        public float Rotation
         {
             get
             {
@@ -50,6 +57,8 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 rotation = value;
+                if (Rotated != null)
+                    Rotated(this, rotation);
             }
         }
 
@@ -107,7 +116,8 @@ namespace Legend_Of_Knight.Entities
 
         public Entity(BoundingBox box)
         {
-            this.Box = box;
+            this.box = box;
+            box.Collided += OnCollision;
         }
 
         public abstract void OnRender(float partialTicks);
@@ -121,6 +131,9 @@ namespace Legend_Of_Knight.Entities
         {
             X += velocity[0];
             Y += velocity[1];
+
+            if (Moved != null)
+                Moved(this, position);
         }
 
         public abstract void OnCollision(object sender, CollisionArgs e);
