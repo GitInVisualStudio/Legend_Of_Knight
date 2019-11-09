@@ -7,7 +7,7 @@ using Legend_Of_Knight.Entities;
 
 namespace Legend_Of_Knight.Utils
 {
-    class CollisionArgs
+    public class CollisionArgs
     {
         private BoundingBox[] boxes;
         private Vector position;

@@ -7,7 +7,7 @@ using Legend_Of_Knight.Utils;
 
 namespace Legend_Of_Knight.Entities
 {
-    class BoundingBox
+    public class BoundingBox
     {
         private Entity owner;
         private float width;

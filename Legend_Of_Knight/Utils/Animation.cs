@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils
 {
-    class Animation
+    public class Animation
     {
     }
 }

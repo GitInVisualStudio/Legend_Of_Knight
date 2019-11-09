@@ -45,6 +45,17 @@ namespace Legend_Of_Knight.Utils
             }
         }
 
+        public float Length
+        {
+            get
+            {
+                float value = 0;
+                foreach (float f in values)
+                    value += f * f;
+                return (float)Math.Sqrt(value);
+            }
+        }
+
         public Vector(int dimensions)
         {
             values = new float[dimensions];
@@ -55,43 +66,44 @@ namespace Legend_Of_Knight.Utils
             return new Vector(values);
         }
 
-        /// <summary>
-        /// Berechnet das Produkt zweier Vektoren
-        /// </summary>
-        public static float operator *(Vector a, Vector b)
+        public void Normalize()
         {
-            if (a.Values.Length != b.Values.Length)
-                throw new VectorSizeNotEqualException();
-
-            float res = 0;
-            for (int i = 0; i < a.Values.Length; i++)
-                res += a[i] * b[i];
-
-            return res;
+            this /= Length;
         }
 
-        /// <summary>
-        /// Skaliert einen Vektor mit einem Faktor
-        /// </summary>
-        public static Vector operator * (Vector a, float b)
+        public static Vector operator +(Vector v1, Vector v2)
         {
-            Vector res = a.Clone();
-            for (int i = 0; i < a.Values.Length; i++)
-                res[i] *= b;
-
-            return res;
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] += v2[i];
+            return v1;
         }
 
-        public static Vector operator + (Vector a, Vector b)
+        public static Vector operator -(Vector v1, Vector v2)
         {
-            if (a.Values.Length != b.Values.Length)
-                throw new VectorSizeNotEqualException();
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] -= v2[i];
+            return v1;
+        }
 
-            Vector res = new Vector(a.Values.Length);
-            for (int i = 0; i < a.Values.Length; i++)
-                res[i] = a[i] + b[i];
+        public static Vector operator *(Vector v1, Vector v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] *= v2[i];
+            return v1;
+        }
 
-            return res;
+        public static Vector operator *(Vector v1, float v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] *= v2;
+            return v1;
+        }
+
+        public static Vector operator /(Vector v1, float v2)
+        {
+            for (int i = 0; i < v1.Values.Length; i++)
+                v1[i] /= v2;
+            return v1;
         }
     }
 }
