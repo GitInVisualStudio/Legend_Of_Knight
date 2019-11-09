@@ -19,6 +19,9 @@ namespace Legend_Of_Knight
         public const string NAME = "Legend of Knight";
         private Timer renderTimer, tickTimer;
         private Stopwatch watch;
+        private InputManager inputManager;
+
+        public InputManager InputManager => inputManager;
 
         public Game()
         {
@@ -46,9 +49,35 @@ namespace Legend_Of_Knight
             watch = new Stopwatch();
             watch.Start();
 
+            MouseClick += Game_MouseClick;
+            MouseMove += Game_MouseMove;
+            KeyDown += Game_KeyDown;
+            KeyUp += Game_KeyUp;
+
             renderTimer.Start();
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
+        }
+
+        private void Game_MouseMove(object sender, MouseEventArgs e)
+        {
+            InputManager.mouseX = e.X;
+            InputManager.mouseY = e.Y;
+        }
+
+        private void Game_KeyUp(object sender, KeyEventArgs e)
+        {
+            inputManager.OnKeyRelease(e.KeyValue);
+        }
+
+        private void Game_KeyDown(object sender, KeyEventArgs e)
+        {
+            inputManager.OnKeyPressed(e.KeyValue);
+        }
+
+        private void Game_MouseClick(object sender, MouseEventArgs e)
+        {
+            //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
         }
 
         private void TickTimer_Tick(object sender, EventArgs e)
@@ -75,11 +104,12 @@ namespace Legend_Of_Knight
 
         public void onRender(float partialTicks)
         {
+
         }
 
         public void onTick()
         {
-
+            
         }
     }
 }

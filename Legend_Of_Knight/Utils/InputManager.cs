@@ -8,7 +8,8 @@ namespace Legend_Of_Knight.Utils
 {
     public class InputManager
     {
-
+        public static int mouseX;
+        public static int mouseY;
         private List<Keybind> keys;
 
         public InputManager()

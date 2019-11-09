@@ -47,16 +47,21 @@ namespace Legend_Of_Knight.Utils
         public static void Rotate(float angle)
         {
             g.RotateTransform(angle);
+            rotation = angle;
         }
 
         public static void Scale(float x, float y)
         {
             g.ScaleTransform(x, y);
+            scaleX = x;
+            scaleY = y;
         }
 
         public static void Scale(float x)
         {
             Scale(x, x);
+            scaleX = x;
+            scaleY = x;
         }
 
         public static void Push()
@@ -67,9 +72,9 @@ namespace Legend_Of_Knight.Utils
         public static void Pop()
         {
             state = state.LastState;
-            rotation = state.Rotation;
-            scaleX = state.ScaleX;
-            scaleY = state.ScaleY;
+            g.Transform.Reset();
+            Scale(state.ScaleX, state.ScaleY);
+            Rotate(state.Rotation);
         }
 
         public static float GetStringWidth(string s)
