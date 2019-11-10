@@ -7,7 +7,7 @@ using Legend_Of_Knight.Utils;
 
 namespace Legend_Of_Knight.Entities
 {
-    abstract class Entity
+    public abstract class Entity
     {
         private Vector position;
         private Vector velocity;
@@ -18,7 +18,7 @@ namespace Legend_Of_Knight.Entities
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
 
-        internal Vector Position
+        public Vector Position
         {
             get
             {
@@ -31,7 +31,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        internal Vector Velocity
+        public Vector Velocity
         {
             get
             {
@@ -66,12 +66,12 @@ namespace Legend_Of_Knight.Entities
         {
             get
             {
-                return position[0];
+                return position.X;
             }
 
             set
             {
-                position[0] = value;
+                position.X = value;
             }
         }
 
@@ -79,16 +79,16 @@ namespace Legend_Of_Knight.Entities
         {
             get
             {
-                return position[1];
+                return position.Y;
             }
 
             set
             {
-                position[1] = value;
+                position.Y = value;
             }
         }
 
-        internal BoundingBox Box
+        public BoundingBox Box
         {
             get
             {
@@ -98,10 +98,17 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 box = value;
+                box.Collided += OnCollision;
             }
         }
 
-        internal Animation Anim
+        public Entity()
+        {
+            position = new Vector(2);
+            velocity = new Vector(2);
+        }
+
+        public Animation Anim
         {
             get
             {
@@ -112,12 +119,6 @@ namespace Legend_Of_Knight.Entities
             {
                 anim = value;
             }
-        }
-
-        public Entity(BoundingBox box)
-        {
-            this.box = box;
-            box.Collided += OnCollision;
         }
 
         public abstract void OnRender(float partialTicks);

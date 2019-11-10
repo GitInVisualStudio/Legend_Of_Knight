@@ -16,7 +16,7 @@ namespace Legend_Of_Knight.Entities
 
         public event EventHandler<CollisionArgs> Collided;
 
-        internal Entity Owner
+        public Entity Owner
         {
             get
             {
@@ -54,6 +54,7 @@ namespace Legend_Of_Knight.Entities
                 new Vector(owner.X + width / 2, owner.Y + height / 2),
                 new Vector(owner.X - width / 2, owner.Y + height / 2)
             };
+            Owner_Rotated(this, Owner.Rotation);
         }
 
         private void Owner_Rotated(object sender, float angle)
@@ -70,19 +71,49 @@ namespace Legend_Of_Knight.Entities
 
         public bool Collides(BoundingBox box)
         {
-            // Achsen dieser Box
-            Vector xAxis = new Vector(corners[0][0] - corners[1][0], corners[0][1] - corners[1][1]);
-            Vector yAxis = new Vector(corners[1][0] - corners[2][0], corners[1][1] - corners[2][1]);
+            float[] angles;
+            if (owner.Rotation == box.Owner.Rotation)
+                angles = new float[] { owner.Rotation, owner.Rotation + (float)Math.PI / 2.0f };
+            else
+                angles = new float[] { owner.Rotation, owner.Rotation + (float)Math.PI / 2.0f, box.Owner.Rotation, box.Owner.Rotation + (float)Math.PI / 2.0f };
+
+            foreach (float angle in angles)
+                if (!ProjectionOverlaps(ProjectOnto(angle), box.ProjectOnto(angle)))
+                    return false;
             
-            if (true && Collided != null)
-                Collided(this, new CollisionArgs() 
-                {
-                    Boxes = new BoundingBox[] {this, box},
-                    Position = new Vector(2)
-                });
-            return false;
+
+            Collided?.Invoke(this, new CollisionArgs() 
+            {
+                Boxes = new BoundingBox[] {this, box},
+            });
+            return true;
         }
 
-        
+        /// <summary>
+        /// Projiziert diese Box auf eine Achse
+        /// </summary>
+        /// <param name="angle">Der Winkel der Achse im Bogenmaß</param>
+        public float[] ProjectOnto(float angle)
+        {
+            float min = Int32.MaxValue;
+            float max = Int32.MinValue;
+
+            foreach (Vector c in corners)
+            {
+                float cuttingAngle = (float)Math.Atan(c.Y / c.X) - angle;
+                float projection = (float)(Math.Cos(cuttingAngle) * Math.Sqrt(Math.Pow(c.X, 2) + Math.Pow(c.Y, 2)));
+                min = projection < min ? projection : min;
+                max = projection > max ? projection : max;
+            }
+
+            return new float[] { min, max };
+        }
+
+        private bool ProjectionOverlaps(float[] a, float[] b)
+        {
+            if ((a[0] < b[0] && a[1] > b[0]) || (b[0] < a[0] && b[1] > a[0]))
+                return true;
+            return false;
+        }
     }
 }

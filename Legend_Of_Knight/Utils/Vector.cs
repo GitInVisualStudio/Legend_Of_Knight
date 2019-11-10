@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils
 {
-    struct Vector
+    public struct Vector
     {
         private float[] values;
 
@@ -36,6 +36,44 @@ namespace Legend_Of_Knight.Utils
             }
         }
 
+        public float X
+        {
+            get
+            {
+                if (values.Length < 2)
+                    throw new VectorNot2DException();
+
+                return values[0];
+            }
+            
+            set
+            {
+                if (values.Length < 2)
+                    throw new VectorNot2DException();
+
+                values[0] = value;
+            }
+        }
+
+        public float Y
+        {
+            get
+            {
+                if (values.Length < 2)
+                    throw new VectorNot2DException();
+
+                return values[1];
+            }
+
+            set
+            {
+                if (values.Length < 2)
+                    throw new VectorNot2DException();
+
+                values[1] = value;
+            }
+        }
+
         public Vector(params float[] p)
         {
             values = new float[p.Length];
@@ -59,11 +97,6 @@ namespace Legend_Of_Knight.Utils
         public Vector(int dimensions)
         {
             values = new float[dimensions];
-        }
-
-        public Vector Clone()
-        {
-            return new Vector(values);
         }
 
         public void Normalize()

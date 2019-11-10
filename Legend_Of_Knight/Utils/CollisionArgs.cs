@@ -10,9 +10,8 @@ namespace Legend_Of_Knight.Utils
     public class CollisionArgs
     {
         private BoundingBox[] boxes;
-        private Vector position;
 
-        internal BoundingBox[] Boxes
+        public BoundingBox[] Boxes
         {
             get
             {
@@ -23,24 +22,6 @@ namespace Legend_Of_Knight.Utils
             {
                 boxes = value;
             }
-        }
-
-        internal Vector Position
-        {
-            get
-            {
-                return position;
-            }
-
-            set
-            {
-                position = value;
-            }
-        }
-
-        public CollisionArgs()
-        {
-
         }
     }
 }
