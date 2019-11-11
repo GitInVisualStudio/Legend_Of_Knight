@@ -33,6 +33,14 @@ namespace Legend_Of_Knight.Utils
 
         public delegate void Event();
 
+        public void Update()
+        {
+            keys.ForEach(x => {
+                if (x.Pressed)
+                    x.OnPress?.Invoke();
+            });
+        }
+
         public void Add(int keyChar, Event OnPress)
         {
             keys.Add(new Keybind(keyChar, OnPress));
@@ -78,8 +86,6 @@ namespace Legend_Of_Knight.Utils
 
                 set
                 {
-                    if (value)
-                        OnPress?.Invoke();
                     pressed = value;
                 }
             }
