@@ -21,6 +21,8 @@ namespace Legend_Of_Knight.Utils.Animations
 
         public abstract void Update();
 
+        public abstract void Reset();
+
         protected void Finish()
         {
             OnFinish?.Invoke(this, null);

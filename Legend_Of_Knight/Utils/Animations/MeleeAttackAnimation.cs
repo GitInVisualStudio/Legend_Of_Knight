@@ -41,5 +41,12 @@ namespace Legend_Of_Knight.Utils.Animations
         {
             currentFrame.Update();
         }
+
+        public override void Reset()
+        {
+            index = 0;
+            foreach (MeleeAttackFrame frame in attackFrames)
+                frame.Reset();
+        }
     }
 }

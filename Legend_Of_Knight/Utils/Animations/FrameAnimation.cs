@@ -46,5 +46,10 @@ namespace Legend_Of_Knight.Utils.Animations
                 }
             }
         }
+
+        public override void Reset()
+        {
+            index = 0;
+        }
     }
 }
