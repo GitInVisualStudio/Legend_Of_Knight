@@ -80,11 +80,11 @@ namespace Legend_Of_Knight.Entities
             foreach (float angle in angles)
                 if (!ProjectionOverlaps(ProjectOnto(angle), box.ProjectOnto(angle)))
                     return false;
-            
 
-            Collided?.Invoke(this, new CollisionArgs() 
+
+            Collided?.Invoke(this, new CollisionArgs()
             {
-                Boxes = new BoundingBox[] {this, box},
+                Boxes = new BoundingBox[] { this, box },
             });
             return true;
         }

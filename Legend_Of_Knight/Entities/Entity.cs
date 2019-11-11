@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Utils.Animations;
 
 namespace Legend_Of_Knight.Entities
 {
     public abstract class Entity
     {
-        private Vector position;
-        private Vector velocity;
+        protected Vector position;
+        protected Vector velocity;
+        protected Vector prevPosition;
         private float rotation;
         private BoundingBox box;
-        private Animation anim;
-
+        protected FrameAnimation walkingAnimation;
+        
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
 
@@ -106,19 +108,7 @@ namespace Legend_Of_Knight.Entities
         {
             position = new Vector(2);
             velocity = new Vector(2);
-        }
-
-        public Animation Anim
-        {
-            get
-            {
-                return anim;
-            }
-
-            set
-            {
-                anim = value;
-            }
+            prevPosition = new Vector(2);
         }
 
         public abstract void OnRender(float partialTicks);
@@ -130,11 +120,24 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
-            X += velocity[0];
-            Y += velocity[1];
+            prevPosition = Position;
+            Position += Velocity * 2;
+            velocity *= 0.8f;
+
+            if (velocity.Length > 0.2f)
+                walkingAnimation.Update();
+            else
+                walkingAnimation.Reset();
+
 
             if (Moved != null)
                 Moved(this, position);
+        }
+
+        public void SetVelocity(float x, float y)
+        {
+            velocity.X = x;
+            velocity.Y = y;
         }
 
         public abstract void OnCollision(object sender, CollisionArgs e);
