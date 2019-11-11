@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\BoundingBox.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\EntityPlayer.cs" />
     <Compile Include="Game.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -57,9 +60,11 @@
     <Compile Include="Utils\Animations\FrameAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackFrame.cs" />
+    <Compile Include="Utils\CollisionArgs.cs" />
     <Compile Include="Utils\InputManager.cs" />
     <Compile Include="Utils\StateManager.cs" />
     <Compile Include="Utils\TimeUtils.cs" />
+    <Compile Include="Utils\Vector.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -68,6 +73,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -81,6 +87,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player_3.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -34,9 +34,14 @@ namespace Legend_Of_Knight.Utils
             g.DrawString(text, font, new SolidBrush(color), x, y);
         }
 
-        public static void DrawImage(Image img, float x, float y)
+        public static void DrawImage(Bitmap img, float x, float y)
         {
             g.DrawImage(img, x, y);
+        }
+
+        public static void DrawImage(Bitmap map, Vector pos)
+        {
+            g.DrawImage(map, pos.X, pos.Y);
         }
 
         public static void DrawRect(float x, float y, float width, float height)

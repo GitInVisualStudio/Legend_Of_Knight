@@ -1,4 +1,5 @@
-﻿using Legend_Of_Knight.Utils;
+﻿using Legend_Of_Knight.Entities;
+using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace Legend_Of_Knight
         private Stopwatch watch;
         private InputManager inputManager;
         private AnimationHandler animationHandler;
+        private EntityPlayer thePlayer;
 
         public InputManager InputManager => inputManager;
 
@@ -57,10 +59,34 @@ namespace Legend_Of_Knight
             KeyUp += Game_KeyUp;
 
             animationHandler = new AnimationHandler();
-
+            inputManager = new InputManager();
+            AddKeybinds();
             renderTimer.Start();
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
+
+            thePlayer = new EntityPlayer();
+        }
+
+        private void AddKeybinds()
+        {
+            inputManager.Add('W', () =>
+            {
+                thePlayer.SetVelocity(thePlayer.Velocity.X, -1);
+            });
+            inputManager.Add('A', () =>
+            {
+                thePlayer.SetVelocity(-1, thePlayer.Velocity.Y);
+            });
+            inputManager.Add('S', () =>
+            {
+                thePlayer.SetVelocity(thePlayer.Velocity.X, 1);
+            });
+            inputManager.Add('D', () =>
+            {
+                thePlayer.SetVelocity(1, thePlayer.Velocity.Y);
+            });
+
         }
 
         private void Game_MouseMove(object sender, MouseEventArgs e)
@@ -101,19 +127,21 @@ namespace Legend_Of_Knight
         {
             base.OnPaint(e);
             //TODO: calculate the partialTicks, set new Graphics instance
-            float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds);
+            float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds) / (1000.0f / TPS);
             StateManager.Update(e.Graphics);
             onRender(partialTicks);
         }
 
         public void onRender(float partialTicks)
         {
-
+            thePlayer.OnRender(partialTicks);
         }
 
         public void onTick()
         {
-            animationHandler.Update();   
+            animationHandler.Update();
+            inputManager.Update();
+            thePlayer.OnTick();
         }
     }
 }
