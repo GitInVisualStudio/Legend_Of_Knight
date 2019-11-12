@@ -26,8 +26,8 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            Vector position = prevPosition + (prevPosition - this.Position) * partialTicks;
-            StateManager.DrawImage(walkingAnimation.Image, position.X, position.Y);
+            Vector position = prevPosition + (prevPosition - this.position) * partialTicks;
+            StateManager.DrawImage(walkingAnimation.Image, position);
         }
     }
 }

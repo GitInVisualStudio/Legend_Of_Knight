@@ -40,7 +40,7 @@ namespace Legend_Of_Knight.Entities
         }
 
         /// <summary>
-        /// Drehwinkel im Grad (Einfach einfach für das Rendern)
+        /// Drehwinkel in Grad (Einfacher für das Rendern)
         /// </summary>
         public float Rotation
         {
