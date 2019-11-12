@@ -62,10 +62,17 @@
     <Compile Include="Utils\Animations\MeleeAttackFrame.cs" />
     <Compile Include="Utils\Math\CollisionArgs.cs" />
     <Compile Include="Utils\InputManager.cs" />
+    <Compile Include="Utils\Math\CRandom.cs" />
     <Compile Include="Utils\Math\MathUtils.cs" />
     <Compile Include="Utils\Render\StateManager.cs" />
     <Compile Include="Utils\Math\TimeUtils.cs" />
     <Compile Include="Utils\Math\Vector.cs" />
+    <Compile Include="World\Area.cs" />
+    <Compile Include="World\Corridor.cs" />
+    <Compile Include="World\Dungeon.cs" />
+    <Compile Include="World\DungeonGenArgs.cs" />
+    <Compile Include="World\Field.cs" />
+    <Compile Include="World\Room.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
