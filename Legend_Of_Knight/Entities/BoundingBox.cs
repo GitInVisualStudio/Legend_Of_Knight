@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Utils.Math;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -12,6 +13,7 @@ namespace Legend_Of_Knight.Entities
         private Entity owner;
         private float width;
         private float height;
+        private Vector size;
         private Vector[] corners;
 
         public event EventHandler<CollisionArgs> Collided;
@@ -40,11 +42,14 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public Vector Size => size;
+
         public BoundingBox(Entity owner, float width, float height)
         {
             this.owner = owner;
             this.width = width;
             this.height = height;
+            this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
 
             corners = new Vector[4]
@@ -59,6 +64,7 @@ namespace Legend_Of_Knight.Entities
 
         private void Owner_Rotated(object sender, float angle)
         {
+            angle = MathUtils.ToRadians(angle);
             for (int i = 0; i < corners.Length; i++)
             {
                 // Lösung geklaut von https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle/86784#86784

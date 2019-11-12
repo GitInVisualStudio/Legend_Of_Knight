@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Legend_Of_Knight.Properties;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
+using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Render;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -24,8 +26,8 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            Vector position = prevPosition + (prevPosition - this.position) * partialTicks;
-            StateManager.DrawImage(walkingAnimation.Image, position);
+            Vector position = prevPosition + (prevPosition - this.Position) * partialTicks;
+            StateManager.DrawImage(walkingAnimation.Image, position.X, position.Y);
         }
     }
 }

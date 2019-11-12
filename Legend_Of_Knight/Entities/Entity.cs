@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
+using Legend_Of_Knight.Utils.Math;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -20,6 +21,11 @@ namespace Legend_Of_Knight.Entities
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
 
+        public Vector Velocity => velocity;//Kann sowieso nicht geil geändert werden lol
+        public float Width => box.Width;
+        public float Height => box.Height;
+        public Vector Size => box.Size;
+
         public Vector Position
         {
             get
@@ -33,21 +39,8 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public Vector Velocity
-        {
-            get
-            {
-                return velocity;
-            }
-
-            set
-            {
-                velocity = value;
-            }
-        }
-
         /// <summary>
-        /// Drehwinkel im Bogenmaß
+        /// Drehwinkel im Grad (Einfach einfach für das Rendern)
         /// </summary>
         public float Rotation
         {

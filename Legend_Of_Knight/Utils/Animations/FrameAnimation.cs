@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Legend_Of_Knight.Utils.Math;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public int Delay { get => delay; set => delay = value; }
         public int Length => images.Length;
         public Bitmap Image => images[index];
+        public int Index => index;
 
         /// <summary>
         /// goes through the images

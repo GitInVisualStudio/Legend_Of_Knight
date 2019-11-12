@@ -60,11 +60,12 @@
     <Compile Include="Utils\Animations\FrameAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackFrame.cs" />
-    <Compile Include="Utils\CollisionArgs.cs" />
+    <Compile Include="Utils\Math\CollisionArgs.cs" />
     <Compile Include="Utils\InputManager.cs" />
-    <Compile Include="Utils\StateManager.cs" />
-    <Compile Include="Utils\TimeUtils.cs" />
-    <Compile Include="Utils\Vector.cs" />
+    <Compile Include="Utils\Math\MathUtils.cs" />
+    <Compile Include="Utils\Render\StateManager.cs" />
+    <Compile Include="Utils\Math\TimeUtils.cs" />
+    <Compile Include="Utils\Math\Vector.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
