@@ -12,11 +12,11 @@ using Legend_Of_Knight.Utils.Render;
 
 namespace Legend_Of_Knight.Entities
 {
-    public class EntityPlayer : Entity
+    public class EntityPlayer : EntityLivingBase
     {
         public EntityPlayer()
         {
-            walkingAnimation = new FrameAnimation(500, false, Resources.player_1, Resources.player_2, Resources.player_3);
+            animation = new FrameAnimation(500, false, Resources.player_1, Resources.player_2, Resources.player_3);
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
@@ -26,8 +26,7 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            Vector position = prevPosition + (prevPosition - this.position) * partialTicks;
-            StateManager.DrawImage(walkingAnimation.Image, position);
+            base.OnRender(partialTicks: partialTicks);
         }
     }
 }

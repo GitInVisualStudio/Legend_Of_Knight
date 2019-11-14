@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Render;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -16,7 +17,7 @@ namespace Legend_Of_Knight.Entities
         protected Vector prevPosition;
         private float rotation;
         private BoundingBox box;
-        protected FrameAnimation walkingAnimation;
+        protected FrameAnimation animation;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -25,6 +26,18 @@ namespace Legend_Of_Knight.Entities
         public float Width => box.Width;
         public float Height => box.Height;
         public Vector Size => box.Size;
+
+        public FrameAnimation Animation
+        {
+            get
+            {
+                return animation;
+            }
+            set
+            {
+                animation = value;
+            }
+        }
 
         public Vector Position
         {
@@ -36,6 +49,7 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position = value;
+                prevPosition = value;
             }
         }
 
@@ -52,8 +66,7 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 rotation = value;
-                if (Rotated != null)
-                    Rotated(this, rotation);
+                Rotated?.Invoke(this, rotation);
             }
         }
 
@@ -104,27 +117,34 @@ namespace Legend_Of_Knight.Entities
             prevPosition = new Vector(2);
         }
 
-        public abstract void OnRender(float partialTicks);
+        public virtual void OnRender(float partialTicks)
+        {
+            Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
+            StateManager.Push();
+            StateManager.Translate(position);
+            StateManager.Rotate(rotation);
+            StateManager.DrawImage(animation.Image, position - Size / 2);
+            StateManager.Pop();
+        }
 
-        public void OnTick()
+        public virtual void OnTick()
         {
             Move();
         }
 
         public void Move()
         {
-            prevPosition = Position;
-            Position += Velocity * 2;
+            prevPosition = position;
+            position += Velocity * 2;
             velocity *= 0.8f;
 
             if (velocity.Length > 0.2f)
-                walkingAnimation.Update();
+                animation.Update();
             else
-                walkingAnimation.Reset();
+                animation.Reset();
 
 
-            if (Moved != null)
-                Moved(this, position);
+            Moved?.Invoke(this, position);
         }
 
         public void SetVelocity(float x, float y)
