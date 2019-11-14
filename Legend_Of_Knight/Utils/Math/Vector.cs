@@ -83,6 +83,11 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        public Vector(int dimensions) 
+        {
+            values = new float[dimensions];
+        }
+
         public float Length
         {
             get
@@ -96,14 +101,10 @@ namespace Legend_Of_Knight.Utils.Math
 
         public int Dimensions => values.Length;
 
-        public Vector(int dimensions)
+        public Vector Normalize()
         {
-            values = new float[dimensions];
-        }
-
-        public void Normalize()
-        {
-            this /= Length;
+            Vector newVector = Copy();
+            return newVector / Length;
         }
 
         public static Vector operator +(Vector v1, Vector v2)
@@ -144,6 +145,15 @@ namespace Legend_Of_Knight.Utils.Math
             for (int i = 0; i < v1.Values.Length; i++)
                 newVector[i] = v1[i] / v2;
             return newVector;
+        }
+
+        public static bool operator ==(Vector v1, Vector v2)
+        {
+            return v1.values == v2.values;
+        }
+        public static bool operator !=(Vector v1, Vector v2)
+        {
+            return !(v1 == v2);
         }
 
         public override string ToString()
