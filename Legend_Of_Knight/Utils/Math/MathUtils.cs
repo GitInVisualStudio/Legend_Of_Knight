@@ -20,6 +20,11 @@ namespace Legend_Of_Knight.Utils.Math
             return (float)formath::Math.Cos(ToRadians(angle));
         }
 
+        public static float Tan(float angle)
+        {
+            return (float)formath::Math.Tan(ToRadians(angle));
+        }
+
         public static float Asin(float sin)
         {
             return ToDegree((float)formath::Math.Asin(sin));
@@ -28,6 +33,11 @@ namespace Legend_Of_Knight.Utils.Math
         public static float Acos(float cos)
         {
             return ToDegree((float)formath::Math.Acos(cos));
+        }
+
+        public static float Atan(float tan)
+        {
+            return (float)formath::Math.Atan(ToRadians(angle));
         }
 
         public static float ToRadians(float angle)
