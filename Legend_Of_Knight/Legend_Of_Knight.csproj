@@ -64,10 +64,9 @@
     <Compile Include="Utils\InputManager.cs" />
     <Compile Include="Utils\Math\CRandom.cs" />
     <Compile Include="Utils\Math\MathUtils.cs" />
-    <Compile Include="Utils\Math\Triangulation\Connection.cs" />
-    <Compile Include="Utils\Math\Triangulation\Line.cs" />
-    <Compile Include="Utils\Math\Triangulation\Point.cs" />
-    <Compile Include="Utils\Math\Triangulation\UnstructuredGrid.cs" />
+    <Compile Include="Utils\Math\Triangulation\DelaunayTriangulation.cs" />
+    <Compile Include="Utils\Math\Triangulation\Edge.cs" />
+    <Compile Include="Utils\Math\Triangulation\Triangle.cs" />
     <Compile Include="Utils\Render\StateManager.cs" />
     <Compile Include="Utils\Math\TimeUtils.cs" />
     <Compile Include="Utils\Math\Vector.cs" />

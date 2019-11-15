@@ -45,9 +45,10 @@ namespace Legend_Of_Knight.World
                     int posX = (int)(rnd.NextFloat() * args.Size.X);
                     int posY = (int)(rnd.NextFloat() * args.Size.Y);
                     Vector pos = new Vector(posX, posY);
+                    Vector centerPos = new Vector(posX + sizeY / 2, posY + sizeY / 2);
 
                     Field[] occFields = GetFields(pos, size); // alle Felder, die von diesem Raum belegt werden würden
-                    Room room = new Room(occFields);
+                    Room room = new Room(occFields, centerPos, size);
                     if (occFields.All(x => x.Area == null)) // falls die gesamte Fläche des Raumes noch unbelegt sind
                     {
                         occFields.ToList().ForEach(x => x.Area = room); // belegt die Felder

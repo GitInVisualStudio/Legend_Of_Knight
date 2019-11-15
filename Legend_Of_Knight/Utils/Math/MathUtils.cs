@@ -37,7 +37,7 @@ namespace Legend_Of_Knight.Utils.Math
 
         public static float Atan(float tan)
         {
-            return (float)formath::Math.Atan(ToRadians(angle));
+            return (float)formath::Math.Atan(ToRadians(tan));
         }
 
         public static float ToRadians(float angle)
@@ -48,6 +48,16 @@ namespace Legend_Of_Knight.Utils.Math
         public static float ToDegree(float angle)
         {
             return (float)(angle * 180.0f / formath::Math.PI);
+        }
+
+        public static float Sqrt(float d)
+        {
+            return (float)formath::Math.Sqrt(d);
+        }
+
+        public static float Pow(float basis, float exponent)
+        {
+            return (float)formath::Math.Pow(basis, exponent);
         }
     }
 }
