@@ -1,6 +1,8 @@
 ﻿using Legend_Of_Knight.Entities;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
+using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Math.Triangulation;
 using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
@@ -25,8 +27,8 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
-
         public InputManager InputManager => inputManager;
+        private DelaunayTriangulation triangulation;
 
         public Game()
         {
@@ -66,7 +68,12 @@ namespace Legend_Of_Knight
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
 
-            thePlayer = new EntityPlayer();
+            //thePlayer = new EntityPlayer();
+
+            Vector[] vectors = new Vector[30];
+            for (int i = 0; i < vectors.Length; i++)
+                vectors[i] = new Vector(MathUtils.Random(500), MathUtils.Random(500));
+            triangulation = new DelaunayTriangulation(new Vector(500, 500), vectors);
         }
 
         private void AddKeybinds()
@@ -130,12 +137,20 @@ namespace Legend_Of_Knight
             //TODO: calculate the partialTicks, set new Graphics instance
             float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds) / (1000.0f / TPS);
             StateManager.Update(e.Graphics);
-            onRender(partialTicks);
+            OnRender(partialTicks);
         }
 
-        public void onRender(float partialTicks)
+        public void OnRender(float partialTicks)
         {
-            thePlayer.OnRender(partialTicks);
+            //thePlayer.OnRender(partialTicks);
+            #region Render Triangulation
+            for (int i = 0; i < triangulation.Triangles.Length; i++)
+            {
+                Triangle triangle = triangulation.Triangles[i];
+                foreach (Edge e in triangle.Edges)
+                    StateManager.DrawLine(e.A, e.B);
+            }
+            #endregion
         }
 
         public void onTick()

@@ -52,6 +52,16 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawRectangle(new Pen(new SolidBrush(color)), x, y, width, height);
         }
 
+        public static void DrawLine(float x, float y, float x1, float y1, float width = 1)
+        {
+            g.DrawLine(new Pen(new SolidBrush(color), width), x, y, x1, y1);
+        }
+
+        public static void DrawLine(Vector v1, Vector v2, float width = 1)
+        {
+            DrawLine(v1.X, v1.Y, v2.X, v2.Y, width);
+        }
+
         public static void Rotate(float angle)
         {
             g.RotateTransform(angle);
