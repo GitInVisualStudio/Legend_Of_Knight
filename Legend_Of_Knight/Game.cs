@@ -27,8 +27,8 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
+
         public InputManager InputManager => inputManager;
-        private DelaunayTriangulation triangulation;
 
         public Game()
         {
@@ -70,10 +70,7 @@ namespace Legend_Of_Knight
 
             //thePlayer = new EntityPlayer();
 
-            Vector[] vectors = new Vector[30];
-            for (int i = 0; i < vectors.Length; i++)
-                vectors[i] = new Vector(MathUtils.Random(500), MathUtils.Random(500));
-            triangulation = new DelaunayTriangulation(new Vector(500, 500), vectors);
+            StateManager.Color(0, 0, 0);
         }
 
         private void AddKeybinds()
@@ -143,20 +140,13 @@ namespace Legend_Of_Knight
         public void OnRender(float partialTicks)
         {
             //thePlayer.OnRender(partialTicks);
-            #region Render Triangulation
-            for (int i = 0; i < triangulation.Triangles.Length; i++)
-            {
-                Triangle triangle = triangulation.Triangles[i];
-                foreach (Edge e in triangle.Edges)
-                    StateManager.DrawLine(e.A, e.B);
-            }
-            #endregion
         }
 
         public void onTick()
         {
             animationHandler.Update();
             inputManager.Update();
+
             //thePlayer.OnTick();
         }
     }

@@ -47,9 +47,9 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawImage(map, pos.X, pos.Y);
         }
 
-        public static void DrawRect(float x, float y, float width, float height)
+        public static void DrawRect(float x, float y, float width, float height, float strength = 1)
         {
-            g.DrawRectangle(new Pen(new SolidBrush(color)), x, y, width, height);
+            g.DrawRectangle(new Pen(new SolidBrush(color), strength), x, y, width, height);
         }
 
         public static void DrawLine(float x, float y, float x1, float y1, float width = 1)

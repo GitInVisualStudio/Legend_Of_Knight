@@ -38,7 +38,7 @@ namespace Legend_Of_Knight.Utils.Math
 
         public static float Atan(float tan)
         {
-            return (float)s::Math.Atan(ToRadians(tan));
+            return ToDegree((float)s::Math.Atan(tan));
         }
 
         public static float ToRadians(float angle)

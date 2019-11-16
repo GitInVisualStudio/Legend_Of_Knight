@@ -23,5 +23,15 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
             length = MathUtils.Sqrt(MathUtils.Pow(a.X - b.X, 2) + MathUtils.Pow(a.Y - b.Y, 2));
         }
+
+        public static bool operator ==(Edge a, Edge b)
+        {
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(Edge a, Edge b)
+        {
+            return !(a == b);
+        }
     }
 }

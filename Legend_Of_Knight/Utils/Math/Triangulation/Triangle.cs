@@ -48,19 +48,14 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             Bc = new Edge(b, c);
             Ac = new Edge(a, c);
 
-            alpha = s::Math.Abs(GetGradientAngle(A, B) - GetGradientAngle(A, C));
-            beta = s::Math.Abs(GetGradientAngle(B, A) - GetGradientAngle(B, C));
-            gamma = 180 - alpha - beta;
+            alpha = MathUtils.Acos((MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ac.Length, 2) - MathUtils.Pow(Ab.Length, 2)) / (-2 * Ac.Length * Ab.Length));
+            beta = MathUtils.Acos((MathUtils.Pow(Ac.Length, 2) - MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ab.Length, 2)) / (-2 * Bc.Length * Ab.Length));
+            gamma = MathUtils.Acos((MathUtils.Pow(Ab.Length, 2) - MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ac.Length, 2)) / (-2 * Bc.Length * Ac.Length));
 
             float ccX = (A.X * MathUtils.Sin(2 * alpha) + B.X * MathUtils.Sin(2 * beta) + C.X * MathUtils.Sin(2 * gamma)) / (MathUtils.Sin(2 * alpha) + MathUtils.Sin(2 * beta) + MathUtils.Sin(2 * gamma));
             float ccY = (A.Y * MathUtils.Sin(2 * alpha) + B.Y * MathUtils.Sin(2 * beta) + C.Y * MathUtils.Sin(2 * gamma)) / (MathUtils.Sin(2 * alpha) + MathUtils.Sin(2 * beta) + MathUtils.Sin(2 * gamma));
             circumcenter = new Vector(ccX, ccY);
             radius = MathUtils.Sqrt(MathUtils.Pow(A.X - circumcenter.X, 2) + MathUtils.Pow(A.Y - circumcenter.Y, 2));
-        }
-
-        private float GetGradientAngle(Vector v1, Vector v2)
-        {
-            return MathUtils.Atan((v1.Y - v2.Y) / (v1.X / v2.X));
         }
 
         public bool PointInCircumcircle(Vector point)

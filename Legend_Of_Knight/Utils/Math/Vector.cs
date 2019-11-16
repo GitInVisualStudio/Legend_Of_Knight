@@ -156,6 +156,16 @@ namespace Legend_Of_Knight.Utils.Math
             return new Vector(values);
         }
 
+        public static bool operator ==(Vector v1, Vector v2)
+        {
+            return v1.Equals(v2);
+        }
+
+        public static bool operator !=(Vector v1, Vector v2)
+        {
+            return !(v1 == v2);
+        }
+
         class VectorNot2DException : Exception
         {
             public VectorNot2DException() : base("Vector did not have 2 or more Dimensions")
