@@ -42,10 +42,12 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
                     tempTriangles.Add(new Triangle(e.A, e.B, point));
             }
 
-            foreach (Triangle t in tempTriangles)
-                if (t.ContainsPoint(superA) || t.ContainsPoint(superB) || t.ContainsPoint(superC))
-                    tempTriangles.Remove(t);
-
+            for(int i = 0; i < tempTriangles.Count; i++)
+                if (tempTriangles[i].ContainsPoint(superA) || tempTriangles[i].ContainsPoint(superB) || tempTriangles[i].ContainsPoint(superC))
+                {
+                    tempTriangles.Remove(tempTriangles[i]);
+                    i--;
+                }
             Triangles = tempTriangles.ToArray();
         }
     }

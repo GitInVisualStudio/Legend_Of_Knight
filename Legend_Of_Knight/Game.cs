@@ -157,7 +157,7 @@ namespace Legend_Of_Knight
         {
             animationHandler.Update();
             inputManager.Update();
-            thePlayer.OnTick();
+            //thePlayer.OnTick();
         }
     }
 }
