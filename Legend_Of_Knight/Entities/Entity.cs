@@ -19,6 +19,7 @@ namespace Legend_Of_Knight.Entities
         protected Vector prevPosition;
         private float rotation;
         private BoundingBox box;
+        protected float movingTime;
         protected FrameAnimation animation;
         
         public event EventHandler<Vector> Moved;
@@ -118,9 +119,9 @@ namespace Legend_Of_Knight.Entities
         {
             Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
-            StateManager.Translate(position);
+            StateManager.Translate(position - Size / 2);
             StateManager.Rotate(rotation);
-            StateManager.DrawImage(animation.Image, position - Size / 2);
+            StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
         }
 
@@ -136,9 +137,15 @@ namespace Legend_Of_Knight.Entities
             velocity *= 0.8f;
 
             if (velocity.Length > 0.2f)
+            {
+                movingTime += Game.TPT / 1000.0f;
                 animation.Update();
+            }
             else
+            {
+                movingTime = 0;
                 animation.Reset();
+            }
 
 
             Moved?.Invoke(this, position);

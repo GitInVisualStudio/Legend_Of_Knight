@@ -70,6 +70,7 @@
     <Compile Include="Utils\Render\StateManager.cs" />
     <Compile Include="Utils\Math\TimeUtils.cs" />
     <Compile Include="Utils\Math\Vector.cs" />
+    <Compile Include="Utils\ResourceManager.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -94,27 +95,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Entities\Player\Idle\Down\anim.kra" />
-    <None Include="Resources\Entities\Player\Idle\Left\anim.kra" />
-    <None Include="Resources\Entities\Player\Idle\Right\anim.kra" />
-    <None Include="Resources\Entities\Player\Idle\Up\anim.kra" />
-    <None Include="Resources\player_1.png" />
+    <EmbeddedResource Include="Resources\player_1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\player_2.png" />
+    <EmbeddedResource Include="Resources\player_2.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\EntityPlayer\Left\anim.kra" />
+    <None Include="Resources\EntityPlayer\Right\anim.kra" />
     <None Include="Resources\player_3.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Entities\Player\Idle\Down\0000.png" />
-    <Content Include="Resources\Entities\Player\Idle\Down\0001.png" />
-    <Content Include="Resources\Entities\Player\Idle\Left\0000.png" />
-    <Content Include="Resources\Entities\Player\Idle\Left\0001.png" />
-    <Content Include="Resources\Entities\Player\Idle\Right\0000.png" />
-    <Content Include="Resources\Entities\Player\Idle\Right\0001.png" />
-    <Content Include="Resources\Entities\Player\Idle\Up\0000.png" />
-    <Content Include="Resources\Entities\Player\Idle\Up\0001.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Left\0.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Left\1.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Right\0.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Right\1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -54,6 +54,10 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawRectangle(new Pen(new SolidBrush(color)), x, y, width, height);
         }
 
+        /// <summary>
+        /// Dreht die Transformation
+        /// </summary>
+        /// <param name="angle">In Grad</param>
         public static void Rotate(float angle)
         {
             g.RotateTransform(angle);
@@ -97,9 +101,9 @@ namespace Legend_Of_Knight.Utils.Render
         {
             state = state.LastState;
             g.ResetTransform();
+            Translate(-state.TranslateX, -state.TranslateY);
             Scale(state.ScaleX, state.ScaleY);
             Rotate(state.Rotation);
-            Translate(state.TranslateX, state.TranslateY);
         }
 
         public static float GetStringWidth(string s)

@@ -14,10 +14,6 @@ namespace Legend_Of_Knight.Entities
 {
     public class EntityPlayer : EntityLivingBase
     {
-        public EntityPlayer() : base(new FrameAnimation(FPS, false, Resources.right_0000, Resources.right_0001), new FrameAnimation(FPS, false, Resources.left_0000, Resources.left_0001))
-        {
-            
-        }
 
         public override void OnCollision(object sender, CollisionArgs e)
         {

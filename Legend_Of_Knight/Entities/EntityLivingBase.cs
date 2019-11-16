@@ -9,6 +9,8 @@ using Item = Legend_Of_Knight.Items.Item;
 using EntityItem = Legend_Of_Knight.Entities.Items.EntityItem;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Render;
+using System.Drawing;
+using Legend_Of_Knight.Utils;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -90,9 +92,10 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public EntityLivingBase(FrameAnimation right, FrameAnimation left)
+        public EntityLivingBase()
         {
-            this.animations = new FrameAnimation[]{ right, left};
+            Bitmap[][] images = ResourceManager.GetImages(this);
+            this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
             Box = new BoundingBox(this, animation.Image.Width, animation.Image.Height);
@@ -105,15 +108,27 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            base.OnRender(partialTicks);
+            StateManager.Push();
             Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
+            StateManager.Translate(position - Size / 2);
+
+            float walkingTime = this.movingTime;
+            if (walkingTime != 0)
+                walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
+            StateManager.Rotate(MathUtils.Sin(walkingTime * 360 * 3) * 2.5f);
+            StateManager.Rotate(Rotation);
+            StateManager.DrawImage(animation.Image, 0, 0);
 
             if (item == null)
+            {
+                StateManager.Pop();
                 return;
+            }
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             Vector offset = new Vector(Width * itemOffset);
             entityItem.Position = position;
             entityItem.OnRender(partialTicks);
+            StateManager.Pop();
         }
 
         public override void OnTick()

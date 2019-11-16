@@ -6,6 +6,7 @@ using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,9 @@ namespace Legend_Of_Knight
     public class Game : Form
     {
         /// <summary>
-        /// frames per Second and ticks per Second
+        /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 240.0f, TPS = 30.0f; 
+        public const float FPS = 240.0f, TPS = 30.0f, TPT = (1000.0f / TPS); 
         public const int WIDTH = 1280, HEIGHT = 720;
         public const string NAME = "Legend of Knight";
         private Timer renderTimer, tickTimer;
@@ -48,7 +49,7 @@ namespace Legend_Of_Knight
             renderTimer.Tick += RenderTimer_Tick;
 
             tickTimer = new Timer() {
-                Interval = (int)(1000.0f / TPS),
+                Interval = (int)TPT,
             };
             tickTimer.Tick += TickTimer_Tick;
 
@@ -129,7 +130,7 @@ namespace Legend_Of_Knight
         {
             base.OnPaint(e);
             //TODO: calculate the partialTicks, set new Graphics instance
-            float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds) / (1000.0f / TPS);
+            float partialTicks = (float)(TPT - watch.Elapsed.TotalMilliseconds) / TPT;
             StateManager.Update(e.Graphics);
             OnRender(partialTicks);
         }
@@ -137,6 +138,7 @@ namespace Legend_Of_Knight
         public void OnRender(float partialTicks)
         {
             StateManager.Scale(5);
+            StateManager.Push();
             thePlayer.OnRender(partialTicks);
         }
 

@@ -44,5 +44,10 @@ namespace Legend_Of_Knight.Utils.Math
         {
             return current + (prev - current) * partialTicks;
         }
+
+        public static float Interpolate(float prev, float current, float partialTicks)
+        {
+            return current + (prev - current) * partialTicks;
+        }
     }
 }
