@@ -21,13 +21,14 @@ namespace Legend_Of_Knight.Entities.Items
         public override void OnRender(float partialTicks)
         {
             Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
-            Vector hover = new Vector(0, (float)Math.Sin(delta));
+            Vector hover = new Vector(0, (float)Math.Sin(MathUtils.Interpolate(prevDelta, delta, partialTicks)));
             StateManager.DrawImage(animation.Image, position + hover - Size/2);
         }
 
         public override void OnTick() 
         {
             base.OnTick();
+            prevDelta = delta;
             delta += 0.1f;
         }
     }

@@ -2,6 +2,7 @@
 using Legend_Of_Knight.Properties;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
+using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
@@ -19,9 +20,13 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 240.0f, TPS = 30.0f, TPT = (1000.0f / TPS); 
+        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS); 
         public const int WIDTH = 1280, HEIGHT = 720;
         public const string NAME = "Legend of Knight";
+        public const bool DEBUG = false;
+
+        private int fps = 0;
+        private int currentFrames = 0;
         private Timer renderTimer, tickTimer;
         private Stopwatch watch;
         private InputManager inputManager;
@@ -75,19 +80,19 @@ namespace Legend_Of_Knight
         {
             inputManager.Add('W', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X, -1);
+                thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1);
             });
             inputManager.Add('A', () =>
             {
-                thePlayer.SetVelocity(-1, thePlayer.Velocity.Y);
+                thePlayer.SetVelocity(thePlayer.Velocity.X - 1, thePlayer.Velocity.Y);
             });
             inputManager.Add('S', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X, 1);
+                thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y + 1);
             });
             inputManager.Add('D', () =>
             {
-                thePlayer.SetVelocity(1, thePlayer.Velocity.Y);
+                thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
             });
 
         }
@@ -137,8 +142,34 @@ namespace Legend_Of_Knight
 
         public void OnRender(float partialTicks)
         {
-            StateManager.Scale(5);
+            #region DEBUG
+            if (DEBUG)
+            {
+                currentFrames++;
+                if (TimeUtils.Check(1000))
+                {
+                    fps = currentFrames;
+                    currentFrames = 0;
+                }
+                StateManager.SetColor(0, 0, 0);
+                StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
+                StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
+                Vector prev = thePlayer.Box.Corners.Last();
+                StateManager.Push();
+                StateManager.SetColor(255, 0, 0);
+                StateManager.Scale(5);
+                StateManager.Translate(thePlayer.Position - thePlayer.Size / 2);
+                for (int i = 0; i < thePlayer.Box.Corners.Length; i++)
+                {
+                    Vector current = thePlayer.Box.Corners[i];
+                    StateManager.DrawLine(prev, current);
+                    prev = current;
+                }
+                StateManager.Pop();
+            }
+            #endregion
             StateManager.Push();
+            StateManager.Scale(5);
             thePlayer.OnRender(partialTicks);
         }
 

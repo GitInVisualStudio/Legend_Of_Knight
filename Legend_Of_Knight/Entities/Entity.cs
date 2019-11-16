@@ -50,8 +50,8 @@ namespace Legend_Of_Knight.Entities
             }
             set
             {
+                prevPosition = position;
                 position = value;
-                prevPosition = value;
             }
         }
 
@@ -134,7 +134,7 @@ namespace Legend_Of_Knight.Entities
         {
             prevPosition = position;
             position += Velocity;
-            velocity *= 0.8f;
+            velocity *= 0.7f;
 
             if (velocity.Length > 0.2f)
             {

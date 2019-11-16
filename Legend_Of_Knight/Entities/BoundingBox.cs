@@ -16,6 +16,7 @@ namespace Legend_Of_Knight.Entities
         private Vector size;
         private Vector[] corners;
 
+        public Vector[] Corners => corners;
         public event EventHandler<CollisionArgs> Collided;
 
         public Entity Owner

@@ -108,17 +108,11 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            StateManager.Push();
-            Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
-            StateManager.Translate(position - Size / 2);
-
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
-            StateManager.Rotate(MathUtils.Sin(walkingTime * 360 * 3) * 2.5f);
-            StateManager.Rotate(Rotation);
-            StateManager.DrawImage(animation.Image, 0, 0);
-
+            Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
+            base.OnRender(partialTicks);
             if (item == null)
             {
                 StateManager.Pop();
@@ -128,7 +122,6 @@ namespace Legend_Of_Knight.Entities
             Vector offset = new Vector(Width * itemOffset);
             entityItem.Position = position;
             entityItem.OnRender(partialTicks);
-            StateManager.Pop();
         }
 
         public override void OnTick()

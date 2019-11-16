@@ -40,14 +40,11 @@ namespace Legend_Of_Knight.Utils.Math
             return (float)(angle * 180.0f / s::Math.PI);
         }
 
-        public static Vector Interpolate(Vector prev, Vector current, float partialTicks)
+        public static T Interpolate<T>(T prev, T current, float partialTicks)
         {
-            return current + (prev - current) * partialTicks;
-        }
-
-        public static float Interpolate(float prev, float current, float partialTicks)
-        {
-            return current + (prev - current) * partialTicks;
+            dynamic var1 = prev;
+            dynamic var2 = current;
+            return var2 + (var1 - var2) * partialTicks;
         }
     }
 }

@@ -19,10 +19,5 @@ namespace Legend_Of_Knight.Entities
         {
             
         }
-
-        public override void OnRender(float partialTicks)
-        {
-            base.OnRender(partialTicks: partialTicks);
-        }
     }
 }
