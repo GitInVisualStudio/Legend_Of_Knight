@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,10 +13,10 @@ namespace Legend_Of_Knight.Utils.Render
     {
         private static Graphics g;
         private static Color color;
-        private static Font font = new Font("Arial", 12);
-        private static float scaleX, scaleY, translateX, translateY;
-        private static float rotation;
-        private static State state;
+        private static Font font = new Font("System", 12);
+        private static float scaleX = 1, scaleY = 1, translateX = 0, translateY = 0;
+        private static float rotation = 0;
+        private static State state = new State();
 
         public static float ScaleX => scaleX;
         public static float ScaleY => scaleY;
@@ -29,6 +30,7 @@ namespace Legend_Of_Knight.Utils.Render
 
         public static void Update(Graphics g)
         {
+            g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam nocheinmal besprechen
             StateManager.g = g;
         }
 
@@ -94,7 +96,7 @@ namespace Legend_Of_Knight.Utils.Render
         public static void Pop()
         {
             state = state.LastState;
-            g.Transform.Reset();
+            g.ResetTransform();
             Scale(state.ScaleX, state.ScaleY);
             Rotate(state.Rotation);
             Translate(state.TranslateX, state.TranslateY);

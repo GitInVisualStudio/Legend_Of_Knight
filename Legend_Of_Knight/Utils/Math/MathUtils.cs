@@ -42,7 +42,7 @@ namespace Legend_Of_Knight.Utils.Math
 
         public static Vector Interpolate(Vector prev, Vector current, float partialTicks)
         {
-            return prev + (prev - current) * partialTicks;
+            return current + (prev - current) * partialTicks;
         }
     }
 }

@@ -90,10 +90,12 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public EntityLivingBase(params FrameAnimation[] animations)
+        public EntityLivingBase(FrameAnimation right, FrameAnimation left)
         {
-            this.animations = animations;
+            this.animations = new FrameAnimation[]{ right, left};
             Facing = EnumFacing.RIGHT; //Weil immer rechts
+            animation = animations[0];
+            Box = new BoundingBox(this, animation.Image.Width, animation.Image.Height);
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
@@ -103,6 +105,7 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
+            base.OnRender(partialTicks);
             Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
 
             if (item == null)

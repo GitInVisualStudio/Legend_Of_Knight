@@ -71,7 +71,7 @@
     <Compile Include="Utils\Math\TimeUtils.cs" />
     <Compile Include="Utils\Math\Vector.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -94,6 +94,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Entities\Player\Idle\Down\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Left\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Right\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Up\anim.kra" />
     <None Include="Resources\player_1.png" />
   </ItemGroup>
   <ItemGroup>
@@ -101,6 +105,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\player_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Entities\Player\Idle\Down\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Down\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Left\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Left\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Right\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Right\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Up\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Up\0001.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

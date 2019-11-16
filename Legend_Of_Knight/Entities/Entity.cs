@@ -12,6 +12,8 @@ namespace Legend_Of_Knight.Entities
 {
     public abstract class Entity
     {
+        protected const int FPS = (int)(1000.0f / 5);
+
         protected Vector position;
         protected Vector velocity;
         protected Vector prevPosition;
@@ -45,7 +47,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return position;
             }
-
             set
             {
                 position = value;
@@ -62,7 +63,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return rotation;
             }
-
             set
             {
                 rotation = value;
@@ -76,7 +76,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return position.X;
             }
-
             set
             {
                 position.X = value;
@@ -89,7 +88,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return position.Y;
             }
-
             set
             {
                 position.Y = value;
@@ -102,8 +100,7 @@ namespace Legend_Of_Knight.Entities
             {
                 return box;
             }
-
-            set
+            protected set
             {
                 box = value;
                 box.Collided += OnCollision;
@@ -119,7 +116,7 @@ namespace Legend_Of_Knight.Entities
 
         public virtual void OnRender(float partialTicks)
         {
-            Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
+            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(rotation);
@@ -135,7 +132,7 @@ namespace Legend_Of_Knight.Entities
         public void Move()
         {
             prevPosition = position;
-            position += Velocity * 2;
+            position += Velocity;
             velocity *= 0.8f;
 
             if (velocity.Length > 0.2f)

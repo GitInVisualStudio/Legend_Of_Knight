@@ -1,4 +1,5 @@
 ﻿using Legend_Of_Knight.Entities;
+using Legend_Of_Knight.Properties;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Render;
@@ -130,11 +131,12 @@ namespace Legend_Of_Knight
             //TODO: calculate the partialTicks, set new Graphics instance
             float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds) / (1000.0f / TPS);
             StateManager.Update(e.Graphics);
-            onRender(partialTicks);
+            OnRender(partialTicks);
         }
 
-        public void onRender(float partialTicks)
+        public void OnRender(float partialTicks)
         {
+            StateManager.Scale(5);
             thePlayer.OnRender(partialTicks);
         }
 
