@@ -90,6 +90,12 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public EntityLivingBase(params FrameAnimation[] animations)
+        {
+            this.animations = animations;
+            Facing = EnumFacing.RIGHT; //Weil immer rechts
+        }
+
         public override void OnCollision(object sender, CollisionArgs e)
         {
             throw new NotImplementedException();

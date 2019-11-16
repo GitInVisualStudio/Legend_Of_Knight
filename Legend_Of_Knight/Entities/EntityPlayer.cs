@@ -16,7 +16,7 @@ namespace Legend_Of_Knight.Entities
     {
         public EntityPlayer()
         {
-            animation = new FrameAnimation(500, false, Resources.player_1, Resources.player_2, Resources.player_3);
+            
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
