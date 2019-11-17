@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Legend_Of_Knight.Utils.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace Legend_Of_Knight.Utils
     {
         public static int mouseX;
         public static int mouseY;
+        public static Vector mousePosition;
         private List<Keybind> keys;
 
         public InputManager()

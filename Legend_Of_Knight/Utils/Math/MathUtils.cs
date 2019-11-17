@@ -20,6 +20,11 @@ namespace Legend_Of_Knight.Utils.Math
             return (float)s::Math.Cos(ToRadians(angle));
         }
 
+        public static float Tan(float angle)
+        {
+            return (float)s::Math.Tan(ToRadians(angle));
+        }
+
         public static float Asin(float sin)
         {
             return ToDegree((float)s::Math.Asin(sin));
@@ -28,6 +33,11 @@ namespace Legend_Of_Knight.Utils.Math
         public static float Acos(float cos)
         {
             return ToDegree((float)s::Math.Acos(cos));
+        }
+
+        public static float Atan(float tan)
+        {
+            return ToDegree((float)s::Math.Atan(tan));
         }
 
         public static float ToRadians(float angle)

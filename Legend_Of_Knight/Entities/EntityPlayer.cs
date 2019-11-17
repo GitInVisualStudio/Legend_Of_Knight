@@ -14,10 +14,20 @@ namespace Legend_Of_Knight.Entities
 {
     public class EntityPlayer : EntityLivingBase
     {
+        public EntityPlayer() : base()
+        {
+            Item = new Legend_Of_Knight.Items.Item("sword.png");
+        }
 
         public override void OnCollision(object sender, CollisionArgs e)
         {
-            
+        }
+
+        public override void OnRender(float partialTicks)
+        {
+            base.OnRender(partialTicks);
+            Vector yaw = InputManager.mousePosition - position;
+            Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
         }
     }
 }

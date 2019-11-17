@@ -30,7 +30,7 @@ namespace Legend_Of_Knight.Utils.Render
         /// <param name="g"></param>
         public static void Update(Graphics g)
         {
-            g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam noch besprechen
+            //g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam noch besprechen
             StateManager.g = g;
         }
 
@@ -73,14 +73,48 @@ namespace Legend_Of_Knight.Utils.Render
         /// <param name="y"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public static void DrawRect(float x, float y, float width, float height)
+        public static void DrawRect(float x, float y, float width, float height, float lineWidth = 1)
         {
-            g.DrawRectangle(new Pen(new SolidBrush(Color)), x, y, width, height);
+            g.DrawRectangle(new Pen(new SolidBrush(Color), lineWidth), x, y, width, height);
         }
 
-        public static void DrawRect(Vector position, float width, float height)
+        public static void DrawRect(Vector position, float width, float height, float lineWidth)
         {
-            DrawRect(position.X, position.Y, width, height);
+            DrawRect(position.X, position.Y, width, height, lineWidth);
+        }
+
+        /// <summary>
+        /// Zeichnet einen Kreis
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="r">Radius</param>
+        /// <param name="lineWidth">Linien stärke</param>
+        public static void DrawCircle(float x, float y, float r, float lineWidth = 1)
+        {
+            g.DrawEllipse(new Pen(new SolidBrush(Color), lineWidth), x, y, r, r);
+        }
+
+        public static void DrawCircle(Vector position, float r, float lineWidth = 1)
+        {
+            DrawCircle(position.X, position.Y, r, lineWidth);
+        }
+
+        /// <summary>
+        /// Zeichnet einen Kreis
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="r">Radius</param>
+        /// <param name="lineWidth">Linien stärke</param>
+        public static void FillCircle(float x, float y, float r)
+        {
+            g.FillEllipse(new SolidBrush(Color), x - r / 2, y - r / 2, r, r);
+        }
+
+        public static void DrawCircle(Vector position, float r)
+        {
+            DrawCircle(position.X, position.Y, r);
         }
 
         /// <summary>
@@ -160,8 +194,8 @@ namespace Legend_Of_Knight.Utils.Render
         /// </summary>
         public static void Pop()
         {
-            state = state.PrevState;
             g.ResetTransform();
+            state = state.PrevState;
             Translate(-state.TranslateX, -state.TranslateY);
             Scale(state.ScaleX, state.ScaleY);
             Rotate(state.Rotation);

@@ -53,26 +53,35 @@ namespace Legend_Of_Knight.Entities
             this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
 
-            corners = new Vector[4]
+            corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
             {
-                new Vector(owner.X - width / 2, owner.Y - height / 2),
-                new Vector(owner.X + width / 2, owner.Y - height / 2),
-                new Vector(owner.X + width / 2, owner.Y + height / 2),
-                new Vector(owner.X - width / 2, owner.Y + height / 2)
+                new Vector(-width / 2, -height / 2),
+                new Vector(width / 2, -height / 2),
+                new Vector(width / 2, height / 2),
+                new Vector(-width / 2, height / 2)
             };
             Owner_Rotated(this, Owner.Rotation);
         }
 
         private void Owner_Rotated(object sender, float angle)
         {
-            angle = MathUtils.ToRadians(angle);
+            //angle = MathUtils.ToRadians(angle);
+            //Wieder neu setzen, sonst ist die Ausgansposition anders
+            corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
+            {
+                new Vector(-width / 2, -height / 2),
+                new Vector(width / 2, -height / 2),
+                new Vector(width / 2, height / 2),
+                new Vector(-width / 2, height / 2)
+            };
+
             for (int i = 0; i < corners.Length; i++)
             {
-                // Lösung geklaut von https://gamedev.stackexchange.com/questions/86755/how-to-calculate-corner-positions-marks-of-a-rotated-tilted-rectangle/86784#86784
-                Vector cTranslated = new Vector(corners[i][0] - owner.X, corners[i][1] - owner.Y); // punkt relativ zum Mittelpunkt des Rechteckes
-                cTranslated[0] = (float)(cTranslated[0] * Math.Cos(angle) - cTranslated[1] * Math.Sin(angle));
-                cTranslated[1] = (float)(cTranslated[0] * Math.Sin(angle) + cTranslated[1] * Math.Cos(angle)); // nicht -cTranslated[0] * ... ??
-                corners[i] = new Vector(cTranslated[0] + owner.X, cTranslated[1] + owner.Y); // punkt rotiert und absolut
+                Vector current = corners[i];
+                current -= Size / 2;
+                current.X = owner.X + current.X * MathUtils.Cos(angle) - current.Y * MathUtils.Sin(angle);
+                current.Y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
+                corners[i] = current;
             }
         }
 

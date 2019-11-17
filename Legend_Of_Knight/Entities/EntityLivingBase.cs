@@ -11,12 +11,13 @@ using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Render;
 using System.Drawing;
 using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Entities.Items;
 
 namespace Legend_Of_Knight.Entities
 {
     public class EntityLivingBase : Entity
     {
-        private FrameAnimation[] animations;
+        protected FrameAnimation[] animations;
         private float health;
         private Item item;
         private EntityItem entityItem;
@@ -24,17 +25,18 @@ namespace Legend_Of_Knight.Entities
         private bool usingItem;
         private EnumFacing facing;
         private int itemCount; //Wie lange das Item in benutung ist
+        private int swingProgress;
 
-        public int ItemCount => entityItem.Animation.Index;
+        public int ItemCount => EntityItem.Animation.Index;
         public float Yaw
         {
             get
             {
-                return entityItem.Rotation;
+                return EntityItem.Rotation;
             }
             set
             {
-                entityItem.Rotation = value;
+                EntityItem.Rotation = value;
             }
         }
 
@@ -60,6 +62,7 @@ namespace Legend_Of_Knight.Entities
 
             set
             {
+                EntityItem = new EntityItem(value);
                 item = value;
             }
         }
@@ -92,13 +95,15 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public EntityItem EntityItem { get => entityItem; protected set => entityItem = value; }
+
         public EntityLivingBase()
         {
             Bitmap[][] images = ResourceManager.GetImages(this);
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
-            Box = new BoundingBox(this, animation.Image.Width, animation.Image.Height);
+            Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
@@ -112,16 +117,32 @@ namespace Legend_Of_Knight.Entities
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
             Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
-            base.OnRender(partialTicks);
+
+            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            StateManager.Push();
+            StateManager.Translate(position - Size / 2);
+            StateManager.Rotate(Rotation);
+            StateManager.DrawImage(animation.Image, 0, 0);
+
+            if (Game.DEBUG)
+            {
+                StateManager.SetColor(255, 0, 0);
+                StateManager.FillCircle(Width / 2, Height / 2, 1);
+                StateManager.DrawRect(0, 0, Width, Height, 0.1f);
+            }
+
             if (item == null)
             {
                 StateManager.Pop();
                 return;
             }
-            float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
-            Vector offset = new Vector(Width * itemOffset);
-            entityItem.Position = position;
-            entityItem.OnRender(partialTicks);
+            //float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
+            //float offset = Width * itemOffset;
+            StateManager.Pop();
+            Vector itemPosition = Position.Copy();
+            itemPosition.Y -= EntityItem.Height / 2;
+            EntityItem.Position = itemPosition;
+            EntityItem.OnRender(partialTicks);
         }
 
         public override void OnTick()
@@ -144,20 +165,21 @@ namespace Legend_Of_Knight.Entities
                 return;
 
             if (IsUsingItem)
-                entityItem?.Animation.Update();
+                EntityItem?.Animation.Update();
         }
 
-        public void UseItem()
+        public void Swing()
         {
             if(item != null)
                 usingItem = true;
+            swingProgress = 10;
         }
 
         public static TAttribute GetAttribute<TAttribute>(Enum value) where TAttribute : Attribute
         {
             var type = value.GetType();
             var name = Enum.GetName(type, value);
-            return type.GetField(name) // I prefer to get attributes this way
+            return type.GetField(name)
                 .GetCustomAttributes(false)
                 .OfType<TAttribute>()
                 .SingleOrDefault();
