@@ -66,6 +66,7 @@
     <Compile Include="Utils\Math\MathUtils.cs" />
     <Compile Include="Utils\Math\Triangulation\DelaunayTriangulation.cs" />
     <Compile Include="Utils\Math\Triangulation\Edge.cs" />
+    <Compile Include="Utils\Math\Triangulation\Forest.cs" />
     <Compile Include="Utils\Math\Triangulation\MinimumSpanningTree.cs" />
     <Compile Include="Utils\Math\Triangulation\Triangle.cs" />
     <Compile Include="Utils\Render\StateManager.cs" />

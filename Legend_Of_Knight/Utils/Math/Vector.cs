@@ -74,6 +74,14 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        public static Vector Null
+        {
+            get
+            {
+                return new Vector();
+            }
+        }
+
         public Vector(params float[] p)
         {
             values = new float[p.Length];

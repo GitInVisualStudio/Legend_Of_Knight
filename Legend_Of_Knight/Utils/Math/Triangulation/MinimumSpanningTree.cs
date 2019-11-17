@@ -26,54 +26,84 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
         private void Calculate(Vector[] points, Edge[] edges)
         {
-            List<Vector> pointsInside = new List<Vector>();
-            pointsInside.Add(points[0]);
-            List<Vector> pointsOutside = points.ToList();
-            pointsOutside.Remove(points[0]);
-            Edges = Calculate(pointsInside, new List<Edge>(), pointsOutside, edges.ToList());
-            List<Vector> tempPoints = new List<Vector>();
-            Edges.ToList().ForEach(x =>
-            {
-                if (!tempPoints.Contains(x.A))
-                    tempPoints.Add(x.A);
-                if (!tempPoints.Contains(x.B))
-                    tempPoints.Add(x.B);
-            });
-            Points = tempPoints.ToArray();
-        }
+            // https://en.wikipedia.org/wiki/Prim's_algorithm#Description
+            Dictionary<Vector, float> c = new Dictionary<Vector, float>(); // 1
+            for (int i = 0; i < points.Length; i++)
+                c.Add(points[i], float.MaxValue);
 
-        private Edge[] Calculate(List<Vector> pointsInside, List<Edge> edgesInside, List<Vector> pointsOutside, List<Edge> edgesOutside)
-        {
-            if (pointsOutside.Count == pointsInside.Count + 1)
-                return edgesInside.ToArray();
+            Dictionary<Vector, Edge> e = new Dictionary<Vector, Edge>();
+            for (int i = 0; i < points.Length; i++)
+                e.Add(points[i], Edge.Null);
 
-            Edge minCost = FindMinimumCostEdge(pointsInside[0], edgesOutside);
-            for (int i = 1; i < pointsInside.Count; i++) // findet die Kante, die zu einem der Punkte des Baumes verbindet und am kleinsten ist
+            Forest forest = new Forest(); // 2
+            List<Vector> q = points.ToList();
+
+            while (q.Count > 0) // 3
             {
-                Edge e = FindMinimumCostEdge(pointsInside[i], edgesOutside);
-                if (minCost == Edge.Null || minCost.Length > e.Length)
-                    minCost = e;
+                Vector v = MinKey(q, c); // Punkt, zu dem die Verbindung am billigsten ist | 3.a
+                q.Remove(v);
+                forest.Verticies.Add(v); // 3.b
+                if (e[v] != Edge.Null)
+                    forest.Edges.Add(e[v]);
+
+                Edge[] connectingEdges = GetConnectingEdges(v, edges); // 3.c
+                foreach (Edge vw in connectingEdges)
+                {
+                    Vector w = vw.A == v ? vw.B : vw.A;
+                    if (q.Contains(w) && vw.Length < c[w])
+                    {
+                        c[w] = vw.Length;
+                        e[w] = vw;
+                    }
+                }
             }
 
-            Vector pointToAdd = pointsInside.Contains(minCost.A) ? minCost.B : minCost.A;
-            pointsInside.Add(pointToAdd);
-            pointsOutside.Remove(pointToAdd);
-            edgesInside.Add(minCost);
-            edgesOutside.Remove(minCost);
-
-            return Calculate(pointsInside, edgesInside, pointsOutside, edgesOutside);
+            Points = forest.Verticies.ToArray();
+            Edges = forest.Edges.ToArray();
         }
 
-        private Edge FindMinimumCostEdge(Vector point, List<Edge> edges)
+        private Vector MinKey(IEnumerable<Vector> acceptable, Dictionary<Vector, float> dict)
         {
-            edges = ((Edge[])edges.ToArray().Clone()).ToList();
-            edges.RemoveAll(x => !(x.A == point || x.B == point)); // damit nur die Kanten betrachtet werden, die point mit einem anderen Punkt verbinden
-            if (edges.Count == 0)
-                return Edge.Null;
-            Edge minCost = edges[0];
-            for (int i = 1; i < edges.Count; i++)
-                minCost = edges[i].Length < minCost.Length ? edges[i] : minCost;
-            return minCost;
+            if (dict.Count == 0)
+                return Vector.Null;
+            Vector minKey = dict.First().Key;
+            for (int i = 0; i < dict.Count; i++)
+                if (acceptable.Contains(dict.Keys.ElementAt(i)) && dict[dict.Keys.ElementAt(i)] < dict[minKey])
+                    minKey = dict.Keys.ElementAt(i);
+            return minKey;
+        }
+
+        private int MinIndex(IEnumerable<float> array)
+        {
+            if (array.Count() == 0)
+                return -1;
+            int min = 0;
+            for (int i = 1; i < array.Count(); i++)
+                min = array.ElementAt(i) < array.ElementAt(min) ? i : min;
+            return min;
+        }
+
+        private float Min(IEnumerable<float> array)
+        {
+            return array.ElementAt(MinIndex(array));
+        }
+
+        private Edge[] GetConnectingEdges(Vector vertex, IEnumerable<Edge> edges)
+        {
+            List<Edge> connectingEdges = new List<Edge>(); // alle Kanten, die mit point verbinden
+            foreach (Edge e in edges)
+                if (e.A == vertex || e.B == vertex)
+                    connectingEdges.Add(e);
+            return connectingEdges.ToArray();
+        }
+
+        private Edge FindCheapestConnection(Vector vertex, IEnumerable<Edge> edges)
+        {
+            Edge[] connectingEdges = GetConnectingEdges(vertex, edges);
+            Edge cheapest = connectingEdges[0];
+            for (int i = 0; i < connectingEdges.Length; i++)
+                cheapest = cheapest.Length > connectingEdges[i].Length ? connectingEdges[i] : cheapest;
+            return cheapest;
         }
     }
 }

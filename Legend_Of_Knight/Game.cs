@@ -19,7 +19,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second and ticks per Second
         /// </summary>
-        public const float FPS = 240.0f, TPS = 0.5f; 
+        public const float FPS = 240.0f, TPS = 0.05f; 
         public const int WIDTH = 1280, HEIGHT = 720;
         public const string NAME = "Legend of Knight";
         private Timer renderTimer, tickTimer;
@@ -76,11 +76,16 @@ namespace Legend_Of_Knight
 
             StateManager.Color(0, 0, 0);
 
-            CRandom rnd = new CRandom(22102016);
-            Vector[] points = new Vector[10];
+            MakeTriangMst();
+        }
+
+        private void MakeTriangMst()
+        {
+            CRandom rnd = new CRandom(2210);
+            Vector[] points = new Vector[50];
             for (int i = 0; i < points.Length; i++)
-                points[i] = new Vector(rnd.NextFloat() * 200, rnd.NextFloat() * 100);
-            triang = new DelaunayTriangulation(new Vector(200, 100), points);
+                points[i] = new Vector(rnd.NextFloat() * (Width - 50), rnd.NextFloat() * (Height - 50));
+            triang = new DelaunayTriangulation(new Vector(Width - 50, Height - 50), points);
             mst = new MinimumSpanningTree(triang);
             mstDisplayed = false;
         }
@@ -151,7 +156,6 @@ namespace Legend_Of_Knight
 
         public void OnRender(float partialTicks)
         {
-            StateManager.Scale(4);
             //thePlayer.OnRender(partialTicks);
             foreach (Vector point in triang.Points)
                 StateManager.DrawRect(point.X - 1, point.Y - 1, 2, 2, 2);
@@ -169,14 +173,9 @@ namespace Legend_Of_Knight
 
             if (!mstDisplayed)
             {
-                CRandom rnd = new CRandom(22102016);
-                Vector[] points = new Vector[10];
-                for (int i = 0; i < points.Length; i++)
-                    points[i] = new Vector(rnd.NextFloat() * 200, rnd.NextFloat() * 100);
-                triang = new DelaunayTriangulation(new Vector(200, 100), points);
-                mst = new MinimumSpanningTree(triang);
+                //MakeTriangMst();
             }
-            mstDisplayed = !mstDisplayed;
+            //mstDisplayed = !mstDisplayed;
         }
     }
 }
