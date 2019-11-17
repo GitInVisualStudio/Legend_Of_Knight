@@ -19,7 +19,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second and ticks per Second
         /// </summary>
-        public const float FPS = 240.0f, TPS = 30.0f; 
+        public const float FPS = 240.0f, TPS = 0.5f; 
         public const int WIDTH = 1280, HEIGHT = 720;
         public const string NAME = "Legend of Knight";
         private Timer renderTimer, tickTimer;
@@ -27,6 +27,10 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
+
+        private DelaunayTriangulation triang;
+        private MinimumSpanningTree mst;
+        private bool mstDisplayed;
 
         public InputManager InputManager => inputManager;
 
@@ -71,6 +75,14 @@ namespace Legend_Of_Knight
             //thePlayer = new EntityPlayer();
 
             StateManager.Color(0, 0, 0);
+
+            CRandom rnd = new CRandom(22102016);
+            Vector[] points = new Vector[10];
+            for (int i = 0; i < points.Length; i++)
+                points[i] = new Vector(rnd.NextFloat() * 200, rnd.NextFloat() * 100);
+            triang = new DelaunayTriangulation(new Vector(200, 100), points);
+            mst = new MinimumSpanningTree(triang);
+            mstDisplayed = false;
         }
 
         private void AddKeybinds()
@@ -139,7 +151,13 @@ namespace Legend_Of_Knight
 
         public void OnRender(float partialTicks)
         {
+            StateManager.Scale(4);
             //thePlayer.OnRender(partialTicks);
+            foreach (Vector point in triang.Points)
+                StateManager.DrawRect(point.X - 1, point.Y - 1, 2, 2, 2);
+
+            foreach (Edge edge in mstDisplayed ? triang.Edges : mst.Edges)
+                StateManager.DrawLine(edge.A, edge.B, 1);
         }
 
         public void onTick()
@@ -148,6 +166,17 @@ namespace Legend_Of_Knight
             inputManager.Update();
 
             //thePlayer.OnTick();
+
+            if (!mstDisplayed)
+            {
+                CRandom rnd = new CRandom(22102016);
+                Vector[] points = new Vector[10];
+                for (int i = 0; i < points.Length; i++)
+                    points[i] = new Vector(rnd.NextFloat() * 200, rnd.NextFloat() * 100);
+                triang = new DelaunayTriangulation(new Vector(200, 100), points);
+                mst = new MinimumSpanningTree(triang);
+            }
+            mstDisplayed = !mstDisplayed;
         }
     }
 }

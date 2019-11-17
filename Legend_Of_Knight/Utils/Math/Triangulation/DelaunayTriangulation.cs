@@ -67,7 +67,12 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             foreach (Triangle t in tempTriangles)
                 tempEdges.AddRange(t.Edges);
             tempEdges.RemoveAll(x => x.A == superA || x.B == superB || x.A == superB || x.B == superB || x.A == superC || x.B == superC);
-            edges = tempEdges.ToArray();
+            List<Edge> tempUniqueEdges = new List<Edge>();
+            foreach (Edge e in tempEdges) // entfernt alle zweifach enthaltenen Kanten
+                if (!tempUniqueEdges.Contains(e))
+                    tempUniqueEdges.Add(e);
+
+            edges = tempUniqueEdges.ToArray();
 
             List<Triangle> toRemove = new List<Triangle>();
             for(int i = 0; i < tempTriangles.Count; i++)

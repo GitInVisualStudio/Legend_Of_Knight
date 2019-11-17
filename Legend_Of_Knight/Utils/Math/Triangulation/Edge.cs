@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
         public Vector A { get => a; set => a = value; }
         public Vector B { get => b; set => b = value; }
-        public float Length { get => length; set => length = value; }
+        public float Length { get => length; private set => length = value; }
 
         public Edge(Vector pointA, Vector pointB)
         {
@@ -32,6 +32,17 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         public static bool operator !=(Edge a, Edge b)
         {
             return !(a == b);
+        }
+
+        public static Edge Null
+        {
+            get
+            {
+                return new Edge()
+                {
+                    Length = -1
+                };
+            }
         }
     }
 }
