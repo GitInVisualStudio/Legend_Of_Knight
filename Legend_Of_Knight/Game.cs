@@ -32,7 +32,7 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
-
+        private CustomAnimation<float> zoom;
         public InputManager InputManager => inputManager;
 
         public Game()
@@ -65,8 +65,17 @@ namespace Legend_Of_Knight
             MouseMove += Game_MouseMove;
             KeyDown += Game_KeyDown;
             KeyUp += Game_KeyUp;
+            MouseWheel += (object sender, MouseEventArgs e) =>
+            {
+                zoom.End += e.Delta / 120;
+            };
 
             animationHandler = new AnimationHandler();
+            zoom = new CustomAnimation<float>(5, 5, (float current, float delta) =>
+            {
+                return current + delta;
+            });
+            zoom.Fire();
             inputManager = new InputManager();
             AddKeybinds();
             renderTimer.Start();
@@ -143,8 +152,9 @@ namespace Legend_Of_Knight
 
         public void OnRender(float partialTicks)
         {
+            animationHandler.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Scale(5);
+            StateManager.Scale(zoom.Value);
             #region DEBUG
             if (DEBUG)
             {
@@ -155,19 +165,19 @@ namespace Legend_Of_Knight
                     currentFrames = 0;
                 }
                 StateManager.Push();
-                StateManager.Scale(1/5f);
+                StateManager.Scale(1/zoom.Value);
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
                 Vector prev = thePlayer.Box.Corners.Last();
                 StateManager.Pop();
-                //StateManager.SetColor(255, 0, 0);
-                //for (int i = 0; i < thePlayer.Box.Corners.Length; i++)
-                //{
-                //    Vector current = thePlayer.Box.Corners[i];
-                //    StateManager.DrawLine(prev, current);
-                //    prev = current;
-                //}
+                StateManager.SetColor(255, 0, 0);
+                for (int i = 0; i < thePlayer.Box.Corners.Length; i++)
+                {
+                    Vector current = thePlayer.Box.Corners[i];
+                    StateManager.DrawLine(prev, current, 0.1f);
+                    prev = current;
+                }
             }
             #endregion
             thePlayer.OnRender(partialTicks);

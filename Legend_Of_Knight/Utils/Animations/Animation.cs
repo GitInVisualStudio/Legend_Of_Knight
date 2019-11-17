@@ -25,6 +25,7 @@ namespace Legend_Of_Knight.Utils.Animations
 
         protected void Finish()
         {
+            finished = true;
             OnFinish?.Invoke(this, null);
         }
 

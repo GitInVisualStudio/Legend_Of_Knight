@@ -61,6 +61,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Animations\Animation.cs" />
     <Compile Include="Utils\Animations\AnimationHandler.cs" />
+    <Compile Include="Utils\Animations\CustomAnimation.cs" />
     <Compile Include="Utils\Animations\FireableAnimation.cs" />
     <Compile Include="Utils\Animations\FrameAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackAnimation.cs" />

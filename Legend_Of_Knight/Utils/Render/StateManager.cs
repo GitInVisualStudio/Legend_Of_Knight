@@ -30,7 +30,7 @@ namespace Legend_Of_Knight.Utils.Render
         /// <param name="g"></param>
         public static void Update(Graphics g)
         {
-            //g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam noch besprechen
+            g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam noch besprechen
             StateManager.g = g;
         }
 
