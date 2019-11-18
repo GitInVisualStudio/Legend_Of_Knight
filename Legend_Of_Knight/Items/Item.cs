@@ -19,7 +19,7 @@ namespace Legend_Of_Knight.Items
             name = path;
         }
 
-        public Bitmap Image { get => image; set => image = value; }
-        public string Name { get => name; set => name = value; }
+        public Bitmap Image { get { return image; } set { image = value; } }
+        public string Name { get { return name; } set { name = value; } }
     }
 }

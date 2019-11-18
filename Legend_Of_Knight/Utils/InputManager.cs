@@ -11,7 +11,7 @@ namespace Legend_Of_Knight.Utils
     {
         public static int mouseX;
         public static int mouseY;
-        public static Vector mousePosition;
+        public static Vector mousePosition = new Vector(2);
         private List<Keybind> keys;
 
         public InputManager()

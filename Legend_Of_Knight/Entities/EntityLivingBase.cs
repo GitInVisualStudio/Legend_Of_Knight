@@ -95,7 +95,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public EntityItem EntityItem { get => entityItem; protected set => entityItem = value; }
+        public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
 
         public EntityLivingBase()
         {
@@ -113,6 +113,9 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
+            if (Game.DEBUG)
+                RenderBoundingBox();
+
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
@@ -120,16 +123,10 @@ namespace Legend_Of_Knight.Entities
 
             Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
-            StateManager.Translate(position - Size / 2);
+            StateManager.Translate(position);
             StateManager.Rotate(Rotation);
+            StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
-
-            if (Game.DEBUG)
-            {
-                StateManager.SetColor(255, 0, 0);
-                StateManager.FillCircle(Width / 2, Height / 2, 1);
-                StateManager.DrawRect(0, 0, Width, Height, 0.1f);
-            }
 
             if (item == null)
             {
@@ -138,9 +135,10 @@ namespace Legend_Of_Knight.Entities
             }
             //float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             //float offset = Width * itemOffset;
+            //StateManager.Translate(EntityItem.Width / 2, 0);
+            //EntityItem.Position = new Vector(2);
             StateManager.Pop();
-            Vector itemPosition = Position.Copy();
-            itemPosition.Y -= EntityItem.Height / 2;
+            Vector itemPosition = position.Copy();
             EntityItem.Position = itemPosition;
             EntityItem.OnRender(partialTicks);
         }

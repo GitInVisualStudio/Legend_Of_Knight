@@ -50,8 +50,8 @@ namespace Legend_Of_Knight.Entities
             }
             set
             {
-                prevPosition = position;
                 position = value;
+                prevPosition = position;
             }
         }
 
@@ -118,11 +118,26 @@ namespace Legend_Of_Knight.Entities
         public virtual void OnRender(float partialTicks)
         {
             Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            if (Game.DEBUG)
+                RenderBoundingBox();
             StateManager.Push();
-            StateManager.Translate(position - Size / 2);
+            StateManager.Translate(position);
             StateManager.Rotate(rotation);
+            StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
+        }
+
+        protected virtual void RenderBoundingBox()
+        {
+            Vector prev = Box.Corners.Last();
+            StateManager.SetColor(255, 0, 0);
+            for (int i = 0; i < Box.Corners.Length; i++)
+            {
+                Vector current = Box.Corners[i];
+                StateManager.DrawLine(prev, current, 0.1f);
+                prev = current;
+            }
         }
 
         public virtual void OnTick()

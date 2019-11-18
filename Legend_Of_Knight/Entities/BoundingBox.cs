@@ -65,8 +65,6 @@ namespace Legend_Of_Knight.Entities
 
         private void Owner_Rotated(object sender, float angle)
         {
-            //angle = MathUtils.ToRadians(angle);
-            //Wieder neu setzen, sonst ist die Ausgansposition anders
             corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
             {
                 new Vector(-width / 2, -height / 2),
@@ -78,11 +76,12 @@ namespace Legend_Of_Knight.Entities
             for (int i = 0; i < corners.Length; i++)
             {
                 Vector current = corners[i];
-                current -= Size / 2;
-                current.X = owner.X + current.X * MathUtils.Cos(angle) - current.Y * MathUtils.Sin(angle);
-                current.Y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
-                corners[i] = current;
+                float x = owner.X + current.X * MathUtils.Cos(angle) - current.Y * MathUtils.Sin(angle);
+                float y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
+                corners[i].X = x;
+                corners[i].Y = y;
             }
+
         }
 
         public bool Collides(BoundingBox box)

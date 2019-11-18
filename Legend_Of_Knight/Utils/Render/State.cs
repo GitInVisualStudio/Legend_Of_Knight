@@ -16,6 +16,109 @@ namespace Legend_Of_Knight.Utils.Render
         private float rotation = 0;
         private State prevState;
 
+        public Font Font
+        {
+            get
+            {
+                return font;
+            }
+
+            set
+            {
+                font = value;
+            }
+        }
+
+        public float ScaleX
+        {
+            get
+            {
+                return scaleX;
+            }
+
+            set
+            {
+                scaleX = value;
+            }
+        }
+
+        public float ScaleY
+        {
+            get
+            {
+                return scaleY;
+            }
+
+            set
+            {
+                scaleY = value;
+            }
+        }
+
+        public float TranslateX
+        {
+            get
+            {
+                return translateX;
+            }
+
+            set
+            {
+                translateX = value;
+            }
+        }
+
+        public float TranslateY
+        {
+            get
+            {
+                return translateY;
+            }
+
+            set
+            {
+                translateY = value;
+            }
+        }
+
+        public float Rotation
+        {
+            get
+            {
+                return rotation;
+            }
+
+            set
+            {
+                rotation = value;
+            }
+        }
+
+        public State PrevState
+        {
+            get
+            {
+                return prevState;
+            }
+
+            set
+            {
+                prevState = value;
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
+            }
+        }
+
         public State(bool createNew = false)
         {
             if (createNew)
@@ -28,16 +131,7 @@ namespace Legend_Of_Knight.Utils.Render
             Font = StateManager.Font;
             Rotation = StateManager.Rotation;
             PrevState = StateManager.State;
-            Color = StateManager.Color;
+            color = StateManager.Color;
         }
-
-        public Color Color { get => color; set => color = value; }
-        public Font Font { get => font; set => font = value; }
-        public float ScaleX { get => scaleX; set => scaleX = value; }
-        public float ScaleY { get => scaleY; set => scaleY = value; }
-        public float TranslateX { get => translateX; set => translateX = value; }
-        public float TranslateY { get => translateY; set => translateY = value; }
-        public float Rotation { get => rotation; set => rotation = value; }
-        public State PrevState { get => prevState; set => prevState = value; }
     }
 }

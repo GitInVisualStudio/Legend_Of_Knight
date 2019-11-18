@@ -16,15 +16,51 @@ namespace Legend_Of_Knight.Utils.Animations
         private float speed = 1.0f;
 
         public T Value => interpolated;
-        public T Start { get => start; set => start = value; }
-        public T End { get => end; set => end = value; }
-        public float Speed { get => speed; set => speed = value; }
+
+        public T Start
+        {
+            get
+            {
+                return start;
+            }
+
+            set
+            {
+                start = value;
+            }
+        }
+
+        public T End
+        {
+            get
+            {
+                return end;
+            }
+
+            set
+            {
+                end = value;
+            }
+        }
+
+        public float Speed
+        {
+            get
+            {
+                return speed;
+            }
+
+            set
+            {
+                speed = value;
+            }
+        }
 
         public CustomAnimation(T start, T end, Animate animate)
         {
             this.animate = animate;
-            this.start = start;
-            this.end = end;
+            this.Start = start;
+            this.End = end;
             this.current = start;
             this.interpolated = start;
             this.prevCurrent = start;

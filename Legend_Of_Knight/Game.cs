@@ -62,13 +62,10 @@ namespace Legend_Of_Knight
             watch.Start();
 
             MouseClick += Game_MouseClick;
-            MouseMove += Game_MouseMove;
+            MouseMove += Game_MouseEvent;
             KeyDown += Game_KeyDown;
             KeyUp += Game_KeyUp;
-            MouseWheel += (object sender, MouseEventArgs e) =>
-            {
-                zoom.End += e.Delta / 120;
-            };
+            MouseWheel += Game_MouseEvent;
 
             animationHandler = new AnimationHandler();
             zoom = new CustomAnimation<float>(5, 5, (float current, float delta) =>
@@ -106,11 +103,12 @@ namespace Legend_Of_Knight
 
         }
 
-        private void Game_MouseMove(object sender, MouseEventArgs e)
+        private void Game_MouseEvent(object sender, MouseEventArgs e)
         {
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
             InputManager.mouseY = (int)(e.Y / StateManager.ScaleY);
             InputManager.mousePosition = new Vector(InputManager.mouseX, InputManager.mouseY);
+            zoom.End += e.Delta / 120;
         }
 
         private void Game_KeyUp(object sender, KeyEventArgs e)
@@ -133,7 +131,7 @@ namespace Legend_Of_Knight
             //TODO: Call Tick, reset the StopWatch
             watch.Reset();
             watch.Start();
-            onTick();
+            OnTick();
         }
 
         private void RenderTimer_Tick(object sender, EventArgs e)
@@ -169,21 +167,13 @@ namespace Legend_Of_Knight
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
-                Vector prev = thePlayer.Box.Corners.Last();
                 StateManager.Pop();
-                StateManager.SetColor(255, 0, 0);
-                for (int i = 0; i < thePlayer.Box.Corners.Length; i++)
-                {
-                    Vector current = thePlayer.Box.Corners[i];
-                    StateManager.DrawLine(prev, current, 0.1f);
-                    prev = current;
-                }
             }
             #endregion
             thePlayer.OnRender(partialTicks);
         }
 
-        public void onTick()
+        public void OnTick()
         {
             animationHandler.Update();
             inputManager.Update();

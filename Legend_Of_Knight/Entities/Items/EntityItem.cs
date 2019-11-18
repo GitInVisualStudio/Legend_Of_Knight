@@ -27,20 +27,15 @@ namespace Legend_Of_Knight.Entities.Items
 
         public override void OnRender(float partialTicks)
         {
+            if (Game.DEBUG)
+                RenderBoundingBox();
             Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
             Vector hover = new Vector(0, (float)Math.Sin(MathUtils.Interpolate(prevDelta, delta, partialTicks)));
             StateManager.Push();
-            StateManager.Translate(position - Size / 2);
-            StateManager.Translate(Width/2, Height);
+            StateManager.Translate(position);
             StateManager.Rotate(Rotation);
-            StateManager.DrawImage(item.Image, -Width/2, -Height);
-            StateManager.Translate(-Width/2, -Height);
-            if (Game.DEBUG)
-            {
-                StateManager.SetColor(255, 0, 0);
-                StateManager.FillCircle(Width/2, Height/2, 1);
-                StateManager.DrawRect(0, 0, Width, Height, 0.1f);
-            }
+            StateManager.Translate(Size / -2);
+            StateManager.DrawImage(item.Image, 0, 0);
             StateManager.Pop();
         }
 
