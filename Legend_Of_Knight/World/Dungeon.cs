@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Math.Triangulation;
 
 namespace Legend_Of_Knight.World
 {
@@ -55,8 +56,28 @@ namespace Legend_Of_Knight.World
                         rooms.Add(room);
                     }
                 }
+            }
 
+            Vector[] points = new Vector[rooms.Count];
+            for (int i = 0; i < points.Length; i++)
+                points[i] = rooms[i].CenterPos;
 
+            DelaunayTriangulation triang = new DelaunayTriangulation(args.Size, points);
+            MinimumSpanningTree mst = new MinimumSpanningTree(triang);
+
+            List<Room[]> connections = new List<Room[]>();
+            foreach (Edge e in mst.Edges)
+                if (mst.Edges.Contains(e) || rnd.NextFloat() < args.LeaveConnectionPercentage)
+                    connections.Add(new Room[] { Room.FindRoomByPosition(rooms, e.A), Room.FindRoomByPosition(rooms, e.B) });
+
+            foreach (Room[] connection in connections)
+            {
+                Vector overlap = Room.FindOverlap(connection[0], connection[1]);
+                bool straightPossibleX = overlap.X > args.CorridorWidth;
+                bool straightPossibleY = overlap.Y > args.CorridorWidth;
+                bool straightPossible = straightPossibleX || straightPossibleY;
+                // TODO : math util overlap hinzufuegen?
+                    
             }
         }
 

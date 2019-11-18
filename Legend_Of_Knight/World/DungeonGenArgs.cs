@@ -13,6 +13,8 @@ namespace Legend_Of_Knight.World
         private Vector size;
         private float roomPercentage;
         private float roomSize;
+        private float leaveConnectionPercentage;
+        private int corridorWidth;
 
         /// <summary>
         /// Deterministischer Seed für die Generierung
@@ -31,6 +33,34 @@ namespace Legend_Of_Knight.World
         /// Durchschnittswert, wie viel Prozent des Dungeons ein Raum einnehmen soll
         /// </summary>
         public float RoomSize { get => roomSize; set => roomSize = value; }
+        /// <summary>
+        /// Die Prozentzahl an redundanten Räumen, die dagelassen werden soll
+        /// </summary>
+        public float LeaveConnectionPercentage
+        {
+            get
+            {
+                return leaveConnectionPercentage;
+            }
+
+            set
+            {
+                leaveConnectionPercentage = value;
+            }
+        }
+
+        public int CorridorWidth
+        {
+            get
+            {
+                return corridorWidth;
+            }
+
+            set
+            {
+                corridorWidth = value;
+            }
+        }
 
         public DungeonGenArgs()
         {
@@ -39,6 +69,8 @@ namespace Legend_Of_Knight.World
             Size = new Vector(100, 100);
             RoomPercentage = 0.5f;
             RoomSize = 0.005f;
+            LeaveConnectionPercentage = 0.1f;
+            CorridorWidth = 3;
         }
     }
 }
