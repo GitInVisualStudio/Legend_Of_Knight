@@ -138,8 +138,7 @@ namespace Legend_Of_Knight.Entities
             //StateManager.Translate(EntityItem.Width / 2, 0);
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
-            Vector itemPosition = position.Copy();
-            EntityItem.Position = itemPosition;
+            EntityItem.Position = position.Copy();
             EntityItem.OnRender(partialTicks);
         }
 
