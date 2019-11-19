@@ -20,8 +20,10 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS); 
-        public const int WIDTH = 1280, HEIGHT = 720;
+        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
+        private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
+        public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
+        public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
         public const bool DEBUG = true;
 

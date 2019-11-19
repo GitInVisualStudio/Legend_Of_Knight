@@ -45,10 +45,8 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawString(text, Font, new SolidBrush(Color), x, y);
         }
 
-        public static void DrawString(string text, Vector position)
-        {
-            DrawString(text, position.X, position.Y);
-        }
+        public static void DrawString(string text, Vector position) => DrawString(text, position.X, position.Y);
+        
 
         /// <summary>
         /// Zeichnet ein Bild
@@ -61,10 +59,7 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawImage(img, x, y);
         }
 
-        public static void DrawImage(Bitmap map, Vector pos)
-        {
-            g.DrawImage(map, pos.X, pos.Y);
-        }
+        public static void DrawImage(Bitmap img, Vector pos) => DrawImage(img, pos.X, pos.Y);
 
         /// <summary>
         /// Zeichnet ein Rechteck
@@ -78,10 +73,21 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawRectangle(new Pen(new SolidBrush(Color), lineWidth), x, y, width, height);
         }
 
-        public static void DrawRect(Vector position, float width, float height, float lineWidth)
+        public static void DrawRect(Vector position, float width, float height, float lineWidth) => DrawRect(position.X, position.Y, width, height, lineWidth);
+        
+        /// <summary>
+        /// Zeichnet ein gefülltest Rechteck;
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public static void FillRect(float x, float y, float width, float height)
         {
-            DrawRect(position.X, position.Y, width, height, lineWidth);
+            g.FillRectangle(new SolidBrush(Color), x, y, width, height);
         }
+
+        public static void FillRect(Vector pos, float width, float height) => FillRect(pos.X, pos.Y, width, height);
 
         /// <summary>
         /// Zeichnet einen Kreis
@@ -95,10 +101,8 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawEllipse(new Pen(new SolidBrush(Color), lineWidth), x, y, r, r);
         }
 
-        public static void DrawCircle(Vector position, float r, float lineWidth = 1)
-        {
-            DrawCircle(position.X, position.Y, r, lineWidth);
-        }
+        public static void DrawCircle(Vector position, float r, float lineWidth = 1) => DrawCircle(position.X, position.Y, r, lineWidth);
+        
 
         /// <summary>
         /// Zeichnet einen Kreis
@@ -112,10 +116,8 @@ namespace Legend_Of_Knight.Utils.Render
             g.FillEllipse(new SolidBrush(Color), x - r / 2, y - r / 2, r, r);
         }
 
-        public static void DrawCircle(Vector position, float r)
-        {
-            DrawCircle(position.X, position.Y, r);
-        }
+        public static void DrawCircle(Vector position, float r) => DrawCircle(position.X, position.Y, r);
+        
 
         /// <summary>
         /// Zeichnet eine Linie
@@ -129,10 +131,8 @@ namespace Legend_Of_Knight.Utils.Render
             g.DrawLine(new Pen(new SolidBrush(Color), width), x, y, x1, y1);
         }
 
-        public static void DrawLine(Vector v1, Vector v2, float width = 1)
-        {
-            DrawLine(v1.X, v1.Y, v2.X, v2.Y, width);
-        }
+        public static void DrawLine(Vector v1, Vector v2, float width = 1) => DrawLine(v1.X, v1.Y, v2.X, v2.Y, width);
+
 
         /// <summary>
         /// Dreht die Transformation
@@ -175,10 +175,8 @@ namespace Legend_Of_Knight.Utils.Render
             state.ScaleY = y;
         }
 
-        public static void Scale(float x)
-        {
-            Scale(x, x);
-        }
+        public static void Scale(float x) => Scale(x, x);
+        
 
         /// <summary>
         /// Erstellt ein neues State, damit die Transformation unverändert wiederhergestellt werden kan
@@ -206,30 +204,24 @@ namespace Legend_Of_Knight.Utils.Render
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static float GetStringWidth(string s)
-        {
-            return GetStringSize(s).Width;
-        }
+        public static float GetStringWidth(string s) => GetStringSize(s).Width;
+        
 
         /// <summary>
         /// Gibt die String-Höhe zurück
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static float GetStringHeight(string s)
-        {
-            return GetStringSize(s).Height;
-        }
+        public static float GetStringHeight(string s) => GetStringSize(s).Height;
+        
 
         /// <summary>
         /// Gibt die Größe des String wieder
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static SizeF GetStringSize(string s)
-        {
-            return g.MeasureString(s, Font);
-        }
+        public static SizeF GetStringSize(string s) => g.MeasureString(s, Font);
+        
 
         /// <summary>
         /// Setzt die Farbe mit der Gezeichnet werden soll
@@ -237,14 +229,14 @@ namespace Legend_Of_Knight.Utils.Render
         /// <param name="r"></param>
         /// <param name="g"></param>
         /// <param name="b"></param>
-        public static void SetColor(int r, int g, int b)
-        {
-            SetColor(r, g, b, 255);
-        }
+        public static void SetColor(int r, int g, int b) => SetColor(r, g, b, 255);
 
         public static void SetColor(int r, int g, int b, int a)
         {
             state.Color = Color.FromArgb(a, r, g, b);
         }
+
+        public static void SetColor(Color color) => state.Color = color;
+
     }
 }

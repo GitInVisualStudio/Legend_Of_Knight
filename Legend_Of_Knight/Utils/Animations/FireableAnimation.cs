@@ -10,6 +10,7 @@ namespace Legend_Of_Knight.Utils.Animations
     {
         public virtual void Fire()
         {
+            Finished = false;
             AnimationHandler.Add(this);
         }
 

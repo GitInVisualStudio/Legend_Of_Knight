@@ -15,6 +15,7 @@ namespace Legend_Of_Knight.Entities
         private float height;
         private Vector size;
         private Vector[] corners;
+        private Vector[] original;
 
         public Vector[] Corners => corners;
         public event EventHandler<CollisionArgs> Collided;
@@ -53,33 +54,26 @@ namespace Legend_Of_Knight.Entities
             this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
 
-            corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
+            original = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
             {
                 new Vector(-width / 2, -height / 2),
                 new Vector(width / 2, -height / 2),
                 new Vector(width / 2, height / 2),
                 new Vector(-width / 2, height / 2)
             };
+            corners = new Vector[4];
             Owner_Rotated(this, Owner.Rotation);
         }
 
         private void Owner_Rotated(object sender, float angle)
         {
-            corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
-            {
-                new Vector(-width / 2, -height / 2),
-                new Vector(width / 2, -height / 2),
-                new Vector(width / 2, height / 2),
-                new Vector(-width / 2, height / 2)
-            };
 
             for (int i = 0; i < corners.Length; i++)
             {
-                Vector current = corners[i];
+                Vector current = original[i];
                 float x = owner.X + current.X * MathUtils.Cos(angle) - current.Y * MathUtils.Sin(angle);
                 float y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
-                corners[i].X = x;
-                corners[i].Y = y;
+                corners[i] = new Vector(x, y);
             }
 
         }

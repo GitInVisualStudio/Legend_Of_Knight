@@ -39,6 +39,8 @@ namespace Legend_Of_Knight.Utils.Animations
 
             set
             {
+                if(Finished)
+                    Fire();
                 end = value;
             }
         }
@@ -81,6 +83,8 @@ namespace Legend_Of_Knight.Utils.Animations
             delta *= Speed / 2;
             prevCurrent = current;
             current = animate(current, delta);
+            if (current.Equals(End))
+                Finish();
         }
 
         public override void OnRender(float partialTicks)
