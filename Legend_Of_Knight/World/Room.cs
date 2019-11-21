@@ -15,37 +15,22 @@ namespace Legend_Of_Knight.World
         private Corridor[] connections;
         private Vector centerPos;
         private Vector size;
+        private Corridor right;
+        private Corridor up;
+        private Corridor left;
+        private Corridor down;
 
         public Corridor[] Connections { get => connections; set => connections = value; }
-        public Vector CenterPos
+        public Vector CenterPos { get => centerPos; set => centerPos = value; }
+        public Vector Size { get => size; set => size = value; }
+        public Corridor Right { get => right; set => right = value; }
+        public Corridor Up { get => up; set => up = value; }
+        public Corridor Left { get => left; set => left = value; }
+        public Corridor Down { get => down; set => down = value; }
+
+        public Room(Field[] fields, Vector centerPos, Vector size) : base(fields)
         {
-            get
-            {
-                return centerPos;
-            }
-
-            set
-            {
-                centerPos = value;
-            }
-        }
-
-        public Vector Size
-        {
-            get
-            {
-                return size;
-            }
-
-            set
-            {
-                size = value;
-            }
-        }
-
-        public Room(Field[] fields, Vector pos, Vector size) : base(fields)
-        {
-            CenterPos = new Vector(pos.X + size.Y / 2, pos.Y + size.Y / 2);
+            CenterPos = centerPos;
             Size = size;
         }
 
@@ -55,21 +40,6 @@ namespace Legend_Of_Knight.World
                 if (r.CenterPos == position)
                     return r;
             return null;
-        }
-
-        public static Vector FindOverlap(Room a, Room b) // TODO: test
-        {
-            Vector aL = new Vector(a.CenterPos.X - a.Size.X / 2, a.CenterPos.Y - a.Size.Y / 2);
-            Vector bL = new Vector(b.CenterPos.X - b.Size.X / 2, b.CenterPos.Y - b.Size.Y / 2);
-
-            Room left = aL.X < bL.X ? a : b;
-            Room right = a.Equals(left) ? b : a;
-            Room up = aL.Y < bL.Y ? a : b;
-            Room down = a.Equals(up) ? b : a;
-
-            float overlapX = left.CenterPos.X + left.Size.X / 2 - right.CenterPos.X - right.Size.X / 2;
-            float overlapY = up.CenterPos.Y + up.Size.Y / 2 - down.CenterPos.Y - down.Size.Y / 2;
-            return new Vector(overlapX, overlapY);
         }
     }
 }

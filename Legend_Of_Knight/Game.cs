@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Legend_Of_Knight.World;
 
 namespace Legend_Of_Knight
 {
@@ -28,9 +29,7 @@ namespace Legend_Of_Knight
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
 
-        private DelaunayTriangulation triang;
-        private MinimumSpanningTree mst;
-        private bool mstDisplayed;
+        private Dungeon d;
 
         public InputManager InputManager => inputManager;
 
@@ -75,19 +74,8 @@ namespace Legend_Of_Knight
             //thePlayer = new EntityPlayer();
 
             StateManager.Color(0, 0, 0);
-
-            MakeTriangMst();
-        }
-
-        private void MakeTriangMst()
-        {
-            CRandom rnd = new CRandom(2210);
-            Vector[] points = new Vector[50];
-            for (int i = 0; i < points.Length; i++)
-                points[i] = new Vector(rnd.NextFloat() * (Width - 50), rnd.NextFloat() * (Height - 50));
-            triang = new DelaunayTriangulation(new Vector(Width - 50, Height - 50), points);
-            mst = new MinimumSpanningTree(triang);
-            mstDisplayed = false;
+            d = new Dungeon(200, 100);
+            
         }
 
         private void AddKeybinds()
@@ -157,11 +145,26 @@ namespace Legend_Of_Knight
         public void OnRender(float partialTicks)
         {
             //thePlayer.OnRender(partialTicks);
-            foreach (Vector point in triang.Points)
-                StateManager.DrawRect(point.X - 1, point.Y - 1, 2, 2, 2);
-
-            foreach (Edge edge in mstDisplayed ? triang.Edges : mst.Edges)
-                StateManager.DrawLine(edge.A, edge.B, 1);
+            StateManager.Scale(5);
+            for (int x = 0; x < d.Fields.GetLength(0); x++)
+            {
+                for (int y = 0; y < d.Fields.GetLength(1); y++)
+                {
+                    if (d.Fields[x, y].Area is Corridor)
+                        StateManager.Color(255, 0, 0);
+                    else if (d.Fields[x, y].Area is Room)
+                        StateManager.Color(0, 0, 255);
+                    else
+                        StateManager.Color(255, 255, 255);
+                    StateManager.DrawRect(x, y, 1, 1);
+                }
+            }
+            //StateManager.Color(0, 255, 0);
+            //foreach (Edge e in d.Mst.Edges)
+            //    StateManager.DrawLine(e.A, e.B);
+            StateManager.Color(0, 0, 0);
+            foreach (Room r in d.Rooms)
+                StateManager.DrawRect(r.CenterPos.X, r.CenterPos.Y, 1, 1, 1);
         }
 
         public void onTick()
@@ -170,12 +173,6 @@ namespace Legend_Of_Knight
             inputManager.Update();
 
             //thePlayer.OnTick();
-
-            if (!mstDisplayed)
-            {
-                //MakeTriangMst();
-            }
-            //mstDisplayed = !mstDisplayed;
         }
     }
 }

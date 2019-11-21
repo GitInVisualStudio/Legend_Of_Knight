@@ -11,13 +11,16 @@ namespace Legend_Of_Knight.World
     /// </summary>
     public class Corridor : Area
     {
-        private Room[] connects;
+        private Room a;
+        private Room b;
 
-        public Room[] Connects { get => connects; set => connects = value; }
+        public Room A { get => a; set => a = value; }
+        public Room B { get => b; set => b = value; }
 
-        public Corridor(Field[] fields) : base(fields)
+        public Corridor(Room a, Room b, Field[] fields) : base(fields)
         {
-
+            A = a;
+            B = b;
         }
     }
 }

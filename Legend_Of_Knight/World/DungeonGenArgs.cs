@@ -11,8 +11,8 @@ namespace Legend_Of_Knight.World
     {
         private int seed;
         private Vector size;
-        private float roomPercentage;
-        private float roomSize;
+        private int rooms;
+        private Vector roomSize;
         private float leaveConnectionPercentage;
         private int corridorWidth;
 
@@ -24,51 +24,23 @@ namespace Legend_Of_Knight.World
         /// Größe des Dungeon in Feldern
         /// </summary>
         public Vector Size { get => size; set => size = value; }
-        
-        /// <summary>
-        /// Näherungswert, wie viel Prozent des Dungeons am Ende mit Räumen belegt werden soll
-        /// </summary>
-        public float RoomPercentage { get => roomPercentage; set => roomPercentage = value; }
-        /// <summary>
-        /// Durchschnittswert, wie viel Prozent des Dungeons ein Raum einnehmen soll
-        /// </summary>
-        public float RoomSize { get => roomSize; set => roomSize = value; }
+
+        public int Rooms { get => rooms; set => rooms = value; }
+        public Vector RoomSize { get => roomSize; set => roomSize = value; }
         /// <summary>
         /// Die Prozentzahl an redundanten Räumen, die dagelassen werden soll
         /// </summary>
-        public float LeaveConnectionPercentage
-        {
-            get
-            {
-                return leaveConnectionPercentage;
-            }
-
-            set
-            {
-                leaveConnectionPercentage = value;
-            }
-        }
-
-        public int CorridorWidth
-        {
-            get
-            {
-                return corridorWidth;
-            }
-
-            set
-            {
-                corridorWidth = value;
-            }
-        }
+        public float LeaveConnectionPercentage { get => leaveConnectionPercentage; set => leaveConnectionPercentage = value; }
+        public int CorridorWidth { get => corridorWidth; set => corridorWidth = value; }
 
         public DungeonGenArgs()
         {
             DateTime now = DateTime.Now;
-            Seed = (((now.Year * 365 + now.Day) * 24 + now.Hour) * 60 + now.Minute) * 60 + now.Second; // standard seed als momentane Zeit in Sekunden
+            //Seed = (((now.Year * 365 + now.Day) * 24 + now.Hour) * 60 + now.Minute) * 60 + now.Second; // standard seed als momentane Zeit in Sekunden
+            Seed = 22102016;
             Size = new Vector(100, 100);
-            RoomPercentage = 0.5f;
-            RoomSize = 0.005f;
+            Rooms = 4;
+            RoomSize = new Vector(10, 10);
             LeaveConnectionPercentage = 0.1f;
             CorridorWidth = 3;
         }
