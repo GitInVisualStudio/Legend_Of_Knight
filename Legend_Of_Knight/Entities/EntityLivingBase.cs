@@ -119,7 +119,7 @@ namespace Legend_Of_Knight.Entities
             Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
             StateManager.Translate(position);
-            StateManager.Rotate(MathUtils.Interpolate(prevRotation, rotation, partialTicks));
+            StateManager.Rotate(MathUtils.Interpolate(PrevRotation, rotation, partialTicks));
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
 
@@ -159,7 +159,7 @@ namespace Legend_Of_Knight.Entities
 
             if (IsUsingItem)
                 EntityItem?.Animation.Update();
-
+            EntityItem.PrevRotation = EntityItem.Rotation;
             base.Move();
         }
 

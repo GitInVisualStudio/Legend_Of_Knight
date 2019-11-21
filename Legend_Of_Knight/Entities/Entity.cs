@@ -18,7 +18,7 @@ namespace Legend_Of_Knight.Entities
         protected Vector velocity;
         protected Vector prevPosition;
         protected float rotation;
-        protected float prevRotation;
+        private float prevRotation;
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
@@ -68,7 +68,6 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 rotation = value;
-                prevRotation = rotation;
                 Rotated?.Invoke(this, rotation);
             }
         }
@@ -110,6 +109,19 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public float PrevRotation
+        {
+            get
+            {
+                return prevRotation;
+            }
+
+            set
+            {
+                prevRotation = value;
+            }
+        }
+
         public Entity()
         {
             position = new Vector(2);
@@ -124,7 +136,7 @@ namespace Legend_Of_Knight.Entities
                 RenderBoundingBox();
             StateManager.Push();
             StateManager.Translate(position);
-            StateManager.Rotate(MathUtils.Interpolate(prevRotation, rotation, partialTicks));
+            StateManager.Rotate(MathUtils.Interpolate(PrevRotation, rotation, partialTicks));
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
@@ -144,7 +156,7 @@ namespace Legend_Of_Knight.Entities
 
         public virtual void OnTick()
         {
-            prevRotation = rotation;
+            PrevRotation = rotation;
             Move();
         }
 

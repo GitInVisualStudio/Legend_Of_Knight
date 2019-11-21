@@ -25,9 +25,9 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnTick()
         {
-            base.OnTick();
             Vector yaw = InputManager.mousePosition - position;
             Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
+            base.OnTick();
         }
     }
 }
