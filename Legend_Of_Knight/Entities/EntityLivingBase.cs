@@ -116,15 +116,10 @@ namespace Legend_Of_Knight.Entities
             if (Game.DEBUG)
                 RenderBoundingBox();
 
-            float walkingTime = this.movingTime;
-            if (walkingTime != 0)
-                walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
-            Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
-
             Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
             StateManager.Translate(position);
-            StateManager.Rotate(Rotation);
+            StateManager.Rotate(MathUtils.Interpolate(prevRotation, rotation, partialTicks));
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
 
@@ -139,13 +134,14 @@ namespace Legend_Of_Knight.Entities
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
             EntityItem.Position = position.Copy();
+            EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size/2, Yaw);
+            EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width/2, 0), Yaw);
             EntityItem.OnRender(partialTicks);
         }
 
-        public override void OnTick()
+        public override void Move()
         {
-            base.OnTick();
-
+            Rotation = MathUtils.Sin(movingTime * 360 * 3) * 5.5f;
             Vector direction = velocity.Normalize();
 
             if (direction.X > 0)
@@ -163,6 +159,8 @@ namespace Legend_Of_Knight.Entities
 
             if (IsUsingItem)
                 EntityItem?.Animation.Update();
+
+            base.Move();
         }
 
         public void Swing()

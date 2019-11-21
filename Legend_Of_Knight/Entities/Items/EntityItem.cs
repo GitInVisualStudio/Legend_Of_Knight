@@ -33,7 +33,7 @@ namespace Legend_Of_Knight.Entities.Items
             Vector hover = new Vector(0, (float)Math.Sin(MathUtils.Interpolate(prevDelta, delta, partialTicks)));
             StateManager.Push();
             StateManager.Translate(position);
-            StateManager.Rotate(Rotation);
+            StateManager.Rotate(MathUtils.Interpolate(prevRotation, rotation, partialTicks));
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(item.Image, 0, 0);
             StateManager.Pop();

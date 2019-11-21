@@ -16,7 +16,6 @@ namespace Legend_Of_Knight.Entities
         private Vector size;
         private Vector[] corners;
 
-        public Vector[] Corners => corners;
         public event EventHandler<CollisionArgs> Collided;
 
         public Entity Owner
@@ -45,6 +44,22 @@ namespace Legend_Of_Knight.Entities
 
         public Vector Size => size;
 
+        public Vector[] Corners
+        {
+            get
+            {
+                Vector[] var1 = (Vector[])corners.Clone();
+                for(int i = 0; i < var1.Length; i++)
+                    var1[i] += Owner.Position;
+                return var1;
+            }
+
+            set
+            {
+                corners = value;
+            }
+        }
+
         public BoundingBox(Entity owner, float width, float height)
         {
             this.owner = owner;
@@ -53,7 +68,7 @@ namespace Legend_Of_Knight.Entities
             this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
 
-            corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
+            Corners = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
             {
                 new Vector(-width / 2, -height / 2),
                 new Vector(width / 2, -height / 2),
@@ -72,16 +87,10 @@ namespace Legend_Of_Knight.Entities
                 new Vector(width / 2, height / 2),
                 new Vector(-width / 2, height / 2)
             };
-
             for (int i = 0; i < corners.Length; i++)
             {
-                Vector current = corners[i];
-                float x = owner.X + current.X * MathUtils.Cos(angle) - current.Y * MathUtils.Sin(angle);
-                float y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
-                corners[i].X = x;
-                corners[i].Y = y;
+                corners[i] = MathUtils.GetRotation(corners[i], angle);
             }
-
         }
 
         public bool Collides(BoundingBox box)
@@ -113,7 +122,7 @@ namespace Legend_Of_Knight.Entities
             float min = Int32.MaxValue;
             float max = Int32.MinValue;
 
-            foreach (Vector c in corners)
+            foreach (Vector c in Corners)
             {
                 float cuttingAngle = (float)Math.Atan(c.Y / c.X) - angle;
                 float projection = (float)(Math.Cos(cuttingAngle) * Math.Sqrt(Math.Pow(c.X, 2) + Math.Pow(c.Y, 2)));
