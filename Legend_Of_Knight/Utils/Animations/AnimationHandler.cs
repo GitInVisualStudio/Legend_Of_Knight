@@ -16,7 +16,7 @@ namespace Legend_Of_Knight.Utils.Animations
             {
                 FireableAnimation animation = animations[i];
                 animation.Update();
-                if (animation.Finished)
+                if (animation.Finished) 
                     animations.Remove(animation);
             }
         }

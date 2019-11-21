@@ -15,6 +15,8 @@ namespace Legend_Of_Knight.Gui
         private Vector position;
         private FireableAnimation animation; //Um Animation einhaltlich zu berechnen und abzufragen
 
+        public float X => position.X;
+        public float Y => position.Y;
         public float Width => Size.X;
         public float Height => Size.Y;
 

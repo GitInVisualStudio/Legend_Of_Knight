@@ -34,11 +34,9 @@ namespace Legend_Of_Knight.Utils.Math
         public static float ToDegree(float angle) => (float)(angle * 180.0f / s::Math.PI);
         
 
-        public static T Interpolate<T>(T prev, T current, float partialTicks)
+        public static dynamic Interpolate(dynamic prev, dynamic current, float partialTicks)
         {
-            dynamic var1 = prev;
-            dynamic var2 = current;
-            return var2 + (var1 - var2) * partialTicks;
+            return current + (prev - current) * partialTicks;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Legend_Of_Knight.Entities;
+using Legend_Of_Knight.Gui;
 using Legend_Of_Knight.Properties;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
@@ -25,7 +26,7 @@ namespace Legend_Of_Knight
         public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
         public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         private int fps = 0;
         private int currentFrames = 0;
@@ -35,6 +36,7 @@ namespace Legend_Of_Knight
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
+        private GuiScreen currentScreen;
         public InputManager InputManager => inputManager;
 
         public Game()
@@ -102,9 +104,9 @@ namespace Legend_Of_Knight
             {
                 thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
             });
-
         }
 
+        #region events
         private void Game_MouseEvent(object sender, MouseEventArgs e)
         {
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
@@ -126,6 +128,7 @@ namespace Legend_Of_Knight
         private void Game_MouseClick(object sender, MouseEventArgs e)
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
+            currentScreen?.Click(e);
         }
 
         private void TickTimer_Tick(object sender, EventArgs e)
@@ -149,9 +152,24 @@ namespace Legend_Of_Knight
             StateManager.Update(e.Graphics);
             OnRender(partialTicks);
         }
+        #endregion
 
+        public void OpenScreen(GuiScreen screen)
+        {
+            if(currentScreen == null)
+            {
+                currentScreen = screen.Open();
+                return;
+            }
+            currentScreen.Close();
+            currentScreen.Animation.OnFinish += (object sender, EventArgs args) =>
+            {
+                currentScreen = screen.Open();
+            }; //CheckBox, Label, Textbox, Slider
+        }
         public void OnRender(float partialTicks)
         {
+            currentScreen?.OnRender(partialTicks);
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
             StateManager.Scale(zoom.Value);

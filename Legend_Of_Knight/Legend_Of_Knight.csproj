@@ -59,6 +59,8 @@
     </Compile>
     <Compile Include="Gui\GuiButton.cs" />
     <Compile Include="Gui\Gui.cs" />
+    <Compile Include="Gui\GuiCheckbox.cs" />
+    <Compile Include="Gui\GuiLabel.cs" />
     <Compile Include="Gui\GuiScreen.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Program.cs" />

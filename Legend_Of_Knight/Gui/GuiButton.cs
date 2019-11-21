@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Gui
 {
-    public class GuiButton : Gui
+    public class GuiButton : GuiLabel
     {
         private string text;
-        private Color color = Color.Black;
         private Color background = Color.Transparent;
         private Bitmap image;
 
@@ -25,19 +24,6 @@ namespace Legend_Of_Knight.Gui
             set
             {
                 text = value;
-            }
-        }
-
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-
-            set
-            {
-                color = value;
             }
         }
 
@@ -82,8 +68,7 @@ namespace Legend_Of_Knight.Gui
             StateManager.SetColor(Background);
             StateManager.FillRect(Position, Width, Height);
             StateManager.DrawImage(Image, Position);
-            StateManager.SetColor(Color);
-            StateManager.DrawString(Text, Position);
+            base.OnRender(partialTicks);
         }
     }
 }

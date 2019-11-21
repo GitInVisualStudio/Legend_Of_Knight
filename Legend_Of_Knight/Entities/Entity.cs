@@ -162,7 +162,6 @@ namespace Legend_Of_Knight.Entities
                 animation.Reset();
             }
 
-
             Moved?.Invoke(this, position);
         }
 

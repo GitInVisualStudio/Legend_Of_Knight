@@ -10,9 +10,9 @@ namespace Legend_Of_Knight.Utils.Animations
     public class CustomAnimation<T> : FireableAnimation where T : struct
     {
         private Animate animate;
-        private T start, current, end;
-        private T prevCurrent;
-        private T interpolated;
+        private dynamic start, current, end;
+        private dynamic prevCurrent;
+        private dynamic interpolated;
         private float speed = 1.0f;
 
         public T Value => interpolated;
@@ -58,6 +58,8 @@ namespace Legend_Of_Knight.Utils.Animations
             }
         }
 
+        public T Delta => end - current;
+
         public CustomAnimation(T start, T end, Animate animate)
         {
             this.animate = animate;
@@ -75,11 +77,17 @@ namespace Legend_Of_Knight.Utils.Animations
             current = Start;
         }
 
+        public override void Reverse()
+        {
+            base.Reverse();
+            T prevStart = start;
+            Start = end;
+            End = start;
+        }
+
         public override void Update()
         {
-            dynamic delta = current;
-            dynamic end = End;
-            delta = end - current;
+            dynamic delta = Delta;
             delta *= Speed / 2;
             prevCurrent = current;
             current = animate(current, delta);

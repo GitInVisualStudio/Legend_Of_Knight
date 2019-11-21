@@ -13,6 +13,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public bool Finished { get { return finished; } protected set { finished = value; } }
         public event EventHandler OnFinish;
         protected bool increase;
+        public bool Increments => increase;
 
         public Animation()
         {
@@ -27,7 +28,7 @@ namespace Legend_Of_Knight.Utils.Animations
         {
             finished = true;
             OnFinish?.Invoke(this, null);
-        }
+       }
 
         public virtual void Reverse()
         {

@@ -42,10 +42,11 @@ namespace Legend_Of_Knight.Gui
                 gui.Click(e);
         }
 
-        public virtual void Open()
+        public virtual GuiScreen Open()
         {
             Animation = new CustomAnimation<float>(0.0f, 1.0f, (float delta, float current) => current + delta);
             Animation.Fire();
+            return this;
         }
 
         public virtual void Close()
