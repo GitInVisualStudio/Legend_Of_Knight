@@ -14,8 +14,20 @@ namespace Legend_Of_Knight.Gui
     {
         private List<Gui> components;
         private bool onClose;
-        public List<Gui> Components { get => components; set => components = value; }
         public bool IsClosed => Animation.Finished && onClose;
+
+        public List<Gui> Components
+        {
+            get
+            {
+                return components;
+            }
+
+            set
+            {
+                components = value;
+            }
+        }
 
         public GuiScreen()
         {
@@ -47,9 +59,9 @@ namespace Legend_Of_Knight.Gui
         {
             StateManager.Push();
             StateManager.Translate(0, Game.HEIGHT - GetAnimation<float>() * Game.HEIGHT);
-            for(int i = components.Count - 1; i >= 0; i--) //Falls Components im Rendern entfernt werden
+            for(int i = Components.Count - 1; i >= 0; i--) //Falls Components im Rendern entfernt werden
             {
-                components[i].OnRender(partialTicks);
+                Components[i].OnRender(partialTicks);
             }
             StateManager.Pop();
         }

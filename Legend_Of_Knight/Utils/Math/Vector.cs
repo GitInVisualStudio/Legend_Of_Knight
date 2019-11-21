@@ -83,8 +83,10 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
-        public Vector(int dimensions) => values = new float[dimensions];
-
+        public Vector(int dimensions)
+        {
+            values = new float[dimensions];
+        }
 
         public float Length
         {

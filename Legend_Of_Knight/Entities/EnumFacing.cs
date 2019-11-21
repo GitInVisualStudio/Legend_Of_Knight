@@ -17,7 +17,10 @@ namespace Legend_Of_Knight.Entities
     {
         public float offset;
 
-        public FacingAttribute(float offset) => this.offset = offset;
+        public FacingAttribute(float offset)
+        {
+            this.offset = offset;
+        }
     }
 
 }

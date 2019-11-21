@@ -12,8 +12,10 @@ namespace Legend_Of_Knight.Utils.Animations
         const int FRAME_DELAY = 20;
         private AttackFrameStatus status;
 
-        public MeleeAttackFrame(AttackFrameStatus status, params Bitmap[] images) : base(FRAME_DELAY, stop: true, images: images) => Status = status;
-        
+        public MeleeAttackFrame(AttackFrameStatus status, params Bitmap[] images) : base(FRAME_DELAY, stop: true, images: images)
+        {
+            Status = status;
+        }
 
         public AttackFrameStatus Status { get { return status; } set { status = value; } }
 

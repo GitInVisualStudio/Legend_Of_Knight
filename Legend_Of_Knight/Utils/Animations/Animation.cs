@@ -14,8 +14,10 @@ namespace Legend_Of_Knight.Utils.Animations
         public event EventHandler OnFinish;
         protected bool increase;
 
-        public Animation() => increase = true;
-        
+        public Animation()
+        {
+            increase = true;
+        }
 
         public abstract void Update();
 

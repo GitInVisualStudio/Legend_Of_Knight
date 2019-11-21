@@ -15,6 +15,58 @@ namespace Legend_Of_Knight.Gui
         private Color background = Color.Transparent;
         private Bitmap image;
 
+        public string Text
+        {
+            get
+            {
+                return text;
+            }
+
+            set
+            {
+                text = value;
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                return color;
+            }
+
+            set
+            {
+                color = value;
+            }
+        }
+
+        public Color Background
+        {
+            get
+            {
+                return background;
+            }
+
+            set
+            {
+                background = value;
+            }
+        }
+
+        public Bitmap Image
+        {
+            get
+            {
+                return image;
+            }
+
+            set
+            {
+                image = value;
+            }
+        }
+
         public GuiButton(string text)
         {
             this.Text = text;
@@ -24,11 +76,6 @@ namespace Legend_Of_Knight.Gui
         {
             Image = img;
         }
-
-        public Color Color { get => color; set => color = value; }
-        public Color Background { get => background; set => background = value; }
-        public string Text { get => text; set => text = value; }
-        public Bitmap Image { get => image; set => image = value; }
 
         public override void OnRender(float partialTicks)
         {

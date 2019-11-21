@@ -14,8 +14,10 @@ namespace Legend_Of_Knight.Utils
         public static Vector mousePosition = new Vector(2);
         private List<Keybind> keys;
 
-        public InputManager() => keys = new List<Keybind>();
-        
+        public InputManager()
+        {
+            keys = new List<Keybind>();
+        }
 
         public void OnKeyPressed(int keyChar)
         {
