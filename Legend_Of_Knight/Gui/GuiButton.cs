@@ -1,4 +1,5 @@
-﻿using Legend_Of_Knight.Utils.Render;
+﻿using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,22 +11,8 @@ namespace Legend_Of_Knight.Gui
 {
     public class GuiButton : GuiLabel
     {
-        private string text;
         private Color background = Color.Transparent;
         private Bitmap image;
-
-        public string Text
-        {
-            get
-            {
-                return text;
-            }
-
-            set
-            {
-                text = value;
-            }
-        }
 
         public Color Background
         {
@@ -58,6 +45,13 @@ namespace Legend_Of_Knight.Gui
             this.Text = text;
         }
 
+        public GuiButton(string text, float x, float y, float width, float height)
+        {
+            this.Text = text;
+            this.Size = new Vector(width, height);
+            this.Position = new Vector(x, y);
+        }
+
         public GuiButton(Bitmap img)
         {
             Image = img;
@@ -67,8 +61,10 @@ namespace Legend_Of_Knight.Gui
         {
             StateManager.SetColor(Background);
             StateManager.FillRect(Position, Width, Height);
-            StateManager.DrawImage(Image, Position);
-            base.OnRender(partialTicks);
+            if(Image != null)
+                StateManager.DrawImage(Image, Position);
+            StateManager.SetColor(Color);
+            StateManager.DrawCenteredString(Text, Position.X + Width/2, Position.Y);
         }
     }
 }

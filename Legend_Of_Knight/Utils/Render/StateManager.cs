@@ -1,6 +1,7 @@
 ﻿using Legend_Of_Knight.Utils.Math;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -13,7 +14,9 @@ namespace Legend_Of_Knight.Utils.Render
     {
         private static Graphics g;
         private static State state = new State(true);
+        private static Stopwatch watch = new Stopwatch();
 
+        public static float delta;
         public static State State => state;
         public static Graphics Graphics => g;
         public static float ScaleX => state.ScaleX;
@@ -30,6 +33,9 @@ namespace Legend_Of_Knight.Utils.Render
         /// <param name="g"></param>
         public static void Update(Graphics g)
         {
+            delta = (float)watch.Elapsed.TotalSeconds;
+            watch.Reset();
+            watch.Start();
             g.InterpolationMode = InterpolationMode.NearestNeighbor; //Muss ich mit miriam noch besprechen
             StateManager.g = g;
         }
@@ -47,6 +53,12 @@ namespace Legend_Of_Knight.Utils.Render
 
         public static void DrawString(string text, Vector position) => DrawString(text, position.X, position.Y);
         
+        public static void DrawCenteredString(string text, float x, float y)
+        {
+            DrawString(text, x - GetStringWidth(text) / 2, y);
+        }
+
+        public static void DrawCenteredString(string text, Vector pos) => DrawCenteredString(text, pos.X, pos.Y);
 
         /// <summary>
         /// Zeichnet ein Bild
@@ -204,7 +216,7 @@ namespace Legend_Of_Knight.Utils.Render
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static float GetStringWidth(string s) => GetStringSize(s).Width;
+        public static float GetStringWidth(string s) => GetStringSize(s).X;
         
 
         /// <summary>
@@ -212,15 +224,19 @@ namespace Legend_Of_Knight.Utils.Render
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static float GetStringHeight(string s) => GetStringSize(s).Height;
-        
+        public static float GetStringHeight(string s) => GetStringSize(s).Y;
+
 
         /// <summary>
         /// Gibt die Größe des String wieder
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
-        public static SizeF GetStringSize(string s) => g.MeasureString(s, Font);
+        public static Vector GetStringSize(string s)
+        {
+            SizeF size = g.MeasureString(s, Font);
+            return new Vector(size.Width, size.Height);
+        }
         
 
         /// <summary>

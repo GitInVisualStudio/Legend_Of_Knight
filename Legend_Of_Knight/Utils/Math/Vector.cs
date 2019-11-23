@@ -147,13 +147,32 @@ namespace Legend_Of_Knight.Utils.Math
             return newVector;
         }
 
+        public static Vector operator -(Vector v1)
+        {
+            Vector newVector = new Vector(v1.Dimensions);
+            for (int i = 0; i < v1.Values.Length; i++)
+                newVector[i] = -v1[i];
+            return newVector;
+        }
+
         public static bool operator ==(Vector v1, Vector v2)
         {
             return v1.values == v2.values;
         }
+
         public static bool operator !=(Vector v1, Vector v2)
         {
             return !(v1 == v2);
+        }
+
+        public static bool operator <(Vector v1, Vector v2)
+        {
+            return v1.Length < v2.Length;
+        }
+
+        public static bool operator >(Vector v1, Vector v2)
+        {
+            return v1.Length > v2.Length;
         }
 
         public override string ToString()

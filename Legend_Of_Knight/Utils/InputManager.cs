@@ -23,14 +23,20 @@ namespace Legend_Of_Knight.Utils
         {
             Keybind key = keys.Find(x => x.KeyChar == keyChar);
             if (key != null)
+            {
+                if (key.FireOnce && !key.Pressed) //WindowsForms events so geil gemacht, dass KeyPressed tatsächlich mehrfach gecalled wird ohne key los zu lassen
+                    key.OnPress?.Invoke();
                 key.Pressed = true;
+            }
         }
 
         public void OnKeyRelease(int keyChar)
         {
             Keybind key = keys.Find(x => x.KeyChar == keyChar);
             if (key != null)
+            { 
                 key.Pressed = false;
+            }
         }
 
         public delegate void Event();
@@ -38,15 +44,12 @@ namespace Legend_Of_Knight.Utils
         public void Update()
         {
             keys.ForEach(x => {
-                if (x.Pressed)
+                if (x.Pressed && !x.FireOnce)
                     x.OnPress?.Invoke();
             });
         }
 
-        public void Add(int keyChar, Event OnPress) => keys.Add(new Keybind(keyChar, OnPress));
-        
-
-        public void Add(int keyChar) => keys.Add(new Keybind(keyChar, null));
+        public void Add(int keyChar, Event OnPress, bool fireOnce = false) => keys.Add(new Keybind(keyChar, OnPress, fireOnce));
         
 
         class Keybind
@@ -54,8 +57,9 @@ namespace Legend_Of_Knight.Utils
 
             private int keyChar;
             private bool pressed;
+            private bool fireOnce;
             public Event OnPress;
-            public Keybind(int keyChar, Event OnPress)
+            public Keybind(int keyChar, Event OnPress, bool fireOnce)
             {
                 KeyChar = keyChar;
                 this.OnPress = OnPress;
@@ -87,6 +91,8 @@ namespace Legend_Of_Knight.Utils
                     pressed = value;
                 }
             }
+
+            public bool FireOnce { get => fireOnce; set => fireOnce = value; }
         }
     }
 }

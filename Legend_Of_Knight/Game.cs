@@ -1,5 +1,6 @@
 ﻿using Legend_Of_Knight.Entities;
 using Legend_Of_Knight.Gui;
+using Legend_Of_Knight.Gui.GuiScreens;
 using Legend_Of_Knight.Properties;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
@@ -26,7 +27,7 @@ namespace Legend_Of_Knight
         public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
         public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = false;
+        public const bool DEBUG = true;
 
         private int fps = 0;
         private int currentFrames = 0;
@@ -70,6 +71,10 @@ namespace Legend_Of_Knight
             KeyDown += Game_KeyDown;
             KeyUp += Game_KeyUp;
             MouseWheel += Game_MouseEvent;
+            Resize += (object sender, EventArgs e) =>
+            {
+                currentScreen?.Resize();
+            };
 
             animationHandler = new AnimationHandler();
             zoom = new CustomAnimation<float>(5, 5, (float current, float delta) =>
@@ -90,29 +95,45 @@ namespace Legend_Of_Knight
         {
             inputManager.Add('W', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1);
+                if (currentScreen == null)
+                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1);
             });
             inputManager.Add('A', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X - 1, thePlayer.Velocity.Y);
+                if (currentScreen == null)
+                    thePlayer.SetVelocity(thePlayer.Velocity.X - 1, thePlayer.Velocity.Y);
             });
             inputManager.Add('S', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y + 1);
+                if (currentScreen == null)
+                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y + 1);
             });
             inputManager.Add('D', () =>
             {
-                thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
+                if(currentScreen == null)
+                    thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
             });
+            inputManager.Add(27, () =>
+            {
+                if (currentScreen == null)
+                    SetScreen(new GuiOptions());
+            }, fireOnce: true); //Sonst wird der Screen solange gesetzt bis der key released wird
         }
 
         #region events
         private void Game_MouseEvent(object sender, MouseEventArgs e)
         {
+            if(currentScreen != null)
+            {
+                currentScreen.Move(e);
+                return;
+            }
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
             InputManager.mouseY = (int)(e.Y / StateManager.ScaleY);
             InputManager.mousePosition = new Vector(InputManager.mouseX, InputManager.mouseY);
             zoom.End += e.Delta / 120;
+            if (zoom.Finished)
+                zoom.Fire();
         }
 
         private void Game_KeyUp(object sender, KeyEventArgs e)
@@ -122,6 +143,7 @@ namespace Legend_Of_Knight
 
         private void Game_KeyDown(object sender, KeyEventArgs e)
         {
+            currentScreen?.KeyPressed(e);
             inputManager.OnKeyPressed(e.KeyValue);
         }
 
@@ -154,25 +176,35 @@ namespace Legend_Of_Knight
         }
         #endregion
 
-        public void OpenScreen(GuiScreen screen)
+        public void SetScreen(GuiScreen screen)
         {
-            if(currentScreen == null)
+            if(screen == null && currentScreen != null)
             {
-                currentScreen = screen.Open();
+                currentScreen.Close();
+                currentScreen.Animation.OnFinish += (object sender, EventArgs args) =>
+                {
+                    currentScreen = null;
+                }; //CheckBox, Label, Textbox, Slider
+                return;
+            }
+            screen.Init(this);
+            if (currentScreen == null)
+            {
+                currentScreen = screen.Open(currentScreen);
                 return;
             }
             currentScreen.Close();
             currentScreen.Animation.OnFinish += (object sender, EventArgs args) =>
             {
-                currentScreen = screen.Open();
+                currentScreen = screen.Open(currentScreen);
             }; //CheckBox, Label, Textbox, Slider
         }
         public void OnRender(float partialTicks)
         {
-            currentScreen?.OnRender(partialTicks);
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
             StateManager.Scale(zoom.Value);
+            currentScreen?.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
             {

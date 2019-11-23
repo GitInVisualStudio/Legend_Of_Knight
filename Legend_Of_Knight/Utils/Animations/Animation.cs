@@ -24,11 +24,11 @@ namespace Legend_Of_Knight.Utils.Animations
 
         public abstract void Reset();
 
-        protected void Finish()
+        protected virtual void Finish()
         {
             finished = true;
             OnFinish?.Invoke(this, null);
-       }
+        }
 
         public virtual void Reverse()
         {
