@@ -70,5 +70,10 @@ namespace Legend_Of_Knight.Utils.Math
         {
             return Random() * size;
         }
+
+        public static float Average(IEnumerable<float> list)
+        {
+            return list.Sum() / list.Count();
+        }
     }
 }

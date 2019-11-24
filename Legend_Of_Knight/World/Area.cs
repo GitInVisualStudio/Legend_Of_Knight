@@ -19,6 +19,8 @@ namespace Legend_Of_Knight.World
         public Area(Field[] fields)
         {
             Fields = fields;
+            foreach (Field f in fields)
+                f.Area = this;
         }
     }
 }

@@ -28,7 +28,6 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
-
         private Dungeon d;
 
         public InputManager InputManager => inputManager;
@@ -74,7 +73,7 @@ namespace Legend_Of_Knight
             //thePlayer = new EntityPlayer();
 
             StateManager.Color(0, 0, 0);
-            d = new Dungeon(200, 100);
+            d = new Dungeon();
             
         }
 
@@ -133,6 +132,18 @@ namespace Legend_Of_Knight
             this.Refresh();
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Game
+            // 
+            this.ClientSize = new System.Drawing.Size(242, 252);
+            this.Name = "Game";
+            this.ResumeLayout(false);
+
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -163,8 +174,8 @@ namespace Legend_Of_Knight
             //foreach (Edge e in d.Mst.Edges)
             //    StateManager.DrawLine(e.A, e.B);
             StateManager.Color(0, 0, 0);
-            foreach (Room r in d.Rooms)
-                StateManager.DrawRect(r.CenterPos.X, r.CenterPos.Y, 1, 1, 1);
+            //foreach (Room r in d.Rooms)
+            //    StateManager.DrawRect(r.CenterPos.X, r.CenterPos.Y, 1, 1, 1);
         }
 
         public void onTick()

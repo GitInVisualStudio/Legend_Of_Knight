@@ -166,8 +166,13 @@ namespace Legend_Of_Knight.Utils.Math
 
         public static bool operator ==(Vector v1, Vector v2)
         {
-            return v1.Equals(v2);
-        }
+            if (v1.Values.Length != v2.Values.Length)
+                return false;
+            for (int i = 0; i < v1.Values.Length; i++)
+                if (v1[i] != v2[i])
+                    return false;
+            return true;
+        }   
 
         public static bool operator !=(Vector v1, Vector v2)
         {

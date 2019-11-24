@@ -78,6 +78,9 @@
     <Compile Include="World\DungeonGenArgs.cs" />
     <Compile Include="World\Field.cs" />
     <Compile Include="World\Room.cs" />
+    <EmbeddedResource Include="Game.resx">
+      <DependentUpon>Game.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

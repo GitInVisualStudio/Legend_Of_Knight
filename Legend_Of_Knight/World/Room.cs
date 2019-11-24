@@ -13,31 +13,50 @@ namespace Legend_Of_Knight.World
     public class Room : Area
     {
         private Corridor[] connections;
-        private Vector centerPos;
-        private Vector size;
+        private int x;
+        private int y;
+        private int sizeX;
+        private int sizeY;
         private Corridor right;
         private Corridor up;
         private Corridor left;
         private Corridor down;
 
         public Corridor[] Connections { get => connections; set => connections = value; }
-        public Vector CenterPos { get => centerPos; set => centerPos = value; }
-        public Vector Size { get => size; set => size = value; }
+        public int X { get => x; set => x = value; }
+        public int Y { get => y; set => y = value; }
+        public Vector CenterPos
+        {
+            get
+            {
+                return new Vector(x + (int)(sizeX / 2), y + (int)(sizeY / 2));
+            }
+        }
+        public int SizeX { get => sizeX; set => sizeX = value; }
+        public int SizeY { get => sizeY; set => sizeY = value; }
         public Corridor Right { get => right; set => right = value; }
         public Corridor Up { get => up; set => up = value; }
         public Corridor Left { get => left; set => left = value; }
         public Corridor Down { get => down; set => down = value; }
-
-        public Room(Field[] fields, Vector centerPos, Vector size) : base(fields)
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fields"></param>
+        /// <param name="pos">Koordinaten des Feldes oben links</param>
+        /// <param name="size"></param>
+        public Room(Field[] fields, int x, int y, int sizeX, int sizeY) : base(fields)
         {
-            CenterPos = centerPos;
-            Size = size;
+            this.x = x;
+            this.y = y;
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
         }
 
-        public static Room FindRoomByPosition(IEnumerable<Room> rooms, Vector position)
+        public static Room GetRoomByPosition(IEnumerable<Room> rooms, Vector pos)
         {
             foreach (Room r in rooms)
-                if (r.CenterPos == position)
+                if (r.CenterPos == pos)
                     return r;
             return null;
         }
