@@ -37,7 +37,7 @@ namespace Legend_Of_Knight.World
         {
             DateTime now = DateTime.Now;
             Seed = (((now.Year * 365 + now.Day) * 24 + now.Hour) * 60 + now.Minute) * 60 + now.Second; // standard seed als momentane Zeit in Sekunden
-            //Seed = 22102016;
+            //Seed = 21022002;
             Size = new Vector(100, 100);
             Rooms = 4;
             RoomSize = new Vector(30, 30);

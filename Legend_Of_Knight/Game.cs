@@ -73,8 +73,12 @@ namespace Legend_Of_Knight
             //thePlayer = new EntityPlayer();
 
             StateManager.Color(0, 0, 0);
-            d = new Dungeon();
-            
+            d = new Dungeon(new DungeonGenArgs()
+            {
+                Size = new Vector(Width / 2, Height / 2),
+                Rooms = 50,
+                RoomSize = new Vector(40, 40)
+            });   
         }
 
         private void AddKeybinds()
@@ -156,7 +160,7 @@ namespace Legend_Of_Knight
         public void OnRender(float partialTicks)
         {
             //thePlayer.OnRender(partialTicks);
-            StateManager.Scale(5);
+            StateManager.Scale(2);
             for (int x = 0; x < d.Fields.GetLength(0); x++)
             {
                 for (int y = 0; y < d.Fields.GetLength(1); y++)
