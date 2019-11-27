@@ -77,7 +77,8 @@ namespace Legend_Of_Knight
             {
                 Size = new Vector(Width / 2, Height / 2),
                 Rooms = 50,
-                RoomSize = new Vector(40, 40)
+                RoomSize = new Vector(40, 40),
+                CorridorWidth = 5
             });   
         }
 

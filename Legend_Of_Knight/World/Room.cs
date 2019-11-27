@@ -17,11 +17,6 @@ namespace Legend_Of_Knight.World
         private int y;
         private int sizeX;
         private int sizeY;
-        private Corridor right;
-        private Corridor up;
-        private Corridor left;
-        private Corridor down;
-
         public Corridor[] Connections { get => connections; set => connections = value; }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
@@ -34,16 +29,13 @@ namespace Legend_Of_Knight.World
         }
         public int SizeX { get => sizeX; set => sizeX = value; }
         public int SizeY { get => sizeY; set => sizeY = value; }
-        public Corridor Right { get => right; set => right = value; }
-        public Corridor Up { get => up; set => up = value; }
-        public Corridor Left { get => left; set => left = value; }
-        public Corridor Down { get => down; set => down = value; }
         
         /// <summary>
         /// 
         /// </summary>
         /// <param name="fields"></param>
-        /// <param name="pos">Koordinaten des Feldes oben links</param>
+        /// <param name="x">X-Koordinate des Feldes oben links</param>
+        /// <param name="y">Y-Koordinate des Feldes oben links</param>
         /// <param name="size"></param>
         public Room(Field[] fields, int x, int y, int sizeX, int sizeY) : base(fields)
         {

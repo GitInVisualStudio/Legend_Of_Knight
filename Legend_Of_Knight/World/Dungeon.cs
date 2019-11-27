@@ -122,16 +122,16 @@ namespace Legend_Of_Knight.World
 
                 if (left == down) // felder von unten nach oben, dann von links nach rechts nehmen
                 {
-                    startX = (int)left.CenterPos.X - args.CorridorWidth / 2;
+                    startX = (int)left.CenterPos.X - args.CorridorWidth / 2; // von unten nach oben
                     startY = (int)up.CenterPos.Y;
                     sizeX = args.CorridorWidth;
                     sizeY = down.Y - startY;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                    startY -= (args.CorridorWidth / 2);
+                    startY -= args.CorridorWidth / 2; // von links nach rechts
                     sizeX = right.X - startX;
                     sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
                 }
                 else
                 {
@@ -139,29 +139,29 @@ namespace Legend_Of_Knight.World
                     startY = left.Y + left.SizeY;
                     sizeX = args.CorridorWidth;
                     sizeY = (int)right.CenterPos.Y - startY;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
                     startY = (int)right.CenterPos.Y - args.CorridorWidth / 2;
                     sizeX = right.X - startX;
                     sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
                 }
             }
             else
             {
                 if (left == down) // felder von links nach rechts, dann von unten nach oben nehmen
                 {
-                    startX = left.X + left.SizeX;
+                    startX = left.X + left.SizeX; // von links nach rechts
                     startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
                     sizeX = (int)right.CenterPos.X - startX;
                     sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                    startX += sizeX - args.CorridorWidth / 2;
-                    startY = up.Y + up.SizeY;
+                    startX += sizeX - args.CorridorWidth / 2; // von unten nach oben
+                    startY = (int)up.CenterPos.Y;
                     sizeX = args.CorridorWidth;
-                    sizeY = (int)down.CenterPos.Y + args.CorridorWidth / 2 + 1 - startY; // + 1 weil args.CorridorWidth / 2 abgerundet wird
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    sizeY = (int)down.CenterPos.Y - startY + (int)Math.Ceiling(args.CorridorWidth / 2.0f);
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
                 }
                 else
                 {
@@ -169,16 +169,26 @@ namespace Legend_Of_Knight.World
                     startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
                     sizeX = (int)right.CenterPos.X - startX;
                     sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
                     startX = (int)right.CenterPos.X - args.CorridorWidth / 2;
                     sizeX = args.CorridorWidth;
                     sizeY = right.Y - startY;
-                    cFields.AddRange(GetFields(startX, startY, sizeX, sizeY));
+                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
                 }
             }
             cFields.RemoveAll(x => x.Area != null);
             return new Corridor(a, b, cFields.ToArray());
+        }
+
+        private Field[] GetFieldsInBounds(int startX, int startY, int sizeX, int sizeY)
+        {
+            List<Field> res = new List<Field>();
+            for (int x = startX; x < startX + sizeX; x++)
+                for (int y = startY; y < startY + sizeY; y++)
+                    if (!OutOfBounds(x, y))
+                        res.Add(fields[x, y]);
+            return res.ToArray();
         }
 
         private void MakeOdd(ref int i)
@@ -200,7 +210,7 @@ namespace Legend_Of_Knight.World
 
         private bool OutOfBounds(int x, int y)
         {
-            if (x > fields.GetLength(0) || y > fields.GetLength(1))
+            if (x < 0 || x >= fields.GetLength(0) || y < 0 || y >= fields.GetLength(1))
                 return true;
             return false;
         }
