@@ -75,10 +75,10 @@ namespace Legend_Of_Knight
             StateManager.Color(0, 0, 0);
             d = new Dungeon(new DungeonGenArgs()
             {
-                Size = new Vector(Width / 2, Height / 2),
-                Rooms = 50,
-                RoomSize = new Vector(40, 40),
-                CorridorWidth = 5
+                Size = new Vector(Width / 16, Height / 16),
+                Rooms = 5,
+                RoomSize = new Vector(10, 10),
+                CorridorWidth = 3
             });   
         }
 
@@ -161,7 +161,7 @@ namespace Legend_Of_Knight
         public void OnRender(float partialTicks)
         {
             //thePlayer.OnRender(partialTicks);
-            StateManager.Scale(2);
+            StateManager.Scale(16);
             for (int x = 0; x < d.Fields.GetLength(0); x++)
             {
                 for (int y = 0; y < d.Fields.GetLength(1); y++)
