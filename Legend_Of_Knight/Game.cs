@@ -1,6 +1,8 @@
 ﻿using Legend_Of_Knight.Entities;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
+using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Math.Triangulation;
 using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
@@ -9,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Legend_Of_Knight.World;
 
 namespace Legend_Of_Knight
 {
@@ -17,7 +20,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second and ticks per Second
         /// </summary>
-        public const float FPS = 240.0f, TPS = 30.0f; 
+        public const float FPS = 240.0f, TPS = 0.05f; 
         public const int WIDTH = 1280, HEIGHT = 720;
         public const string NAME = "Legend of Knight";
         private Timer renderTimer, tickTimer;
@@ -25,6 +28,7 @@ namespace Legend_Of_Knight
         private InputManager inputManager;
         private AnimationHandler animationHandler;
         private EntityPlayer thePlayer;
+        private Dungeon d;
 
         public InputManager InputManager => inputManager;
 
@@ -66,7 +70,16 @@ namespace Legend_Of_Knight
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
 
-            thePlayer = new EntityPlayer();
+            //thePlayer = new EntityPlayer();
+
+            StateManager.Color(0, 0, 0);
+            d = new Dungeon(new DungeonGenArgs()
+            {
+                Size = new Vector(Width / 16, Height / 16),
+                Rooms = 5,
+                RoomSize = new Vector(10, 10),
+                CorridorWidth = 3
+            });   
         }
 
         private void AddKeybinds()
@@ -124,25 +137,58 @@ namespace Legend_Of_Knight
             this.Refresh();
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // Game
+            // 
+            this.ClientSize = new System.Drawing.Size(242, 252);
+            this.Name = "Game";
+            this.ResumeLayout(false);
+
+        }
+
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
             //TODO: calculate the partialTicks, set new Graphics instance
             float partialTicks = (float)((1000.0f / TPS) - watch.Elapsed.TotalMilliseconds) / (1000.0f / TPS);
             StateManager.Update(e.Graphics);
-            onRender(partialTicks);
+            OnRender(partialTicks);
         }
 
-        public void onRender(float partialTicks)
+        public void OnRender(float partialTicks)
         {
-            thePlayer.OnRender(partialTicks);
+            //thePlayer.OnRender(partialTicks);
+            StateManager.Scale(16);
+            for (int x = 0; x < d.Fields.GetLength(0); x++)
+            {
+                for (int y = 0; y < d.Fields.GetLength(1); y++)
+                {
+                    if (d.Fields[x, y].Area is Corridor)
+                        StateManager.Color(255, 0, 0);
+                    else if (d.Fields[x, y].Area is Room)
+                        StateManager.Color(0, 0, 255);
+                    else
+                        StateManager.Color(255, 255, 255);
+                    StateManager.DrawRect(x, y, 1, 1);
+                }
+            }
+            //StateManager.Color(0, 255, 0);
+            //foreach (Edge e in d.Mst.Edges)
+            //    StateManager.DrawLine(e.A, e.B);
+            StateManager.Color(0, 0, 0);
+            //foreach (Room r in d.Rooms)
+            //    StateManager.DrawRect(r.CenterPos.X, r.CenterPos.Y, 1, 1, 1);
         }
 
         public void onTick()
         {
             animationHandler.Update();
             inputManager.Update();
-            thePlayer.OnTick();
+
+            //thePlayer.OnTick();
         }
     }
 }

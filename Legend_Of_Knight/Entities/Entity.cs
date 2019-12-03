@@ -123,8 +123,7 @@ namespace Legend_Of_Knight.Entities
                 walkingAnimation.Reset();
 
 
-            if (Moved != null)
-                Moved(this, position);
+            Moved?.Invoke(this, position);
         }
 
         public void SetVelocity(float x, float y)

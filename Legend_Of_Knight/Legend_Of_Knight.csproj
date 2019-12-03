@@ -62,10 +62,26 @@
     <Compile Include="Utils\Animations\MeleeAttackFrame.cs" />
     <Compile Include="Utils\Math\CollisionArgs.cs" />
     <Compile Include="Utils\InputManager.cs" />
+    <Compile Include="Utils\Math\CRandom.cs" />
     <Compile Include="Utils\Math\MathUtils.cs" />
+    <Compile Include="Utils\Math\Triangulation\DelaunayTriangulation.cs" />
+    <Compile Include="Utils\Math\Triangulation\Edge.cs" />
+    <Compile Include="Utils\Math\Triangulation\Forest.cs" />
+    <Compile Include="Utils\Math\Triangulation\MinimumSpanningTree.cs" />
+    <Compile Include="Utils\Math\Triangulation\Triangle.cs" />
     <Compile Include="Utils\Render\StateManager.cs" />
     <Compile Include="Utils\Math\TimeUtils.cs" />
     <Compile Include="Utils\Math\Vector.cs" />
+    <Compile Include="World\Area.cs" />
+    <Compile Include="World\Corridor.cs" />
+    <Compile Include="World\Dungeon.cs" />
+    <Compile Include="World\DungeonGenArgs.cs" />
+    <Compile Include="World\Field.cs" />
+    <Compile Include="World\FieldAloneException.cs" />
+    <Compile Include="World\Room.cs" />
+    <EmbeddedResource Include="Game.resx">
+      <DependentUpon>Game.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -85,11 +101,20 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Resources\Tilemap\Floors\01.png.kra" />
+    <None Include="Resources\Tilemap\Walls\down.png.kra" />
+    <None Include="Resources\Tilemap\Walls\left.kra" />
+    <None Include="Resources\Tilemap\Walls\right.png.kra" />
+    <None Include="Resources\Tilemap\Walls\up.png.kra" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Entities\Player\Idle\Down\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Left\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Right\anim.kra" />
+    <None Include="Resources\Entities\Player\Idle\Up\anim.kra" />
     <None Include="Resources\player_1.png" />
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +122,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\player_3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Entities\Player\Idle\Down\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Down\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Left\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Left\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Right\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Right\0001.png" />
+    <Content Include="Resources\Entities\Player\Idle\Up\0000.png" />
+    <Content Include="Resources\Entities\Player\Idle\Up\0001.png" />
+    <Content Include="Resources\Tilemap\Floors\01.png" />
+    <Content Include="Resources\Tilemap\Walls\down.png" />
+    <Content Include="Resources\Tilemap\Walls\left.png" />
+    <Content Include="Resources\Tilemap\Walls\right.png" />
+    <Content Include="Resources\Tilemap\Walls\up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
