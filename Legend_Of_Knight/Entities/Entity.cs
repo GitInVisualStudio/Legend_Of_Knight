@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils.Render;
 
 namespace Legend_Of_Knight.Entities
 {
     public abstract class Entity
     {
+        protected const int FPS = (int)(1000.0f / 5);
+
         protected Vector position;
         protected Vector velocity;
         protected Vector prevPosition;
         private float rotation;
         private BoundingBox box;
-        protected FrameAnimation walkingAnimation;
+        protected float movingTime;
+        protected FrameAnimation animation;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -26,21 +30,33 @@ namespace Legend_Of_Knight.Entities
         public float Height => box.Height;
         public Vector Size => box.Size;
 
+        public FrameAnimation Animation
+        {
+            get
+            {
+                return animation;
+            }
+            set
+            {
+                animation = value;
+            }
+        }
+
         public Vector Position
         {
             get
             {
                 return position;
             }
-
             set
             {
                 position = value;
+                prevPosition = position;
             }
         }
 
         /// <summary>
-        /// Drehwinkel im Grad (Einfach einfach für das Rendern)
+        /// Drehwinkel in Grad (Einfacher für das Rendern)
         /// </summary>
         public float Rotation
         {
@@ -48,12 +64,10 @@ namespace Legend_Of_Knight.Entities
             {
                 return rotation;
             }
-
             set
             {
                 rotation = value;
-                if (Rotated != null)
-                    Rotated(this, rotation);
+                Rotated?.Invoke(this, rotation);
             }
         }
 
@@ -63,7 +77,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return position.X;
             }
-
             set
             {
                 position.X = value;
@@ -76,7 +89,6 @@ namespace Legend_Of_Knight.Entities
             {
                 return position.Y;
             }
-
             set
             {
                 position.Y = value;
@@ -89,8 +101,7 @@ namespace Legend_Of_Knight.Entities
             {
                 return box;
             }
-
-            set
+            protected set
             {
                 box = value;
                 box.Collided += OnCollision;
@@ -104,24 +115,52 @@ namespace Legend_Of_Knight.Entities
             prevPosition = new Vector(2);
         }
 
-        public abstract void OnRender(float partialTicks);
+        public virtual void OnRender(float partialTicks)
+        {
+            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            if (Game.DEBUG)
+                RenderBoundingBox();
+            StateManager.Push();
+            StateManager.Translate(position);
+            StateManager.Rotate(rotation);
+            StateManager.Translate(Size / -2);
+            StateManager.DrawImage(animation.Image, 0, 0);
+            StateManager.Pop();
+        }
 
-        public void OnTick()
+        protected virtual void RenderBoundingBox()
+        {
+            Vector prev = Box.Corners.Last();
+            StateManager.SetColor(255, 0, 0);
+            for (int i = 0; i < Box.Corners.Length; i++)
+            {
+                Vector current = Box.Corners[i];
+                StateManager.DrawLine(prev, current, 0.1f);
+                prev = current;
+            }
+        }
+
+        public virtual void OnTick()
         {
             Move();
         }
 
         public void Move()
         {
-            prevPosition = Position;
-            Position += Velocity * 2;
-            velocity *= 0.8f;
+            prevPosition = position;
+            position += Velocity;
+            velocity *= 0.7f;
 
             if (velocity.Length > 0.2f)
-                walkingAnimation.Update();
+            {
+                movingTime += Game.TPT / 1000.0f;
+                animation.Update();
+            }
             else
-                walkingAnimation.Reset();
-
+            {
+                movingTime = 0;
+                animation.Reset();
+            }
 
             Moved?.Invoke(this, position);
         }

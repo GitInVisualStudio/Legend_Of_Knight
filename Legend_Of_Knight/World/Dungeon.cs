@@ -60,9 +60,9 @@ namespace Legend_Of_Knight.World
                 ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
 
             FieldType[,] types = new FieldType[fields.GetLength(0), fields.GetLength(1)];
-            for (int x = 0; x < fields.GetLength(0); x++)
-                for (int y = 0; y < fields.GetLength(1); y++)
-                    types[x, y] = fields[x, y].GetFieldType(fields.To);
+            //for (int x = 0; x < fields.GetLength(0); x++)
+            //    for (int y = 0; y < fields.GetLength(1); y++)
+            //        types[x, y] = fields[x, y].GetFieldType(fields.To);
         }
 
         private Room MakeRoom(int depth = 0)

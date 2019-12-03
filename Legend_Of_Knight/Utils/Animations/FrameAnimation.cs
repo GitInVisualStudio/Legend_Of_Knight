@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.Utils.Animations
         private int index;
         private int delay;
         private bool stop;
-        public int Delay { get => delay; set => delay = value; }
+        public int Delay { get { return delay; } set { delay = value; } }
         public int Length => images.Length;
         public Bitmap Image => images[index];
         public int Index => index;
@@ -49,9 +49,6 @@ namespace Legend_Of_Knight.Utils.Animations
             }
         }
 
-        public override void Reset()
-        {
-            index = 0;
-        }
+        public override void Reset() => index = 0;
     }
 }

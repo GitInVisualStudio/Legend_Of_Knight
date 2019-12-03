@@ -12,22 +12,22 @@ using Legend_Of_Knight.Utils.Render;
 
 namespace Legend_Of_Knight.Entities
 {
-    public class EntityPlayer : Entity
+    public class EntityPlayer : EntityLivingBase
     {
-        public EntityPlayer()
+        public EntityPlayer() : base()
         {
-            walkingAnimation = new FrameAnimation(500, false, Resources.player_1, Resources.player_2, Resources.player_3);
+            Item = new Legend_Of_Knight.Items.Item("sword.png");
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
         {
-            
         }
 
-        public override void OnRender(float partialTicks)
+        public override void OnTick()
         {
-            Vector position = prevPosition + (prevPosition - this.Position) * partialTicks;
-            StateManager.DrawImage(walkingAnimation.Image, position.X, position.Y);
+            base.OnTick();
+            Vector yaw = InputManager.mousePosition - position;
+            Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
         }
     }
 }

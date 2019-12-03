@@ -8,9 +8,13 @@ namespace Legend_Of_Knight.Utils.Animations
 {
     public abstract class FireableAnimation : Animation
     {
-        public void Fire()
+        public virtual FireableAnimation Fire()
         {
+            Finished = false;
             AnimationHandler.Add(this);
+            return this;
         }
+
+        public abstract void OnRender(float partialTicks);
     }
 }

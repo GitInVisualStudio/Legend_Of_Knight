@@ -37,10 +37,7 @@ namespace Legend_Of_Knight.Utils.Animations
             }
         }
 
-        public override void Update()
-        {
-            currentFrame.Update();
-        }
+        public override void Update() => currentFrame.Update();
 
         public override void Reset()
         {

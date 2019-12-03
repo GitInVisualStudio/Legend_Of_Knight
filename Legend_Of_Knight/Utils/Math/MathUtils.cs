@@ -9,46 +9,34 @@ namespace Legend_Of_Knight.Utils.Math
 {
     public class MathUtils
     {
-        private static Random random = new Random();
 
-        public static float Sin(float angle)
-        {
-            return (float)s::Math.Sin(ToRadians(angle));
-        }
+        public static float Sin(float angle) => (float)s::Math.Sin(ToRadians(angle));
+        
 
-        public static float Cos(float angle)
-        {
-            return (float)s::Math.Cos(ToRadians(angle));
-        }
+        public static float Cos(float angle) => (float)s::Math.Cos(ToRadians(angle));
+        
 
-        public static float Tan(float angle)
-        {
-            return (float)s::Math.Tan(ToRadians(angle));
-        }
+        public static float Tan(float angle) => (float)s::Math.Tan(ToRadians(angle));
+        
 
-        public static float Asin(float sin)
-        {
-            return ToDegree((float)s::Math.Asin(sin));
-        }
+        public static float Asin(float sin) => ToDegree((float)s::Math.Asin(sin));
+        
 
-        public static float Acos(float cos)
-        {
-            return ToDegree((float)s::Math.Acos(cos));
-        }
+        public static float Acos(float cos) => ToDegree((float)s::Math.Acos(cos));
+        
 
-        public static float Atan(float tan)
-        {
-            return ToDegree((float)s::Math.Atan(tan));
-        }
+        public static float Atan(float tan) => ToDegree((float)s::Math.Atan(tan));
+        
 
-        public static float ToRadians(float angle)
-        {
-            return (float)(angle * s::Math.PI / 180.0f);
-        }
+        public static float ToRadians(float angle) => (float)(angle * s::Math.PI / 180.0f);
+        
 
-        public static float ToDegree(float angle)
+        public static float ToDegree(float angle) => (float)(angle * 180.0f / s::Math.PI);
+        
+
+        public static dynamic Interpolate(dynamic prev, dynamic current, float partialTicks)
         {
-            return (float)(angle * 180.0f / s::Math.PI);
+            return current + (prev - current) * partialTicks;
         }
 
         public static float Sqrt(float d)
@@ -59,16 +47,6 @@ namespace Legend_Of_Knight.Utils.Math
         public static float Pow(float basis, float exponent)
         {
             return (float)s::Math.Pow(basis, exponent);
-        }
-
-        public static float Random()
-        {
-            return (float)random.NextDouble();
-        }
-
-        public static float Random(float size)
-        {
-            return Random() * size;
         }
 
         public static float Average(IEnumerable<float> list)

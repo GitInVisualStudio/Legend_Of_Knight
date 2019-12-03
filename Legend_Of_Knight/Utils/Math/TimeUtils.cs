@@ -30,10 +30,8 @@ namespace Legend_Of_Knight.Utils.Math
             return result;
         }
 
-        public void Reset()
-        {
-            time = delay.Elapsed.TotalMilliseconds;
-        }
+        public void Reset() => time = delay.Elapsed.TotalMilliseconds;
+        
 
         public static bool Check(float milli, [CallerMemberName] string memberName = "")
         {

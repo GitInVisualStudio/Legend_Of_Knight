@@ -17,7 +17,7 @@ namespace Legend_Of_Knight.Utils.Animations
             Status = status;
         }
 
-        public AttackFrameStatus Status { get => status; set => status = value; }
+        public AttackFrameStatus Status { get { return status; } set { status = value; } }
 
         public enum AttackFrameStatus
         {

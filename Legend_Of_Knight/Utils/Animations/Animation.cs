@@ -10,9 +10,10 @@ namespace Legend_Of_Knight.Utils.Animations
     {
 
         private bool finished;
-        public bool Finished { get => finished; set => finished = value; }
+        public bool Finished { get { return finished; } protected set { finished = value; } }
         public event EventHandler OnFinish;
         protected bool increase;
+        public bool Increments => increase;
 
         public Animation()
         {
@@ -23,8 +24,9 @@ namespace Legend_Of_Knight.Utils.Animations
 
         public abstract void Reset();
 
-        protected void Finish()
+        protected virtual void Finish()
         {
+            finished = true;
             OnFinish?.Invoke(this, null);
         }
 
