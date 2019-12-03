@@ -74,6 +74,14 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        public static Vector Null
+        {
+            get
+            {
+                return new Vector();
+            }
+        }
+
         public Vector(params float[] p)
         {
             values = new float[p.Length];
@@ -183,6 +191,21 @@ namespace Legend_Of_Knight.Utils.Math
         public Vector Copy()
         {
             return new Vector(values);
+        }
+
+        public static bool operator ==(Vector v1, Vector v2)
+        {
+            if (v1.Values.Length != v2.Values.Length)
+                return false;
+            for (int i = 0; i < v1.Values.Length; i++)
+                if (v1[i] != v2[i])
+                    return false;
+            return true;
+        }   
+
+        public static bool operator !=(Vector v1, Vector v2)
+        {
+            return !(v1 == v2);
         }
 
         class VectorNot2DException : Exception
