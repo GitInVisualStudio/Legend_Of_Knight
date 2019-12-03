@@ -6,6 +6,7 @@ using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
+using Legend_Of_Knight.World;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,6 +40,8 @@ namespace Legend_Of_Knight
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
         public InputManager InputManager => inputManager;
+
+        private Dungeon d; // DEBUG
 
         public Game()
         {
@@ -89,6 +92,10 @@ namespace Legend_Of_Knight
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
 
             thePlayer = new EntityPlayer();
+            d = new Dungeon(new DungeonGenArgs()
+            {
+                Seed = 22102016
+            });
         }
 
         private void AddKeybinds()
@@ -222,7 +229,12 @@ namespace Legend_Of_Knight
                 StateManager.Pop();
             }
             #endregion
-            thePlayer.OnRender(partialTicks);
+            //thePlayer.OnRender(partialTicks);
+            for (int x = 0; x < d.Fields.GetLength(0); x++)
+                for (int y = 0; y < d.Fields.GetLength(1); y++)
+                {
+                    
+                }
         }
 
         public void OnTick()

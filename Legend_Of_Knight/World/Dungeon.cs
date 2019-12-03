@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Math.Triangulation;
+using Legend_Of_Knight.World;
 
 namespace Legend_Of_Knight.World
 {
@@ -56,13 +57,13 @@ namespace Legend_Of_Knight.World
             List<Edge> edges = new List<Edge>();
             edges.AddRange(mst.Edges);
             edges.AddRange(rnd.PickElements(triang.Edges.Where(x => !mst.Edges.Contains(x)), args.LeaveConnectionPercentage));
+            List<Corridor> corridors = new List<Corridor>();
             foreach (Edge e in edges)
-                ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
+                corridors.Add(ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B)));
 
-            FieldType[,] types = new FieldType[fields.GetLength(0), fields.GetLength(1)];
-            //for (int x = 0; x < fields.GetLength(0); x++)
-            //    for (int y = 0; y < fields.GetLength(1); y++)
-            //        types[x, y] = fields[x, y].GetFieldType(fields.To);
+            for (int x = 0; x < fields.GetLength(0); x++)
+                for (int y = 0; y < fields.GetLength(1); y++)
+                    fields[x, y].SetFieldType(fields);
         }
 
         private Room MakeRoom(int depth = 0)

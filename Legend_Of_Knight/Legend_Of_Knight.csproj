@@ -77,6 +77,7 @@
     <Compile Include="Utils\InputManager.cs" />
     <Compile Include="Utils\Math\CRandom.cs" />
     <Compile Include="Utils\Math\MathUtils.cs" />
+    <Compile Include="Utils\Math\Rectangle.cs" />
     <Compile Include="Utils\Math\Triangulation\DelaunayTriangulation.cs" />
     <Compile Include="Utils\Math\Triangulation\Edge.cs" />
     <Compile Include="Utils\Math\Triangulation\Forest.cs" />
