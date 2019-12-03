@@ -163,16 +163,6 @@ namespace Legend_Of_Knight.Utils.Math
             return newVector;
         }
 
-        public static bool operator ==(Vector v1, Vector v2)
-        {
-            return v1.values == v2.values;
-        }
-
-        public static bool operator !=(Vector v1, Vector v2)
-        {
-            return !(v1 == v2);
-        }
-
         public static bool operator <(Vector v1, Vector v2)
         {
             return v1.Length < v2.Length;

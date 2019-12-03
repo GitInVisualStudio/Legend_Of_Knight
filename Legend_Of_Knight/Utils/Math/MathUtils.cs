@@ -38,5 +38,20 @@ namespace Legend_Of_Knight.Utils.Math
         {
             return current + (prev - current) * partialTicks;
         }
+
+        public static float Sqrt(float d)
+        {
+            return (float)s::Math.Sqrt(d);
+        }
+
+        public static float Pow(float basis, float exponent)
+        {
+            return (float)s::Math.Pow(basis, exponent);
+        }
+
+        public static float Average(IEnumerable<float> list)
+        {
+            return list.Sum() / list.Count();
+        }
     }
 }
