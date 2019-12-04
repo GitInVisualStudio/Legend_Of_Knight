@@ -36,9 +36,42 @@ namespace Legend_Of_Knight.World
                 return;
 
             Field[] neighbors = GetNeighbors(fields);
+
             Rectangle[] maxRects = FindValidMaxRectangles(neighbors);
-            // TODO: figure out what role this field plays in rectangle -> its free fieldtype
-            // also include case where theres 2 max rectangles, where 
+            if (maxRects.Length == 0)
+                throw new FieldAloneException();
+
+            if (maxRects.Length > 1)
+            {
+                if (maxRects[0].Area < 6)
+                    throw new FieldAloneException();
+                    
+
+                for (int i = 1; i < neighbors.Length; i += 2) // Betrachten aller diagonalen Ecken bei zwei Rechtecken mit Größe 6
+                { 
+                    if (neighbors[i].Area == null)
+                        this.Type = (FieldType)(5 + (((i - 1) / 2 + 2) % 4)); // bestimmt manche Ecken
+                }
+                    
+            }
+            else
+            {
+                Rectangle rect = maxRects[0];
+                if (rect.Area == 4) // Feld ist eine Ecke
+                {
+                    for (int i = 0; i < neighbors.Length; i += 2)
+                        if (neighbors[i].Area == null && neighbors[(i + 2) % neighbors.Length].Area == null)
+                            Type = (FieldType)(5 + i / 2);
+                }
+                else if (rect.Area == 6)
+                {
+                    for (int i = 0; i < neighbors.Length; i += 2)
+                        if (neighbors[i].Area == null)
+                            Type = (FieldType)(1 + i / 2);
+                }
+                else if (rect.Area == 9)
+                    Type = FieldType.Floor;
+            }
         }
 
         /// <summary>
@@ -56,37 +89,60 @@ namespace Legend_Of_Knight.World
             for (int x = 0; x < fields.GetLength(0); x++)
                 for (int y = 0; y < fields.GetLength(1); y++)
                 {
-                    int height = 1;
-                    int width = 1;
+                    if (fields[x, y].Area == null)
+                        continue;
 
-                    for (int i = 1; x + i < fields.GetLength(0) && fields[x + i, y].Area != null; i++)
+                    int width = 1;
+                    int height = 1;
+
+                    for (int i = 1; x + i < fields.GetLength(0) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width + 1, height))); i++)
                         width++;
 
-                    for (int i = 1; y + i < fields.GetLength(1) && fields[x, y + i].Area != null; i++)
+                    for (int i = 1; y + i < fields.GetLength(1) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width, height + 1))); i++)
                         height++;
 
-                    bool isRectangular = true;
-                    for (int x2 = x; x2 < x + width; x2++)
-                        for (int y2 = y; y2 < y + height; y2++)
-                            if (fields[x2, y2].Area == null)
-                                isRectangular = false; // maybe semantically incorrect idk (if sth doesnt work look here)
+                    Rectangle rectHorizontal = new Rectangle(new Vector(x, y), new Vector(width, height));
 
-                    if (isRectangular)
-                        rects.Add(new Rectangle(new Vector(x, y), new Vector(width, height)));
+                    width = 1;
+                    height = 1;
+
+                    for (int i = 1; y + i < fields.GetLength(1) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width, height + 1))); i++)
+                        height++;
+
+                    for (int i = 1; x + i < fields.GetLength(0) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width + 1, height))); i++)
+                        width++;
+
+                    Rectangle rectVertical = new Rectangle(new Vector(x, y), new Vector(width, height));
+                    if (rectHorizontal.Size != rectVertical.Size)
+                        rects.Add(rectVertical);
+                    rects.Add(rectHorizontal);
                 }
+
+            rects.RemoveAll(x => x.Area < 4); // entfernt alle nicht validen Rechtecke mit irgendeiner Kantenlänge < 2
+            if (rects.Count == 0)
+                return rects.ToArray();
 
             List<Rectangle> maxRects = new List<Rectangle>();
             maxRects.Add(rects[0]);
-            foreach (Rectangle r in rects)
-                if (r.Area > maxRects[0].Area)
+            for (int i = 1; i < rects.Count; i++)
+                if (rects[i].Area > maxRects[0].Area)
                 {
                     maxRects.Clear();
-                    maxRects.Add(r);
+                    maxRects.Add(rects[i]);
                 }
-                else if (r.Area == maxRects[0].Area)
-                    maxRects.Add(r);
-            maxRects.RemoveAll(x => x.Area < 4); // entfernt alle nicht validen Rechtecke mit irgendeiner Kantenlänge < 2
+                else if (rects[i].Area == maxRects[0].Area)
+                    maxRects.Add(rects[i]);
+            
             return maxRects.ToArray();
+        }
+
+        private bool AllFieldsInRectangleDefined(Field[,] fields, Rectangle rect)
+        {
+            for (int x = (int)rect.Pos.X; x < rect.Pos.X + rect.Size.X; x++)
+                for (int y = (int)rect.Pos.Y; y < rect.Pos.Y + rect.Size.Y; y++)
+                    if (fields[x, y].Area == null)
+                        return false;
+            return true;
         }
         
         private Field[] GetNeighbors(Field[,] fields)

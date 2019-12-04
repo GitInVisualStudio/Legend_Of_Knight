@@ -23,7 +23,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
+        public const float FPS = 120.0f, TPS = 1f, TPT = (1000.0f / TPS);
         private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
         public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
         public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
@@ -94,7 +94,6 @@ namespace Legend_Of_Knight
             thePlayer = new EntityPlayer();
             d = new Dungeon(new DungeonGenArgs()
             {
-                Seed = 22102016
             });
         }
 
@@ -138,9 +137,9 @@ namespace Legend_Of_Knight
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
             InputManager.mouseY = (int)(e.Y / StateManager.ScaleY);
             InputManager.mousePosition = new Vector(InputManager.mouseX, InputManager.mouseY);
-            zoom.End += e.Delta / 120;
-            if (zoom.Finished)
-                zoom.Fire();
+            //zoom.End += e.Delta / 120;
+            //if (zoom.Finished)
+            //    zoom.Fire();
         }
 
         private void Game_KeyUp(object sender, KeyEventArgs e)
@@ -234,6 +233,17 @@ namespace Legend_Of_Knight
                 for (int y = 0; y < d.Fields.GetLength(1); y++)
                 {
                     
+                    int type = (int)d.Fields[x, y].Type;
+                    if (type < 0)
+                        StateManager.SetColor(255, 255, 255);
+                    else if (type == 0)
+                        StateManager.SetColor(0, 0, 255);
+                    else if (type < 5)
+                        StateManager.SetColor(255, 0, 0);
+                    else
+                        StateManager.SetColor(0, 255, 0);
+
+                    StateManager.DrawRect(new Vector(x, y), 1, 1, 1);
                 }
         }
 

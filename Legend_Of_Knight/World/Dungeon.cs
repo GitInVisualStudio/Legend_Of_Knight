@@ -61,9 +61,16 @@ namespace Legend_Of_Knight.World
             foreach (Edge e in edges)
                 corridors.Add(ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B)));
 
-            for (int x = 0; x < fields.GetLength(0); x++)
-                for (int y = 0; y < fields.GetLength(1); y++)
-                    fields[x, y].SetFieldType(fields);
+            try
+            {
+                for (int x = 0; x < fields.GetLength(0); x++)
+                    for (int y = 0; y < fields.GetLength(1); y++)
+                        fields[x, y].SetFieldType(fields);
+            }
+            catch (FieldAloneException)
+            {
+                Console.WriteLine("Something went wrong! Seed: " + args.Seed);
+            }
         }
 
         private Room MakeRoom(int depth = 0)
@@ -123,68 +130,93 @@ namespace Legend_Of_Knight.World
             }
 
             List<Field> cFields = new List<Field>();
+            Corridor c;
             if (rnd.NextFloat() > 0.5)
+                c = MakeTrueL(left, up, right, down);
+            else
+                c = MakeTurnedL(left, up, right, down);
+            return c;
+        }
+
+        private Corridor MakeTrueL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
+        {
+            int startX;
+            int startY;
+            int sizeX;
+            int sizeY;
+            List<Field> cFields = new List<Field>();
+            if (left == down) // felder von links nach rechts, dann von unten nach oben nehmen
             {
+                startX = left.X + left.SizeX; // von links nach rechts
+                startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
+                sizeX = (int)right.CenterPos.X - startX;
+                sizeY = args.CorridorWidth;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                if (left == down) // felder von unten nach oben, dann von links nach rechts nehmen
-                {
-                    startX = (int)left.CenterPos.X - args.CorridorWidth / 2; // von unten nach oben
-                    startY = (int)up.CenterPos.Y;
-                    sizeX = args.CorridorWidth;
-                    sizeY = down.Y - startY;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-
-                    startY -= args.CorridorWidth / 2; // von links nach rechts
-                    sizeX = right.X - startX;
-                    sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-                }
-                else
-                {
-                    startX = (int)left.CenterPos.X - args.CorridorWidth / 2;
-                    startY = left.Y + left.SizeY;
-                    sizeX = args.CorridorWidth;
-                    sizeY = (int)right.CenterPos.Y - startY;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-
-                    startY = (int)right.CenterPos.Y - args.CorridorWidth / 2;
-                    sizeX = right.X - startX;
-                    sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-                }
+                startX += sizeX - args.CorridorWidth / 2; // von unten nach oben
+                startY = (int)up.CenterPos.Y;
+                sizeX = args.CorridorWidth;
+                sizeY = (int)down.CenterPos.Y - startY + (int)Math.Ceiling(args.CorridorWidth / 2.0f);
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
             else
             {
-                if (left == down) // felder von links nach rechts, dann von unten nach oben nehmen
-                {
-                    startX = left.X + left.SizeX; // von links nach rechts
-                    startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
-                    sizeX = (int)right.CenterPos.X - startX;
-                    sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
+                startX = left.X + left.SizeX;
+                startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
+                sizeX = (int)right.CenterPos.X - startX;
+                sizeY = args.CorridorWidth;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                    startX += sizeX - args.CorridorWidth / 2; // von unten nach oben
-                    startY = (int)up.CenterPos.Y;
-                    sizeX = args.CorridorWidth;
-                    sizeY = (int)down.CenterPos.Y - startY + (int)Math.Ceiling(args.CorridorWidth / 2.0f);
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-                }
-                else
-                {
-                    startX = left.X + left.SizeX;
-                    startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
-                    sizeX = (int)right.CenterPos.X - startX;
-                    sizeY = args.CorridorWidth;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-
-                    startX = (int)right.CenterPos.X - args.CorridorWidth / 2;
-                    sizeX = args.CorridorWidth;
-                    sizeY = right.Y - startY;
-                    cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
-                }
+                startX = (int)right.CenterPos.X - args.CorridorWidth / 2;
+                sizeX = args.CorridorWidth;
+                sizeY = right.Y - startY;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
-            cFields.RemoveAll(x => x.Area != null);
-            return new Corridor(a, b, cFields.ToArray());
+
+            if (cFields.Any(x => x.Area != null) && !beforeFailed)
+                return MakeTurnedL(left, up, right, down, true);
+            else if (cFields.Any(x => x.Area != null))
+                return null;
+            else
+                return new Corridor(left, right, cFields.ToArray());
+        }
+
+        private Corridor MakeTurnedL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
+        {
+            List<Field> cFields = new List<Field>();
+            if (left == down) // felder von unten nach oben, dann von links nach rechts nehmen
+            {
+                int startX = (int)left.CenterPos.X - args.CorridorWidth / 2; // von unten nach oben
+                int startY = (int)up.CenterPos.Y;
+                int sizeX = args.CorridorWidth;
+                int sizeY = down.Y - startY;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
+
+                startY -= args.CorridorWidth / 2; // von links nach rechts
+                sizeX = right.X - startX;
+                sizeY = args.CorridorWidth;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
+            }
+            else
+            {
+                int startX = (int)left.CenterPos.X - args.CorridorWidth / 2;
+                int startY = left.Y + left.SizeY;
+                int sizeX = args.CorridorWidth;
+                int sizeY = (int)right.CenterPos.Y - startY;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
+
+                startY = (int)right.CenterPos.Y - args.CorridorWidth / 2;
+                sizeX = right.X - startX;
+                sizeY = args.CorridorWidth;
+                cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
+            }
+
+            if (cFields.Any(x => x.Area != null) && !beforeFailed)
+                return MakeTrueL(left, up, right, down, true);
+            else if (cFields.Any(x => x.Area != null))
+                return null;
+            else
+                return new Corridor(left, right, cFields.ToArray());
         }
 
         private Field[] GetFieldsInBounds(int startX, int startY, int sizeX, int sizeY)
