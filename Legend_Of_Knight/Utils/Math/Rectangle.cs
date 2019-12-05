@@ -26,5 +26,12 @@ namespace Legend_Of_Knight.Utils.Math
             Pos = pos;
             Size = size;
         }
+
+        public bool PointInRectangle(Vector p)
+        {
+            if (p.X > pos.X && p.Y > pos.Y && p.X < pos.X + size.X && p.Y < pos.Y + size.Y)
+                return true;
+            return false;
+        }
     }
 }

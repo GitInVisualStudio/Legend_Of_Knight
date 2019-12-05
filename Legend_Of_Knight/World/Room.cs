@@ -103,6 +103,11 @@ namespace Legend_Of_Knight.World
             this.Y = y;
             this.SizeX = sizeX;
             this.SizeY = sizeY;
+
+            Bounds = new Rectangle[] 
+            {
+                new Rectangle(new Vector(x, y), new Vector(sizeX, sizeY))
+            };
         }
 
         public static Room GetRoomByPosition(IEnumerable<Room> rooms, Vector pos)

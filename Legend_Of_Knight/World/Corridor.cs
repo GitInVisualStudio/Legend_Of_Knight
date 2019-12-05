@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Legend_Of_Knight.Utils.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,10 +15,16 @@ namespace Legend_Of_Knight.World
         private Room a;
         private Room b;
 
-        public Corridor(Room a, Room b, Field[] fields) : base(fields)
+        public Corridor(Room a, Room b, Vector posA, Vector sizeA, Vector posB, Vector sizeB, Field[] fields) : base(fields)
         {
             A = a;
             B = b;
+
+            Bounds = new Rectangle[]
+            {
+                new Rectangle(posA, sizeA),
+                new Rectangle(posB, sizeB)
+            };
         }
 
         public Room A

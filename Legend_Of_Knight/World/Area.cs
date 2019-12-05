@@ -14,6 +14,7 @@ namespace Legend_Of_Knight.World
     {
         // evtl. noch Array mit Entities / Gegnern?
         private Field[] fields;
+        private Rectangle[] bounds;
 
         public Area(Field[] fields)
         {
@@ -32,6 +33,19 @@ namespace Legend_Of_Knight.World
             set
             {
                 fields = value;
+            }
+        }
+
+        public Rectangle[] Bounds
+        {
+            get
+            {
+                return bounds;
+            }
+
+            set
+            {
+                bounds = value;
             }
         }
     }
