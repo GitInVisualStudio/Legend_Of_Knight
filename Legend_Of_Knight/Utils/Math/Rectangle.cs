@@ -10,21 +10,44 @@ namespace Legend_Of_Knight.Utils.Math
     {
         private Vector pos;
         private Vector size;
-
-        public Vector Pos { get => pos; set => pos = value; }
-        public Vector Size { get => size; set => size = value; }
         public float Area
         {
             get
             {
-                return size[0] * size[1];
+                return Size[0] * Size[1];
+            }
+        }
+
+        public Vector Size
+        {
+            get
+            {
+                return size;
+            }
+
+            set
+            {
+                size = value;
+            }
+        }
+
+        public Vector Pos
+        {
+            get
+            {
+                return pos;
+            }
+
+            set
+            {
+                pos = value;
             }
         }
 
         public Rectangle(Vector pos, Vector size)
         {
-            Pos = pos;
-            Size = size;
+            this.pos = pos;
+            this.size = size;
         }
     }
 }

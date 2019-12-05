@@ -14,6 +14,7 @@ namespace Legend_Of_Knight.Entities
 {
     public class EntityPlayer : EntityLivingBase
     {
+        private CustomAnimation<float> swing;
         public EntityPlayer() : base()
         {
             Item = new Legend_Of_Knight.Items.Item("sword.png");
@@ -21,13 +22,8 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnCollision(object sender, CollisionArgs e)
         {
-        }
-
-        public override void OnTick()
-        {
-            base.OnTick();
             Vector yaw = InputManager.mousePosition - position;
-            Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
+            Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90 + MathUtils.Sin(90 * swing.Value);
         }
     }
 }

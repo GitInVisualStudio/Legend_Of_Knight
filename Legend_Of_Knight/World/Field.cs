@@ -19,19 +19,78 @@ namespace Legend_Of_Knight.World
 
         private CRandom rnd;
 
-        public FrameAnimation Anim { get => anim; set => anim = value; }
-        public Area Area { get => area; set => area = value; }
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
-        public FieldType Type { get => type; set => type = value; }
+        public FrameAnimation Anim
+        {
+            get
+            {
+                return anim;
+            }
+
+            set
+            {
+                anim = value;
+            }
+        }
+
+        public Area Area
+        {
+            get
+            {
+                return area;
+            }
+
+            set
+            {
+                area = value;
+            }
+        }
+
+        public int X
+        {
+            get
+            {
+                return x;
+            }
+
+            set
+            {
+                x = value;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+
+            set
+            {
+                y = value;
+            }
+        }
+
+        public FieldType Type
+        {
+            get
+            {
+                return type;
+            }
+
+            set
+            {
+                type = value;
+            }
+        }
 
         public Field(FrameAnimation anim, int x, int y, CRandom rnd)
         {
-            this.anim = anim;
-            this.x = x;
-            this.y = y;
+            this.Anim = anim;
+            this.X = x;
+            this.Y = y;
             this.rnd = rnd;
-            type = FieldType.Nothing;
+            Type = FieldType.Nothing;
         }
 
         public void SetFieldTypeAndAnimation(Field[,] fields)
@@ -87,7 +146,7 @@ namespace Legend_Of_Knight.World
             for (int i = 0; bmp != null; i++)
             {
                 imgs.Add(bmp);
-                bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_" + String.Format("{0:00}", i));
+                bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_" + string.Format("{0:00}", i));
             }
             Anim = new FrameAnimation(0, true, new d::Bitmap[] { rnd.PickElements(imgs, 1)[0] });
         }
