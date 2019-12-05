@@ -151,18 +151,12 @@ namespace Legend_Of_Knight.Entities
         {
             prevPosition = position;
             position += Velocity;
-            if (!InBounds())
-            {
-                position -= Velocity * 4;
-                velocity *= 0;
-            }
-                
             velocity *= 0.7f;
 
             if (velocity.Length > 0.2f)
             {
                 movingTime += Game.TPT / 1000.0f;
-                animation.Update();
+                //animation.Update();
             }
             else
             {
@@ -170,13 +164,18 @@ namespace Legend_Of_Knight.Entities
                 animation.Reset();
             }
 
+            while (!InBounds())
+            {
+                position -= velocity;
+                Moved?.Invoke(this, position);
+            }
             Moved?.Invoke(this, position);
         }
 
         protected bool InBounds()
         {
             foreach (Vector corner in box.Corners)
-                if (bounds.All(r => !r.PointInRectangle(corner)))
+                if (bounds.All(r => !r.PointInRectangle(corner / 16)))
                     return false;
             return true;
         }

@@ -104,7 +104,7 @@ namespace Legend_Of_Knight
             inputManager.Add('W', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1);
+                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
             });
             inputManager.Add('A', () =>
             {
@@ -225,11 +225,15 @@ namespace Legend_Of_Knight
                     currentFrames = 0;
                 }
                 StateManager.Push();
-                StateManager.Scale(1/zoom.Value);
+                //StateManager.Scale(0.5f);
+                StateManager.SetColor(255, 0, 0);
+                foreach (Utils.Math.Rectangle r in d.Bounds)
+                    StateManager.DrawRect(r.Pos * 16, r.Size.X * 16, r.Size.Y * 16, 5);
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
                 StateManager.Pop();
+                
             }
             #endregion
             thePlayer.OnRender(partialTicks);
