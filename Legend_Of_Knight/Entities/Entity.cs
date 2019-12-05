@@ -17,7 +17,7 @@ namespace Legend_Of_Knight.Entities
         protected Vector position;
         protected Vector velocity;
         protected Vector prevPosition;
-        protected float rotation, prevRotation;
+        protected float rotation;
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
@@ -29,8 +29,6 @@ namespace Legend_Of_Knight.Entities
         public float Width => box.Width;
         public float Height => box.Height;
         public Vector Size => box.Size;
-
-        public float PrevRotation { get { return prevRotation; } set { prevRotation = value; } }
 
         public FrameAnimation Animation
         {
@@ -144,7 +142,6 @@ namespace Legend_Of_Knight.Entities
 
         public virtual void OnTick()
         {
-            prevRotation = rotation;
             Move();
         }
 

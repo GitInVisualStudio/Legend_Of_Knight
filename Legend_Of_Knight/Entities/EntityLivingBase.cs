@@ -138,11 +138,9 @@ namespace Legend_Of_Knight.Entities
             //StateManager.Translate(EntityItem.Width / 2, 0);
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
-            EntityItem.PrevRotation = EntityItem.Rotation;
-            float yaw = MathUtils.Interpolate(EntityItem.PrevRotation, EntityItem.Rotation, partialTicks);
             EntityItem.Position = position.Copy();
-            EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
-            EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
+            EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, Yaw);
+            EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), Yaw);
             EntityItem.OnRender(partialTicks);
         }
 
