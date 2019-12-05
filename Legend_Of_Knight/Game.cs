@@ -123,14 +123,14 @@ namespace Legend_Of_Knight
         #region events
         private void Game_MouseEvent(object sender, MouseEventArgs e)
         {
-            if(currentScreen != null)
-            {
-                currentScreen.Move(e);
-                return;
-            }
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
             InputManager.mouseY = (int)(e.Y / StateManager.ScaleY);
             InputManager.mousePosition = new Vector(InputManager.mouseX, InputManager.mouseY);
+            if (currentScreen != null)
+            {
+                currentScreen.Move(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
+                return;
+            }
             zoom.End += e.Delta / 120;
             if (zoom.Finished)
                 zoom.Fire();
@@ -150,7 +150,7 @@ namespace Legend_Of_Knight
         private void Game_MouseClick(object sender, MouseEventArgs e)
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
-            currentScreen?.Click(e);
+            currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
         }
 
         private void TickTimer_Tick(object sender, EventArgs e)

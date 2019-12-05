@@ -11,8 +11,31 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         private List<Vector> verticies;
         private List<Edge> edges;
 
-        public List<Vector> Verticies { get => verticies; set => verticies = value; }
-        public List<Edge> Edges { get => edges; set => edges = value; }
+        public List<Vector> Verticies
+        {
+            get
+            {
+                return verticies;
+            }
+
+            set
+            {
+                verticies = value;
+            }
+        }
+
+        public List<Edge> Edges
+        {
+            get
+            {
+                return edges;
+            }
+
+            set
+            {
+                edges = value;
+            }
+        }
 
         public Forest()
         {

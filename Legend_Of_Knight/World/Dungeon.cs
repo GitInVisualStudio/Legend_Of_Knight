@@ -17,9 +17,33 @@ namespace Legend_Of_Knight.World
         private DungeonGenArgs args;
         private CRandom rnd;
 
-        public Field[,] Fields { get => fields; set => fields = value; }
-        public MinimumSpanningTree Mst { get => mst; set => mst = value; }
-        public Room[] Rooms { get => rooms; set => rooms = value; }
+        public MinimumSpanningTree Mst { get { return mst; } set { mst = value; } }
+
+        public Field[,] Fields
+        {
+            get
+            {
+                return fields;
+            }
+
+            set
+            {
+                fields = value;
+            }
+        }
+
+        public Room[] Rooms
+        {
+            get
+            {
+                return rooms;
+            }
+
+            set
+            {
+                rooms = value;
+            }
+        }
 
         public Dungeon(DungeonGenArgs args = null)
         {
@@ -51,7 +75,7 @@ namespace Legend_Of_Knight.World
             Vector[] centerPoints = new Vector[rooms.Count];
             for (int i = 0; i < rooms.Count; i++)
                 centerPoints[i] = rooms[i].CenterPos;
-            DelaunayTriangulation triang = new DelaunayTriangulation(new Vector(fields.GetLength(0), fields.GetLength(1)), centerPoints);
+            DelaunayTriangulation triang = new DelaunayTriangulation(new Vector(Fields.GetLength(0), Fields.GetLength(1)), centerPoints);
             MinimumSpanningTree mst = new MinimumSpanningTree(triang);
             List<Edge> edges = new List<Edge>();
             edges.AddRange(mst.Edges);
@@ -59,7 +83,7 @@ namespace Legend_Of_Knight.World
             foreach (Edge e in edges)
                 ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
 
-            FieldType[,] types = new FieldType[fields.GetLength(0), fields.GetLength(1)];
+            FieldType[,] types = new FieldType[Fields.GetLength(0), Fields.GetLength(1)];
             //for (int x = 0; x < fields.GetLength(0); x++)
             //    for (int y = 0; y < fields.GetLength(1); y++)
             //        types[x, y] = fields[x, y].GetFieldType(fields.To);
@@ -70,8 +94,8 @@ namespace Legend_Of_Knight.World
             if (depth > 5)
                 return null;
 
-            int posX = (int)(rnd.NextFloat() * fields.GetLength(0));
-            int posY = (int)(rnd.NextFloat() * fields.GetLength(1));
+            int posX = (int)(rnd.NextFloat() * Fields.GetLength(0));
+            int posY = (int)(rnd.NextFloat() * Fields.GetLength(1));
             MakeOdd(ref posX); // um sicherzustellen, dass das Feld oben links bei ungeraden Koordinaten liegt
             MakeOdd(ref posY);
 
@@ -192,7 +216,7 @@ namespace Legend_Of_Knight.World
             for (int x = startX; x < startX + sizeX; x++)
                 for (int y = startY; y < startY + sizeY; y++)
                     if (!OutOfBounds(x, y))
-                        res.Add(fields[x, y]);
+                        res.Add(Fields[x, y]);
             return res.ToArray();
         }
 
@@ -215,7 +239,7 @@ namespace Legend_Of_Knight.World
 
         private bool OutOfBounds(int x, int y)
         {
-            if (x < 0 || x >= fields.GetLength(0) || y < 0 || y >= fields.GetLength(1))
+            if (x < 0 || x >= Fields.GetLength(0) || y < 0 || y >= Fields.GetLength(1))
                 return true;
             return false;
         }

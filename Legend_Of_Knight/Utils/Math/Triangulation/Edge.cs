@@ -12,9 +12,44 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         private Vector b;
         private float length;
 
-        public Vector A { get => a; set => a = value; }
-        public Vector B { get => b; set => b = value; }
-        public float Length { get => length; private set => length = value; }
+        public Vector A
+        {
+            get
+            {
+                return a;
+            }
+
+            set
+            {
+                a = value;
+            }
+        }
+
+        public Vector B
+        {
+            get
+            {
+                return b;
+            }
+
+            set
+            {
+                b = value;
+            }
+        }
+
+        public float Length
+        {
+            get
+            {
+                return length;
+            }
+
+            set
+            {
+                length = value;
+            }
+        }
 
         public Edge(Vector pointA, Vector pointB)
         {
@@ -44,5 +79,6 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
                 };
             }
         }
+
     }
 }

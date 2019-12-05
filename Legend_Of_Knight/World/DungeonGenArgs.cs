@@ -16,22 +16,94 @@ namespace Legend_Of_Knight.World
         private float leaveConnectionPercentage;
         private int corridorWidth;
 
+        public Vector Size
+        {
+            get
+            {
+                return size;
+            }
+
+            set
+            {
+                size = value;
+            }
+        }
+
+        public int Rooms
+        {
+            get
+            {
+                return rooms;
+            }
+
+            set
+            {
+                rooms = value;
+            }
+        }
+
+        public Vector RoomSize
+        {
+            get
+            {
+                return roomSize;
+            }
+
+            set
+            {
+                roomSize = value;
+            }
+        }
+
+        public float LeaveConnectionPercentage
+        {
+            get
+            {
+                return leaveConnectionPercentage;
+            }
+
+            set
+            {
+                leaveConnectionPercentage = value;
+            }
+        }
+
+        public int CorridorWidth
+        {
+            get
+            {
+                return corridorWidth;
+            }
+
+            set
+            {
+                corridorWidth = value;
+            }
+        }
+
+        public int Seed
+        {
+            get
+            {
+                return seed;
+            }
+
+            set
+            {
+                seed = value;
+            }
+        }
+
         /// <summary>
         /// Deterministischer Seed für die Generierung
         /// </summary>
-        public int Seed { get => seed; set => seed = value; }
         /// <summary>
         /// Größe des Dungeon in Feldern
         /// </summary>
-        public Vector Size { get => size; set => size = value; }
 
-        public int Rooms { get => rooms; set => rooms = value; }
-        public Vector RoomSize { get => roomSize; set => roomSize = value; }
         /// <summary>
         /// Die Prozentzahl an redundanten Räumen, die dagelassen werden soll
         /// </summary>
-        public float LeaveConnectionPercentage { get => leaveConnectionPercentage; set => leaveConnectionPercentage = value; }
-        public int CorridorWidth { get => corridorWidth; set => corridorWidth = value; }
 
         public DungeonGenArgs()
         {

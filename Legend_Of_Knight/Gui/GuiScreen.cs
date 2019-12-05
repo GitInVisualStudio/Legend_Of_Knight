@@ -85,9 +85,10 @@ namespace Legend_Of_Knight.Gui
 
         public virtual void Close()
         {
+            if (onClose)
+                return;
             onClose = true;
             Animation.Reverse();
-            Animation.Fire();
         }
 
         public override void OnRender(float partialTicks)

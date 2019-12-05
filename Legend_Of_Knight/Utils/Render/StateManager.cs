@@ -206,8 +206,8 @@ namespace Legend_Of_Knight.Utils.Render
         {
             g.ResetTransform();
             state = state.PrevState;
-            Translate(-state.TranslateX, -state.TranslateY);
             Scale(state.ScaleX, state.ScaleY);
+            Translate(state.TranslateX, state.TranslateY);
             Rotate(state.Rotation);
         }
 

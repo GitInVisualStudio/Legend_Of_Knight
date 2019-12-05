@@ -14,13 +14,36 @@ namespace Legend_Of_Knight.World
         private Room a;
         private Room b;
 
-        public Room A { get => a; set => a = value; }
-        public Room B { get => b; set => b = value; }
-
         public Corridor(Room a, Room b, Field[] fields) : base(fields)
         {
             A = a;
             B = b;
+        }
+
+        public Room A
+        {
+            get
+            {
+                return a;
+            }
+
+            set
+            {
+                a = value;
+            }
+        }
+
+        public Room B
+        {
+            get
+            {
+                return b;
+            }
+
+            set
+            {
+                b = value;
+            }
         }
     }
 }

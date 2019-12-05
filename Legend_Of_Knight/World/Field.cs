@@ -14,17 +14,63 @@ namespace Legend_Of_Knight.World
         private Area area;
         private int x;
         private int y;
-
-        public Animation Anim { get => anim; set => anim = value; }
-        public Area Area { get => area; set => area = value; }
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
-
         public Field(Animation anim, int x, int y)
         {
-            this.anim = anim;
-            this.x = x;
-            this.y = y;
+            this.Anim = anim;
+            this.X = x;
+            this.Y = y;
+        }
+
+        public Animation Anim
+        {
+            get
+            {
+                return anim;
+            }
+
+            set
+            {
+                anim = value;
+            }
+        }
+
+        public Area Area
+        {
+            get
+            {
+                return area;
+            }
+
+            set
+            {
+                area = value;
+            }
+        }
+
+        public int X
+        {
+            get
+            {
+                return x;
+            }
+
+            set
+            {
+                x = value;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+
+            set
+            {
+                y = value;
+            }
         }
 
         public FieldType GetFieldType(Field[,] fields)

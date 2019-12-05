@@ -75,6 +75,7 @@ namespace Legend_Of_Knight.Utils.Animations
             this.Start = start;
             this.End = end;
             this.current = start;
+            
         }
 
         public delegate T Animate(T current, T delta);
@@ -108,8 +109,8 @@ namespace Legend_Of_Knight.Utils.Animations
 
         protected override void Finish()
         {
-            base.Finish();
             current = End;
+            base.Finish();
         }
     }
 }

@@ -74,6 +74,11 @@ namespace Legend_Of_Knight.Gui
 
         public void KeyPressed(KeyEventArgs args) => OnKeyPressed?.Invoke(this, args);
 
+        public bool OnHover(MouseEventArgs args)
+        {
+            return args.X > X && args.Y > Y && args.X < X + Width && args.Y < Y + Height;
+        }
+
         public abstract void OnRender(float partialTicks);
     }
 }
