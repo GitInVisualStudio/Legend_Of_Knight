@@ -21,6 +21,7 @@ namespace Legend_Of_Knight.Entities
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
+        protected Rectangle[] bounds;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -108,11 +109,12 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public Entity()
+        public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
             velocity = new Vector(2);
             prevPosition = new Vector(2);
+            this.bounds = bounds;
         }
 
         public virtual void OnRender(float partialTicks)
@@ -149,6 +151,12 @@ namespace Legend_Of_Knight.Entities
         {
             prevPosition = position;
             position += Velocity;
+            if (!InBounds())
+            {
+                position -= Velocity * 4;
+                velocity *= 0;
+            }
+                
             velocity *= 0.7f;
 
             if (velocity.Length > 0.2f)
@@ -163,6 +171,14 @@ namespace Legend_Of_Knight.Entities
             }
 
             Moved?.Invoke(this, position);
+        }
+
+        protected bool InBounds()
+        {
+            foreach (Vector corner in box.Corners)
+                if (bounds.All(r => !r.PointInRectangle(corner)))
+                    return false;
+            return true;
         }
 
         public void SetVelocity(float x, float y)

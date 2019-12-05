@@ -6,6 +6,7 @@ using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
+using Legend_Of_Knight.World;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,6 +39,8 @@ namespace Legend_Of_Knight
         private EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
+
+        private Dungeon d;
         public InputManager InputManager => inputManager;
 
         public Game()
@@ -88,7 +91,12 @@ namespace Legend_Of_Knight
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
 
-            thePlayer = new EntityPlayer();
+            d = new Dungeon(new DungeonGenArgs()
+            {
+                CorridorWidth = 6
+            });
+            thePlayer = new EntityPlayer(d.Bounds);
+            thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
         }
 
         private void AddKeybinds()
@@ -203,7 +211,9 @@ namespace Legend_Of_Knight
         {
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Scale(zoom.Value);
+            //StateManager.Scale(zoom.Value);
+            StateManager.Scale(0.5f);
+            RenderDungeon();
             currentScreen?.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
@@ -223,6 +233,14 @@ namespace Legend_Of_Knight
             }
             #endregion
             thePlayer.OnRender(partialTicks);
+        }
+
+        public void RenderDungeon()
+        {
+            for (int x = 0; x < d.Fields.GetLength(0); x++)
+                for (int y = 0; y < d.Fields.GetLength(1); y++)
+                    if (d.Fields[x, y].Anim != null)
+                        StateManager.DrawImage(d.Fields[x, y].Anim.Image, new Vector(x, y) * 16);
         }
 
         public void OnTick()

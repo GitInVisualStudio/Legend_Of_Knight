@@ -23,6 +23,14 @@ namespace Legend_Of_Knight.World
                 f.Area = this;
         }
 
+        public bool PointInBounds(Vector point)
+        {
+            foreach (Rectangle r in bounds)
+                if (r.PointInRectangle(point))
+                    return true;
+            return false;
+        }
+
         public Field[] Fields
         {
             get

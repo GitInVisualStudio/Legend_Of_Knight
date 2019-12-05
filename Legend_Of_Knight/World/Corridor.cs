@@ -27,6 +27,17 @@ namespace Legend_Of_Knight.World
             };
         }
 
+        public Corridor(Room a, Room b, Vector pos, Vector size, Field[] fields) : base(fields)
+        {
+            A = a;
+            B = b;
+
+            Bounds = new Rectangle[]
+            {
+                new Rectangle(pos, size)
+            };
+        }
+
         public Room A
         {
             get

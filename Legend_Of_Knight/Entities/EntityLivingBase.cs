@@ -12,6 +12,7 @@ using Legend_Of_Knight.Utils.Render;
 using System.Drawing;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Entities.Items;
+using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -97,7 +98,7 @@ namespace Legend_Of_Knight.Entities
 
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
 
-        public EntityLivingBase()
+        public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
             Bitmap[][] images = ResourceManager.GetImages(this);
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};

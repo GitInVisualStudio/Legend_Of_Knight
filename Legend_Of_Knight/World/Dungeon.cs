@@ -19,15 +19,19 @@ namespace Legend_Of_Knight.World
         private DungeonGenArgs args;
         private CRandom rnd;
 
+        private Rectangle[] bounds;
+
         public Field[,] Fields { get => fields; set => fields = value; }
         public MinimumSpanningTree Mst { get => mst; set => mst = value; }
         public Room[] Rooms { get => rooms; set => rooms = value; }
+        public Rectangle[] Bounds { get => bounds; set => bounds = value; }
+        public DungeonGenArgs Args { get => args; set => args = value; }
 
         public Dungeon(DungeonGenArgs args = null)
         {
-            this.args = args ?? new DungeonGenArgs();
-            rnd = new CRandom(this.args.Seed);
-            Fields = new Field[(int)this.args.Size.X, (int)this.args.Size.Y];
+            this.Args = args ?? new DungeonGenArgs();
+            rnd = new CRandom(this.Args.Seed);
+            Fields = new Field[(int)this.Args.Size.X, (int)this.Args.Size.Y];
             for (int x = 0; x < Fields.GetLength(0); x++)
             {
                 for (int y = 0; y < Fields.GetLength(1); y++)
@@ -43,12 +47,13 @@ namespace Legend_Of_Knight.World
         {
             // implementiert annhähernd nach https://www.gamasutra.com/blogs/AAdonaac/20150903/252889/Procedural_Dungeon_Generation_Algorithm.php
             List<Room> rooms = new List<Room>(); // erstes Erstellen der Räume
-            for (int i = 0; i < args.Rooms; i++)
+            for (int i = 0; i < Args.Rooms; i++)
             {
                 Room r = MakeRoom();
                 if (r != null)
                     rooms.Add(r);
             }
+            Rooms = rooms.ToArray();
 
             Vector[] centerPoints = new Vector[rooms.Count];
             for (int i = 0; i < rooms.Count; i++)
@@ -57,10 +62,14 @@ namespace Legend_Of_Knight.World
             MinimumSpanningTree mst = new MinimumSpanningTree(triang);
             List<Edge> edges = new List<Edge>();
             edges.AddRange(mst.Edges);
-            edges.AddRange(rnd.PickElements(triang.Edges.Where(x => !mst.Edges.Contains(x)), args.LeaveConnectionPercentage));
+            edges.AddRange(rnd.PickElements(triang.Edges.Where(x => !mst.Edges.Contains(x)), Args.LeaveConnectionPercentage));
             List<Corridor> corridors = new List<Corridor>();
             foreach (Edge e in edges)
-                corridors.Add(ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B)));
+            {
+                Corridor c = ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
+                if (c != null)
+                    corridors.Add(c);
+            }
 
             try
             {
@@ -70,8 +79,15 @@ namespace Legend_Of_Knight.World
             }
             catch (FieldAloneException) // DEBUG
             {
-                Console.WriteLine("Something went wrong! Seed: " + args.Seed);
+                Console.WriteLine("Something went wrong! Seed: " + Args.Seed);
             }
+
+            List<Rectangle> b = new List<Rectangle>();
+            foreach (Room r in rooms)
+                b.AddRange(r.Bounds);
+            foreach (Corridor r in corridors)
+                b.AddRange(r.Bounds);
+            Bounds = b.ToArray();
         }
 
         private Room MakeRoom(int depth = 0)
@@ -84,8 +100,8 @@ namespace Legend_Of_Knight.World
             MakeOdd(ref posX); // um sicherzustellen, dass das Feld oben links bei ungeraden Koordinaten liegt
             MakeOdd(ref posY);
 
-            int sizeX = (int)(rnd.NextFloatGaussian(1) * args.RoomSize.X);
-            int sizeY = (int)(rnd.NextFloatGaussian(1) * args.RoomSize.Y);
+            int sizeX = (int)(rnd.NextFloatGaussian(1) * Args.RoomSize.X);
+            int sizeY = (int)(rnd.NextFloatGaussian(1) * Args.RoomSize.Y);
             MakeOdd(ref sizeX); // um sicherzustellen, dass der Raum ungerade Maße hat
             MakeOdd(ref sizeY);
 
@@ -109,25 +125,25 @@ namespace Legend_Of_Knight.World
             Room right = left.Equals(a) ? b : a;
 
             int avgX = (int)MathUtils.Average(new float[] { a.CenterPos.X, b.CenterPos.X });
-            if (avgX > a.X + (int)(args.CorridorWidth / 2) && avgX < a.X + a.SizeX - 1 - (int)(args.CorridorWidth / 2) && avgX > b.X + (int)(args.CorridorWidth / 2) && avgX < b.X + b.SizeX - 1 - (int)(args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich
+            if (avgX > a.X + (int)(Args.CorridorWidth / 2) && avgX < a.X + a.SizeX - 1 - (int)(Args.CorridorWidth / 2) && avgX > b.X + (int)(Args.CorridorWidth / 2) && avgX < b.X + b.SizeX - 1 - (int)(Args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich
             {
-                startX = avgX - (int)(args.CorridorWidth / 2);
+                startX = avgX - (int)(Args.CorridorWidth / 2);
                 startY = up.Y + up.SizeY;
-                sizeX = args.CorridorWidth;
+                sizeX = Args.CorridorWidth;
                 sizeY = down.Y - startY;
                 Field[] fs = GetFields(startX, startY, sizeX, sizeY);
-                return new Corridor(a, b, fs);
+                return new Corridor(a, b, new Vector(startX, startY), new Vector(sizeX, sizeY), fs);
             }
 
             int avgY = (int)MathUtils.Average(new float[] { a.CenterPos.Y, b.CenterPos.Y });
-            if (avgY > a.Y + (int)(args.CorridorWidth / 2) && avgY < a.Y + a.SizeY - 1 - (int)(args.CorridorWidth / 2) && avgY > b.Y + (int)(args.CorridorWidth / 2) && avgY < b.Y + b.SizeY - 1 - (int)(args.CorridorWidth / 2))
+            if (avgY > a.Y + (int)(Args.CorridorWidth / 2) && avgY < a.Y + a.SizeY - 1 - (int)(Args.CorridorWidth / 2) && avgY > b.Y + (int)(Args.CorridorWidth / 2) && avgY < b.Y + b.SizeY - 1 - (int)(Args.CorridorWidth / 2))
             {
                 startX = left.X + left.SizeX;
-                startY = avgY - (int)(args.CorridorWidth / 2);
+                startY = avgY - (int)(Args.CorridorWidth / 2);
                 sizeX = right.X - startX;
-                sizeY = args.CorridorWidth;
+                sizeY = Args.CorridorWidth;
                 Field[] fs = GetFields(startX, startY, sizeX, sizeY);
-                return new Corridor(a, b, fs);
+                return new Corridor(a, b, new Vector(startX, startY), new Vector(sizeX, sizeY), fs);
             }
 
             List<Field> cFields = new List<Field>();
@@ -141,36 +157,44 @@ namespace Legend_Of_Knight.World
 
         private Corridor MakeTrueL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
         {
-            int startX;
-            int startY;
-            int sizeX;
-            int sizeY;
             List<Field> cFields = new List<Field>();
+            Vector posA;
+            Vector posB;
+            Vector sizeA;
+            Vector sizeB;
             if (left == down) // felder von links nach rechts, dann von unten nach oben nehmen
             {
-                startX = left.X + left.SizeX; // von links nach rechts
-                startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
-                sizeX = (int)right.CenterPos.X - startX;
-                sizeY = args.CorridorWidth;
+                int startX = left.X + left.SizeX; // von links nach rechts
+                int startY = (int)left.CenterPos.Y - Args.CorridorWidth / 2;
+                int sizeX = (int)right.CenterPos.X - startX;
+                int sizeY = Args.CorridorWidth;
+                posA = new Vector(startX, startY);
+                sizeA = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                startX += sizeX - args.CorridorWidth / 2; // von unten nach oben
+                startX += sizeX - Args.CorridorWidth / 2; // von unten nach oben
                 startY = (int)up.CenterPos.Y;
-                sizeX = args.CorridorWidth;
-                sizeY = (int)down.CenterPos.Y - startY + (int)Math.Ceiling(args.CorridorWidth / 2.0f);
+                sizeX = Args.CorridorWidth;
+                sizeY = (int)down.CenterPos.Y - startY + (int)Math.Ceiling(Args.CorridorWidth / 2.0f);
+                posB = new Vector(startX, startY);
+                sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
             else
             {
-                startX = left.X + left.SizeX;
-                startY = (int)left.CenterPos.Y - args.CorridorWidth / 2;
-                sizeX = (int)right.CenterPos.X - startX;
-                sizeY = args.CorridorWidth;
+                int startX = left.X + left.SizeX;
+                int startY = (int)left.CenterPos.Y - Args.CorridorWidth / 2;
+                int sizeX = (int)right.CenterPos.X - startX;
+                int sizeY = Args.CorridorWidth;
+                posA = new Vector(startX, startY);
+                sizeA = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                startX = (int)right.CenterPos.X - args.CorridorWidth / 2;
-                sizeX = args.CorridorWidth;
+                startX = (int)right.CenterPos.X - Args.CorridorWidth / 2;
+                sizeX = Args.CorridorWidth;
                 sizeY = right.Y - startY;
+                posB = new Vector(startX, startY);
+                sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
 
@@ -179,36 +203,48 @@ namespace Legend_Of_Knight.World
             else if (cFields.Any(x => x.Area != null))
                 return null;
             else
-                return new Corridor(left, right, cFields.ToArray());
+                return new Corridor(left, right, posA, sizeA, posB, sizeB, cFields.ToArray());
         }
 
         private Corridor MakeTurnedL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
         {
             List<Field> cFields = new List<Field>();
+            Vector posA;
+            Vector posB;
+            Vector sizeA;
+            Vector sizeB;
             if (left == down) // felder von unten nach oben, dann von links nach rechts nehmen
             {
-                int startX = (int)left.CenterPos.X - args.CorridorWidth / 2; // von unten nach oben
+                int startX = (int)left.CenterPos.X - Args.CorridorWidth / 2; // von unten nach oben
                 int startY = (int)up.CenterPos.Y;
-                int sizeX = args.CorridorWidth;
+                int sizeX = Args.CorridorWidth;
                 int sizeY = down.Y - startY;
+                posA = new Vector(startX, startY);
+                sizeA = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                startY -= args.CorridorWidth / 2; // von links nach rechts
+                startY -= Args.CorridorWidth / 2; // von links nach rechts
                 sizeX = right.X - startX;
-                sizeY = args.CorridorWidth;
+                sizeY = Args.CorridorWidth;
+                posB = new Vector(startX, startY);
+                sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
             else
             {
-                int startX = (int)left.CenterPos.X - args.CorridorWidth / 2;
+                int startX = (int)left.CenterPos.X - Args.CorridorWidth / 2;
                 int startY = left.Y + left.SizeY;
-                int sizeX = args.CorridorWidth;
+                int sizeX = Args.CorridorWidth;
                 int sizeY = (int)right.CenterPos.Y - startY;
+                posA = new Vector(startX, startY);
+                sizeA = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                startY = (int)right.CenterPos.Y - args.CorridorWidth / 2;
+                startY = (int)right.CenterPos.Y - Args.CorridorWidth / 2;
                 sizeX = right.X - startX;
-                sizeY = args.CorridorWidth;
+                sizeY = Args.CorridorWidth;
+                posB = new Vector(startX, startY);
+                sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
 
@@ -217,7 +253,7 @@ namespace Legend_Of_Knight.World
             else if (cFields.Any(x => x.Area != null))
                 return null;
             else
-                return new Corridor(left, right, cFields.ToArray());
+                return new Corridor(left, right, posA, sizeA, posB, sizeB, cFields.ToArray());
         }
 
         private Field[] GetFieldsInBounds(int startX, int startY, int sizeX, int sizeY)
