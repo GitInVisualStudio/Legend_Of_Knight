@@ -21,7 +21,7 @@ namespace Legend_Of_Knight.Entities
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
-        
+        private float scale;
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
 
@@ -108,6 +108,19 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public float Scale
+        {
+            get
+            {
+                return scale;
+            }
+
+            set
+            {
+                scale = value;
+            }
+        }
+
         public Entity()
         {
             position = new Vector(2);
@@ -124,6 +137,7 @@ namespace Legend_Of_Knight.Entities
             StateManager.Translate(position);
             StateManager.Rotate(rotation);
             StateManager.Translate(Size / -2);
+            StateManager.Scale(Scale);
             StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
         }

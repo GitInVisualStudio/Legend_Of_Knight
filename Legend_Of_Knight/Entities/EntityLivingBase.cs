@@ -21,22 +21,23 @@ namespace Legend_Of_Knight.Entities
         private float health;
         private Item item;
         private EntityItem entityItem;
+        private float yaw;
         private int hurtTime;
         private bool usingItem;
         private EnumFacing facing;
-        private int itemCount; //Wie lange das Item in benutung ist
-        private int swingProgress;
+        private CustomAnimation<float> swing;
 
         public int ItemCount => EntityItem.Animation.Index;
         public float Yaw
         {
             get
             {
-                return EntityItem.Rotation;
+                return yaw;
             }
             set
             {
                 EntityItem.Rotation = value;
+                yaw = value;
             }
         }
 
@@ -104,6 +105,10 @@ namespace Legend_Of_Knight.Entities
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
             Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
+            swing = new CustomAnimation<float>(0.0f, 1.0f, (float current, float delta) => current + delta/2)
+            {
+                Toleranz = 1E-4f,
+            };
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
@@ -133,14 +138,19 @@ namespace Legend_Of_Knight.Entities
                 StateManager.Pop();
                 return;
             }
-            //float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             //float offset = Width * itemOffset;
             //StateManager.Translate(EntityItem.Width / 2, 0);
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
+            if (swing.Finished)
+                return;
+            float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
+            float yaw = Yaw + (MathUtils.Sin(120 * swing.Value) * 80 - 80) * itemOffset;
+            EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
+            EntityItem.Rotation = yaw;
             EntityItem.Position = position.Copy();
-            EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, Yaw);
-            EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), Yaw);
+            EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
+            EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
             EntityItem.OnRender(partialTicks);
         }
 
@@ -164,14 +174,15 @@ namespace Legend_Of_Knight.Entities
                 return;
 
             if (IsUsingItem)
-                EntityItem?.Animation.Update();
+                EntityItem?.Animation?.Update();
         }
 
         public void Swing()
         {
             if(item != null)
                 usingItem = true;
-            swingProgress = 10;
+            swing.Reset();
+            swing.Fire();
         }
 
         public static TAttribute GetAttribute<TAttribute>(Enum value) where TAttribute : Attribute

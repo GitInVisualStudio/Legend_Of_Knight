@@ -34,7 +34,9 @@ namespace Legend_Of_Knight.Entities.Items
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(Rotation);
-            StateManager.Translate(Size / -2);
+            StateManager.Translate(Size / 2);
+            StateManager.Scale(1, Scale);
+            StateManager.Translate(-Size);
             StateManager.DrawImage(item.Image, 0, 0);
             StateManager.Pop();
         }

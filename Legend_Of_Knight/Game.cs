@@ -27,7 +27,7 @@ namespace Legend_Of_Knight
         public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
         public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         private int fps = 0;
         private int currentFrames = 0;
@@ -150,6 +150,9 @@ namespace Legend_Of_Knight
         private void Game_MouseClick(object sender, MouseEventArgs e)
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
+            thePlayer.Swing();
+            Vector yaw = InputManager.mousePosition - thePlayer.Position;
+            thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
             currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
         }
 
