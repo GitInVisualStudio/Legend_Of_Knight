@@ -8,7 +8,7 @@ namespace Legend_Of_Knight.World
 {
     public class FieldAloneException : Exception
     {
-        public FieldAloneException() : base("Ein Feld existierte mit einem oder weniger Nachbarn.")
+        public FieldAloneException() : base("Ein Feld existierte mit einer ungültigen Nachbarskonfiguration.")
         {
 
         }
