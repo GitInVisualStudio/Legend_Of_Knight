@@ -94,6 +94,8 @@ namespace Legend_Of_Knight
             thePlayer = new EntityPlayer();
             d = new Dungeon(new DungeonGenArgs()
             {
+                Rooms = 20,
+                Size = new Vector(Width, Height) / 16
             });
         }
 
@@ -209,7 +211,7 @@ namespace Legend_Of_Knight
         {
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Scale(zoom.Value);
+            StateManager.Scale(0.5f);
             currentScreen?.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
@@ -232,7 +234,7 @@ namespace Legend_Of_Knight
             for (int x = 0; x < d.Fields.GetLength(0); x++)
                 for (int y = 0; y < d.Fields.GetLength(1); y++)
                 {
-                    
+                    /*
                     int type = (int)d.Fields[x, y].Type;
                     if (type < 0)
                         StateManager.SetColor(255, 255, 255);
@@ -243,7 +245,10 @@ namespace Legend_Of_Knight
                     else
                         StateManager.SetColor(0, 255, 0);
 
-                    StateManager.DrawRect(new Vector(x, y), 1, 1, 1);
+                    StateManager.DrawRect(new Vector(x, y), 1, 1, 1);*/
+
+                    if (d.Fields[x, y].Anim != null)
+                        StateManager.DrawImage(d.Fields[x, y].Anim.Image, new Vector(x, y) * 16);
                 }
         }
 

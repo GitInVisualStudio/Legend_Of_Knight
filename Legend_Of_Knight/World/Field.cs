@@ -5,32 +5,36 @@ using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
+using d = System.Drawing;
 
 namespace Legend_Of_Knight.World
 {
     public class Field
     {
-        private Animation anim;
+        private FrameAnimation anim;
         private Area area;
         private int x;
         private int y;
         private FieldType type;
 
-        public Animation Anim { get => anim; set => anim = value; }
+        private CRandom rnd;
+
+        public FrameAnimation Anim { get => anim; set => anim = value; }
         public Area Area { get => area; set => area = value; }
         public int X { get => x; set => x = value; }
         public int Y { get => y; set => y = value; }
         public FieldType Type { get => type; set => type = value; }
 
-        public Field(Animation anim, int x, int y)
+        public Field(FrameAnimation anim, int x, int y, CRandom rnd)
         {
             this.anim = anim;
             this.x = x;
             this.y = y;
+            this.rnd = rnd;
             type = FieldType.Nothing;
         }
 
-        public void SetFieldType(Field[,] fields)
+        public void SetFieldTypeAndAnimation(Field[,] fields)
         {
             if (Area == null)
                 return;
@@ -50,7 +54,7 @@ namespace Legend_Of_Knight.World
                 for (int i = 1; i < neighbors.Length; i += 2) // Betrachten aller diagonalen Ecken bei zwei Rechtecken mit Größe 6
                 { 
                     if (neighbors[i].Area == null)
-                        this.Type = (FieldType)(5 + (((i - 1) / 2 + 2) % 4)); // bestimmt manche Ecken
+                        this.Type = (FieldType)(9 + (((i - 1) / 2 + 2) % 4)); // bestimmt manche Ecken
                 }
                     
             }
@@ -72,6 +76,20 @@ namespace Legend_Of_Knight.World
                 else if (rect.Area == 9)
                     Type = FieldType.Floor;
             }
+            if (Type != FieldType.Nothing)
+                SetAnimation();
+        }
+
+        private void SetAnimation()
+        {
+            List<d::Bitmap> imgs = new List<d::Bitmap>();
+            d::Bitmap bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_00");
+            for (int i = 0; bmp != null; i++)
+            {
+                imgs.Add(bmp);
+                bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_" + String.Format("{0:00}", i));
+            }
+            Anim = new FrameAnimation(0, true, new d::Bitmap[] { rnd.PickElements(imgs, 1)[0] });
         }
 
         /// <summary>
@@ -151,7 +169,7 @@ namespace Legend_Of_Knight.World
             for (int i = 0; i < neighbors.Length; i++)
             {
                 int[] coords = GetCoordinatesByDirection((Direction)i);
-                neighbors[i] = GetNeighbor(fields, (Direction)i) ?? new Field(null, coords[0], coords[1]);
+                neighbors[i] = GetNeighbor(fields, (Direction)i) ?? new Field(null, coords[0], coords[1], rnd);
             }
                 
             return neighbors;
@@ -210,5 +228,9 @@ namespace Legend_Of_Knight.World
         CornerLeftDown = 6,
         CornerUpLeft = 7,
         CornerRightUp = 8,
+        CornerWallDownRight = 9,
+        CornerWallLeftDown = 10,
+        CornerWallUpLeft = 11,
+        CornerWallRightUp = 12
     }
 }

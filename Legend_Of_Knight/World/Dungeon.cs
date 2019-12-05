@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Math.Triangulation;
 using Legend_Of_Knight.World;
+using Legend_Of_Knight.Utils.Animations;
 
 namespace Legend_Of_Knight.World
 {
@@ -31,7 +32,7 @@ namespace Legend_Of_Knight.World
             {
                 for (int y = 0; y < Fields.GetLength(1); y++)
                 {
-                    Fields[x, y] = new Field(null, x, y);
+                    Fields[x, y] = new Field(null, x, y, rnd);
                 }
             }
 
@@ -65,9 +66,9 @@ namespace Legend_Of_Knight.World
             {
                 for (int x = 0; x < fields.GetLength(0); x++)
                     for (int y = 0; y < fields.GetLength(1); y++)
-                        fields[x, y].SetFieldType(fields);
+                        fields[x, y].SetFieldTypeAndAnimation(fields);
             }
-            catch (FieldAloneException)
+            catch (FieldAloneException) // DEBUG
             {
                 Console.WriteLine("Something went wrong! Seed: " + args.Seed);
             }
