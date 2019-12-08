@@ -22,6 +22,7 @@ namespace Legend_Of_Knight.Entities
         protected float movingTime;
         protected FrameAnimation animation;
         protected Rectangle[] bounds;
+        protected bool outOfBounds;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -149,6 +150,8 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
+            if (outOfBounds)
+                return;
             prevPosition = position;
             position += Velocity;
             velocity *= 0.7f;
@@ -164,11 +167,28 @@ namespace Legend_Of_Knight.Entities
                 animation.Reset();
             }
 
+            int oobCounter = 0;
             while (!InBounds())
             {
-                position -= velocity;
-                Moved?.Invoke(this, position);
+                Rectangle closest = null;
+                if (oobCounter > 50)
+                {
+                    closest = FindClosestBoundingRect();
+                    while (!InBounds())
+                    {
+                        position += new Vector(closest.CenterPos.X * 16 - position.X, closest.CenterPos.Y * 16 - position.Y).Normalize();
+                        Moved?.Invoke(this, position);
+                    }
+                }
+                else
+                {
+                    outOfBounds = true;
+                    position -= velocity.Normalize() * 1;
+                    Moved?.Invoke(this, position);
+                    oobCounter++;
+                }
             }
+            outOfBounds = false;
             Moved?.Invoke(this, position);
         }
 
@@ -180,10 +200,26 @@ namespace Legend_Of_Knight.Entities
             return true;
         }
 
-        public void SetVelocity(float x, float y)
+        protected Rectangle FindClosestBoundingRect()
         {
-            velocity.X = x;
-            velocity.Y = y;
+            
+            for (int i = 0; i < bounds.Length; i++)
+                foreach (Vector c in box.Corners)
+                    if (bounds[i].PointInRectangle(c / 16))
+                        return bounds[i];
+
+            Rectangle closest = bounds[0];
+            for (int i = 1; i < bounds.Length; i++) // falls keiner der Ecken in irgendeinem Rechteck ist
+                if (MathUtils.Sqrt(MathUtils.Pow(closest.CenterPos.X - position.X, 2) + MathUtils.Pow(closest.CenterPos.Y - position.Y, 2)) < MathUtils.Sqrt(MathUtils.Pow(bounds[i].CenterPos.X - position.X, 2) + MathUtils.Pow(bounds[i].CenterPos.Y - position.Y, 2)))
+                    closest = bounds[i];
+            Console.WriteLine("Kein Punkt InBounds, nehme nächstes Rechteck");
+            return closest;
+        }
+
+        public void AddVelocity(Vector delta)
+        {
+            if (InBounds())
+                velocity += delta;
         }
 
         public abstract void OnCollision(object sender, CollisionArgs e);

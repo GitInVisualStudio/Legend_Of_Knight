@@ -28,7 +28,7 @@ namespace Legend_Of_Knight
         public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
         public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = true;
+        public const bool DEBUG = false;
 
         private int fps = 0;
         private int currentFrames = 0;
@@ -104,22 +104,22 @@ namespace Legend_Of_Knight
             inputManager.Add('W', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
+                    thePlayer.AddVelocity(new Vector(0, -1) * 1f); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
             });
             inputManager.Add('A', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X - 1, thePlayer.Velocity.Y);
+                    thePlayer.AddVelocity(new Vector(-1, 0) * 1f);
             });
             inputManager.Add('S', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y + 1);
+                    thePlayer.AddVelocity(new Vector(0, 1) * 1f);
             });
             inputManager.Add('D', () =>
             {
                 if(currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
+                    thePlayer.AddVelocity(new Vector(1, 0) * 1f);
             });
             inputManager.Add(27, () =>
             {

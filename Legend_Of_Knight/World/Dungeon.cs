@@ -53,7 +53,7 @@ namespace Legend_Of_Knight.World
                 if (r != null)
                     rooms.Add(r);
             }
-            Rooms = rooms.ToArray();
+            
 
             Vector[] centerPoints = new Vector[rooms.Count];
             for (int i = 0; i < rooms.Count; i++)
@@ -68,9 +68,14 @@ namespace Legend_Of_Knight.World
             {
                 Corridor c = ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
                 if (c != null)
+                {
                     corridors.Add(c);
+                    c.A.Connections.Add(c);
+                    c.B.Connections.Add(c);
+                }
             }
-
+            rooms.RemoveAll(x => x.Connections.Count == 0);
+            Rooms = rooms.ToArray();
             try
             {
                 for (int x = 0; x < fields.GetLength(0); x++)

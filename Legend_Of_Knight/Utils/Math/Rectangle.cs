@@ -13,6 +13,13 @@ namespace Legend_Of_Knight.Utils.Math
 
         public Vector Pos { get => pos; set => pos = value; }
         public Vector Size { get => size; set => size = value; }
+        public Vector CenterPos
+        {
+            get
+            {
+                return pos + size / 2;
+            }
+        }
         public float Area
         {
             get
