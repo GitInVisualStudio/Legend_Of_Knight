@@ -9,12 +9,13 @@ using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
+using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.Entities
 {
     public class EntityPlayer : EntityLivingBase
     {
-        public EntityPlayer() : base()
+        public EntityPlayer(Rectangle[] bounds) : base(bounds)
         {
             Item = new Legend_Of_Knight.Items.Item("sword.png");
         }

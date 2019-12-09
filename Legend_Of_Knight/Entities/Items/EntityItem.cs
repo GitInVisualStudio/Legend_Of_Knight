@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.Entities.Items
         private Item item;
         private float delta, prevDelta;
 
-        public EntityItem(Item item)
+        public EntityItem(Item item) : base(new Rectangle[0])
         {
             this.item = item;
             this.Box = new BoundingBox(this, item.Image.Width / 3, item.Image.Height / 3);

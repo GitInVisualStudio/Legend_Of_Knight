@@ -14,12 +14,21 @@ namespace Legend_Of_Knight.World
     {
         // evtl. noch Array mit Entities / Gegnern?
         private Field[] fields;
+        private Rectangle[] bounds;
 
         public Area(Field[] fields)
         {
             Fields = fields;
             foreach (Field f in fields)
                 f.Area = this;
+        }
+
+        public bool PointInBounds(Vector point)
+        {
+            foreach (Rectangle r in bounds)
+                if (r.PointInRectangle(point))
+                    return true;
+            return false;
         }
 
         public Field[] Fields
@@ -32,6 +41,19 @@ namespace Legend_Of_Knight.World
             set
             {
                 fields = value;
+            }
+        }
+
+        public Rectangle[] Bounds
+        {
+            get
+            {
+                return bounds;
+            }
+
+            set
+            {
+                bounds = value;
             }
         }
     }

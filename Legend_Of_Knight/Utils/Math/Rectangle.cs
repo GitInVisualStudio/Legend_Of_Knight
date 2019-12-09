@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.Utils.Math
         {
             get
             {
-                return Size[0] * Size[1];
+                return Size.X * Size.Y;
             }
         }
 
@@ -24,14 +24,18 @@ namespace Legend_Of_Knight.Utils.Math
             {
                 return size;
             }
-
-            set
-            {
-                size = value;
-            }
         }
 
-        public Vector Pos
+        public Vector Pos { get => pos; set => pos = value; }
+        public Vector Size { get => size; set => size = value; }
+        public Vector CenterPos
+        {
+            get
+            {
+                return pos + size / 2;
+            }
+        }
+        public float Area
         {
             get
             {
@@ -46,8 +50,15 @@ namespace Legend_Of_Knight.Utils.Math
 
         public Rectangle(Vector pos, Vector size)
         {
-            this.pos = pos;
-            this.size = size;
+            Pos = pos;
+            Size = size;
+        }
+
+        public bool PointInRectangle(Vector p)
+        {
+            if (p.X > pos.X && p.Y > pos.Y && p.X < pos.X + size.X && p.Y < pos.Y + size.Y)
+                return true;
+            return false;
         }
     }
 }

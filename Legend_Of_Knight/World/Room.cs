@@ -12,7 +12,7 @@ namespace Legend_Of_Knight.World
     /// </summary>
     public class Room : Area
     {
-        private Corridor[] connections;
+        private List<Corridor> connections;
         private int x;
         private int y;
         private int sizeX;
@@ -38,7 +38,7 @@ namespace Legend_Of_Knight.World
             }
         }
 
-        public Corridor[] Connections
+        public List<Corridor> Connections
         {
             get
             {
@@ -103,6 +103,12 @@ namespace Legend_Of_Knight.World
             this.Y = y;
             this.SizeX = sizeX;
             this.SizeY = sizeY;
+
+            Bounds = new Rectangle[] 
+            {
+                new Rectangle(new Vector(x, y), new Vector(sizeX, sizeY))
+            };
+            Connections = new List<Corridor>();
         }
 
         public static Room GetRoomByPosition(IEnumerable<Room> rooms, Vector pos)

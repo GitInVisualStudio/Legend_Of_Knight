@@ -53,6 +53,7 @@ namespace Legend_Of_Knight.Entities
             this.height = height;
             this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
+            owner.Moved += Owner_Moved;
 
             original = new Vector[4] //Nicht absolut, nur die Größe sonst wird beim bewegen alles verfälscht
             {
@@ -65,6 +66,11 @@ namespace Legend_Of_Knight.Entities
             Owner_Rotated(this, Owner.Rotation);
         }
 
+        private void Owner_Moved(object sender, Vector e)
+        {
+            Owner_Rotated(owner, owner.Rotation);
+        }
+
         private void Owner_Rotated(object sender, float angle)
         {
 
@@ -75,7 +81,6 @@ namespace Legend_Of_Knight.Entities
                 float y = owner.Y + current.X * MathUtils.Sin(angle) + current.Y * MathUtils.Cos(angle);
                 corners[i] = new Vector(x, y);
             }
-
         }
 
         public bool Collides(BoundingBox box)

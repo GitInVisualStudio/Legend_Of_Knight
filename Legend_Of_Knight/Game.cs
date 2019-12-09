@@ -6,6 +6,7 @@ using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
+using Legend_Of_Knight.World;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,6 +39,8 @@ namespace Legend_Of_Knight
         private EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
+
+        private Dungeon d;
         public InputManager InputManager => inputManager;
 
         public Game()
@@ -88,7 +91,12 @@ namespace Legend_Of_Knight
             tickTimer.Start();
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
 
-            thePlayer = new EntityPlayer();
+            d = new Dungeon(new DungeonGenArgs()
+            {
+                CorridorWidth = 6
+            });
+            thePlayer = new EntityPlayer(d.Bounds);
+            thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
         }
 
         private void AddKeybinds()
@@ -96,22 +104,22 @@ namespace Legend_Of_Knight
             inputManager.Add('W', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y - 1);
+                    thePlayer.AddVelocity(new Vector(0, -1) * 1f); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
             });
             inputManager.Add('A', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X - 1, thePlayer.Velocity.Y);
+                    thePlayer.AddVelocity(new Vector(-1, 0) * 1f);
             });
             inputManager.Add('S', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X, thePlayer.Velocity.Y + 1);
+                    thePlayer.AddVelocity(new Vector(0, 1) * 1f);
             });
             inputManager.Add('D', () =>
             {
                 if(currentScreen == null)
-                    thePlayer.SetVelocity(thePlayer.Velocity.X + 1, thePlayer.Velocity.Y);
+                    thePlayer.AddVelocity(new Vector(1, 0) * 1f);
             });
             inputManager.Add(27, () =>
             {
@@ -206,7 +214,9 @@ namespace Legend_Of_Knight
         {
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Scale(zoom.Value);
+            //StateManager.Scale(zoom.Value);
+            StateManager.Scale(0.5f);
+            RenderDungeon();
             currentScreen?.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
@@ -218,14 +228,26 @@ namespace Legend_Of_Knight
                     currentFrames = 0;
                 }
                 StateManager.Push();
-                StateManager.Scale(1/zoom.Value);
+                //StateManager.Scale(0.5f);
+                StateManager.SetColor(255, 0, 0);
+                foreach (Utils.Math.Rectangle r in d.Bounds)
+                    StateManager.DrawRect(r.Pos * 16, r.Size.X * 16, r.Size.Y * 16, 5);
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
                 StateManager.Pop();
+                
             }
             #endregion
             thePlayer.OnRender(partialTicks);
+        }
+
+        public void RenderDungeon()
+        {
+            for (int x = 0; x < d.Fields.GetLength(0); x++)
+                for (int y = 0; y < d.Fields.GetLength(1); y++)
+                    if (d.Fields[x, y].Anim != null)
+                        StateManager.DrawImage(d.Fields[x, y].Anim.Image, new Vector(x, y) * 16);
         }
 
         public void OnTick()
