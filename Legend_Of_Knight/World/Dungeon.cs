@@ -73,18 +73,18 @@ namespace Legend_Of_Knight.World
                     c.B.Connections.Add(c);
                 }
             }
-            rooms.RemoveAll(x => x.Connections.Count == 0);
+            //rooms.RemoveAll(x => x.Connections.Count == 0);
             Rooms = rooms.ToArray();
-            try
-            {
+            //try
+            //{
                 for (int x = 0; x < Fields.GetLength(0); x++)
                     for (int y = 0; y < Fields.GetLength(1); y++)
                         Fields[x, y].SetFieldTypeAndAnimation(Fields);
-            }
-            catch (FieldAloneException) // DEBUG
-            {
-                Console.WriteLine("Something went wrong! Seed: " + Args.Seed);
-            }
+            //}
+            //catch (FieldAloneException) // DEBUG
+            //{
+            //    Console.WriteLine("Something went wrong! Seed: " + Args.Seed);
+            //}
 
             List<Rectangle> b = new List<Rectangle>();
             foreach (Room r in rooms)

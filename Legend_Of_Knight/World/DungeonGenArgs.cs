@@ -108,8 +108,7 @@ namespace Legend_Of_Knight.World
         public DungeonGenArgs()
         {
             DateTime now = DateTime.Now;
-            Seed = ((((now.Year * 365 + now.Day) * 24 + now.Hour) * 60 + now.Minute) * 60 + now.Second) * 1000 + now.Millisecond; // standard seed als momentane Zeit in Miilsekunden
-            //Seed = 21022002;
+            Seed = (((now.Year * 365 + now.Day) * 24 + now.Hour) * 60 + now.Minute) / ((60 + now.Second) * 1000 + now.Millisecond); // standard seed abhängig von momentaner Zeit 
             Size = new Vector(100, 100);
             Rooms = 4;
             RoomSize = new Vector(30, 30);
