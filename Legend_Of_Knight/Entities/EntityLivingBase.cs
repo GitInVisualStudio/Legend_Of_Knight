@@ -16,7 +16,7 @@ using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.Entities
 {
-    public class EntityLivingBase : Entity
+    public abstract class EntityLivingBase : Entity
     {
         protected FrameAnimation[] animations;
         private float health;
@@ -99,6 +99,8 @@ namespace Legend_Of_Knight.Entities
 
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
 
+        public CustomAnimation<float> SwingAnimation { get => swing; }
+
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
             Bitmap[][] images = ResourceManager.GetImages(this);
@@ -110,11 +112,6 @@ namespace Legend_Of_Knight.Entities
             {
                 Toleranz = 1E-4f,
             };
-        }
-
-        public override void OnCollision(object sender, CollisionArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         public override void OnRender(float partialTicks)

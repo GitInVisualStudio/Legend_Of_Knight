@@ -17,7 +17,7 @@ namespace Legend_Of_Knight.Entities
     {
         public EntityPlayer(Rectangle[] bounds) : base(bounds)
         {
-            Item = new Legend_Of_Knight.Items.Item("sword.png");
+            Item = new Legend_Of_Knight.Items.Item("sword.png", 10);
         }
 
         public override void OnCollision(object sender, CollisionArgs e)

@@ -1,4 +1,5 @@
 ﻿using Legend_Of_Knight.Entities;
+using Legend_Of_Knight.Entities.Enemies;
 using Legend_Of_Knight.Gui;
 using Legend_Of_Knight.Gui.GuiScreens;
 using Legend_Of_Knight.Properties;
@@ -39,9 +40,13 @@ namespace Legend_Of_Knight
         private EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
-
         private Dungeon d;
+        private List<Entity> entities;
+
+        private static EntityPlayer player;
         public InputManager InputManager => inputManager;
+
+        public static EntityPlayer Player { get => player; }
 
         public Game()
         {
@@ -97,6 +102,13 @@ namespace Legend_Of_Knight
             });
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
+            player = thePlayer;
+            entities = new List<Entity>();
+            entities.Add(thePlayer);
+
+            EnemyJens enem = new EnemyJens(d.Bounds);
+            enem.Position = player.Position + new Vector(20, 20);
+            entities.Add(enem);
         }
 
         private void AddKeybinds()
@@ -239,7 +251,7 @@ namespace Legend_Of_Knight
                 
             }
             #endregion
-            thePlayer.OnRender(partialTicks);
+            entities.ForEach(x => x.OnRender(partialTicks));
         }
 
         public void RenderDungeon()
@@ -254,7 +266,7 @@ namespace Legend_Of_Knight
         {
             animationHandler.Update();
             inputManager.Update();
-            thePlayer.OnTick();
+            entities.ForEach(x => x.OnTick());
         }
     }
 }

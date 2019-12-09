@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
 using Item = Legend_Of_Knight.Items.Item;
 using Legend_Of_Knight.Utils.Render;
+using Legend_Of_Knight.Items;
 
 namespace Legend_Of_Knight.Entities.Items
 {
@@ -16,9 +17,11 @@ namespace Legend_Of_Knight.Entities.Items
 
         public EntityItem(Item item) : base(new Rectangle[0])
         {
-            this.item = item;
+            this.Item = item;
             this.Box = new BoundingBox(this, item.Image.Width / 3, item.Image.Height / 3);
         }
+
+        public Item Item { get => item; protected set => item = value; }
 
         public override void OnCollision(object sender, CollisionArgs e)
         {
@@ -37,7 +40,7 @@ namespace Legend_Of_Knight.Entities.Items
             StateManager.Translate(Size / 2);
             StateManager.Scale(1, Scale);
             StateManager.Translate(-Size);
-            StateManager.DrawImage(item.Image, 0, 0);
+            StateManager.DrawImage(Item.Image, 0, 0);
             StateManager.Pop();
         }
 

@@ -12,14 +12,18 @@ namespace Legend_Of_Knight.Items
     {
         private Bitmap image;
         private string name;
+        private float damage;
 
-        public Item(string path)
+        public Item(string path, float damage)
         {
             image = ResourceManager.GetImage("Items." + path);
             name = path;
+            this.damage = damage;
         }
 
         public Bitmap Image { get { return image; } set { image = value; } }
         public string Name { get { return name; } set { name = value; } }
+
+        public float Damage { get => damage; set => damage = value; }
     }
 }

@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\BoundingBox.cs" />
+    <Compile Include="Entities\Enemies\EnemyJens.cs" />
+    <Compile Include="Entities\Enemies\EntityEnemy.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\EntityLivingBase.cs" />
     <Compile Include="Entities\EntityPlayer.cs" />
@@ -138,6 +140,10 @@
     <EmbeddedResource Include="Resources\EntityPlayer\Right\1.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\EntityEnemies\EnemyJens\Idle\03.png" />
+    <None Include="Resources\EntityEnemies\EnemyJens\Idle\00.png" />
+    <None Include="Resources\EntityEnemies\EnemyJens\Idle\01.png" />
+    <None Include="Resources\EntityEnemies\EnemyJens\Idle\02.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f0.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f1.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f2.png" />
