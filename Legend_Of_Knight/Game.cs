@@ -25,8 +25,8 @@ namespace Legend_Of_Knight
         /// </summary>
         public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
         private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
-        public static int WIDTH => (int)(A_WIDTH / StateManager.ScaleX); //Relativ
-        public static int HEIGHT => (int)(A_HEIGHT / StateManager.ScaleY);
+        public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
+        public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
         public const string NAME = "Legend of Knight";
         public const bool DEBUG = false;
 
@@ -51,8 +51,8 @@ namespace Legend_Of_Knight
         private void Init()
         {
             Text = NAME;
-            Width = WIDTH;
-            Height = HEIGHT;
+            Width = (int)WIDTH;
+            Height = (int)HEIGHT;
             DoubleBuffered = true; //Verhindert Flackern
 
             renderTimer = new Timer()
@@ -214,8 +214,10 @@ namespace Legend_Of_Knight
         {
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
-            //StateManager.Scale(zoom.Value);
-            StateManager.Scale(0.5f);
+            //Translating the Player to the center
+            StateManager.Scale(zoom.Value);
+            StateManager.Translate(-thePlayer.Position);
+            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
             RenderDungeon();
             currentScreen?.OnRender(partialTicks);
             #region DEBUG
@@ -244,10 +246,21 @@ namespace Legend_Of_Knight
 
         public void RenderDungeon()
         {
+            float width = WIDTH;
+            float height = HEIGHT;
             for (int x = 0; x < d.Fields.GetLength(0); x++)
+            { 
                 for (int y = 0; y < d.Fields.GetLength(1); y++)
+                {
                     if (d.Fields[x, y].Anim != null)
-                        StateManager.DrawImage(d.Fields[x, y].Anim.Image, new Vector(x, y) * 16);
+                    {
+                        int xx = x * 15, yy = y * 15;
+                        if (xx < thePlayer.X - width / 2 - 15 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 15 || yy > thePlayer.Y + height / 2)
+                            continue;
+                        StateManager.DrawImage(d.Fields[x, y].Anim.Image, xx, yy);
+                    }
+                }
+            }
         }
 
         public void OnTick()

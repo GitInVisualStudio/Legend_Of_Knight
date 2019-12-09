@@ -126,8 +126,6 @@ namespace Legend_Of_Knight.Entities
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
             Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
-
-            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(Rotation);
@@ -143,6 +141,7 @@ namespace Legend_Of_Knight.Entities
             //StateManager.Translate(EntityItem.Width / 2, 0);
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
+
             if (swing.Finished)
                 return;
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;

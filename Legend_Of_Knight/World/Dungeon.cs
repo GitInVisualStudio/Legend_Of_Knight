@@ -129,7 +129,7 @@ namespace Legend_Of_Knight.World
             Room right = left.Equals(a) ? b : a;
 
             int avgX = (int)MathUtils.Average(new float[] { a.CenterPos.X, b.CenterPos.X });
-            if (avgX > a.X + (int)(Args.CorridorWidth / 2) && avgX < a.X + a.SizeX - 1 - (int)(Args.CorridorWidth / 2) && avgX > b.X + (int)(Args.CorridorWidth / 2) && avgX < b.X + b.SizeX - 1 - (int)(Args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich
+            if (avgX > a.X + (int)(Args.CorridorWidth / 2) && avgX < a.X + a.SizeX - (int)(Args.CorridorWidth / 2) && avgX > b.X + (int)(Args.CorridorWidth / 2) && avgX < b.X + b.SizeX - (int)(Args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich
             {
                 startX = avgX - (int)(Args.CorridorWidth / 2);
                 startY = up.Y + up.SizeY;
@@ -140,7 +140,7 @@ namespace Legend_Of_Knight.World
             }
 
             int avgY = (int)MathUtils.Average(new float[] { a.CenterPos.Y, b.CenterPos.Y });
-            if (avgY > a.Y + (int)(Args.CorridorWidth / 2) && avgY < a.Y + a.SizeY - 1 - (int)(Args.CorridorWidth / 2) && avgY > b.Y + (int)(Args.CorridorWidth / 2) && avgY < b.Y + b.SizeY - 1 - (int)(Args.CorridorWidth / 2))
+            if (avgY > a.Y + (int)(Args.CorridorWidth / 2) && avgY < a.Y + a.SizeY - (int)(Args.CorridorWidth / 2) && avgY > b.Y + (int)(Args.CorridorWidth / 2) && avgY < b.Y + b.SizeY  - (int)(Args.CorridorWidth / 2))
             {
                 startX = left.X + left.SizeX;
                 startY = avgY - (int)(Args.CorridorWidth / 2);
