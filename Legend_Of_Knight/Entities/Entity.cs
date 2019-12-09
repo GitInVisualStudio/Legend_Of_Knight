@@ -124,7 +124,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public Entity()
+        public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
             velocity = new Vector(2);

@@ -10,21 +10,6 @@ namespace Legend_Of_Knight.Utils.Math
     {
         private Vector pos;
         private Vector size;
-        public float Area
-        {
-            get
-            {
-                return Size.X * Size.Y;
-            }
-        }
-
-        public Vector Size
-        {
-            get
-            {
-                return size;
-            }
-        }
 
         public Vector Pos { get => pos; set => pos = value; }
         public Vector Size { get => size; set => size = value; }
@@ -39,12 +24,7 @@ namespace Legend_Of_Knight.Utils.Math
         {
             get
             {
-                return pos;
-            }
-
-            set
-            {
-                pos = value;
+                return pos.X * pos.Y;
             }
         }
 
