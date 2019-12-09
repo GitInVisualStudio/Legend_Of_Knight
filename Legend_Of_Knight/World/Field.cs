@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using d = System.Drawing;
+using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.World
 {
@@ -141,14 +144,8 @@ namespace Legend_Of_Knight.World
 
         private void SetAnimation()
         {
-            List<d::Bitmap> imgs = new List<d::Bitmap>();
-            d::Bitmap bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_00");
-            for (int i = 0; bmp != null; i++)
-            {
-                imgs.Add(bmp);
-                bmp = (d::Bitmap)Properties.Resources.ResourceManager.GetObject(Type.ToString() + "_" + string.Format("{0:00}", i));
-            }
-            Anim = new FrameAnimation(0, true, new d::Bitmap[] { rnd.PickElements(imgs, 1)[0] });
+            Bitmap[] imgs = ResourceManager.GetImages(this, Type.ToString());
+            Anim = new FrameAnimation(0, true, new Bitmap[] { rnd.PickElements(imgs, 1)[0] });
         }
 
         /// <summary>

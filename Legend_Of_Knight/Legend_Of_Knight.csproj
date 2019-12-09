@@ -116,8 +116,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Resources\Tilemap\Floors\01.png.kra" />
-    <None Include="Resources\Tilemap\Floors\01.png.old" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -140,10 +138,34 @@
     <EmbeddedResource Include="Resources\EntityPlayer\Right\1.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\EntityEnemies\EnemyJens\Idle\03.png" />
-    <None Include="Resources\EntityEnemies\EnemyJens\Idle\00.png" />
-    <None Include="Resources\EntityEnemies\EnemyJens\Idle\01.png" />
-    <None Include="Resources\EntityEnemies\EnemyJens\Idle\02.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Idle\00.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Idle\01.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Idle\02.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Idle\03.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Run\00.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Run\01.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Run\02.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Run\03.png" />
+    <EmbeddedResource Include="Resources\Field\CornerDownRight\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerLeftDown\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerRightUp\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerUpLeft\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerWallDownRight\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerWallLeftDown\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerWallRightUp\00.png" />
+    <EmbeddedResource Include="Resources\Field\CornerWallUpLeft\00.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\00.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\01.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\02.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\03.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\04.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\05.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\06.png" />
+    <EmbeddedResource Include="Resources\Field\Floor\07.png" />
+    <EmbeddedResource Include="Resources\Field\WallDown\00.png" />
+    <EmbeddedResource Include="Resources\Field\WallLeft\00.png" />
+    <EmbeddedResource Include="Resources\Field\WallRight\00.png" />
+    <EmbeddedResource Include="Resources\Field\WallUp\00.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f0.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f1.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f2.png" />
@@ -473,32 +495,6 @@
     <Content Include="Resources\frames\zombie_run_anim_f1.png" />
     <Content Include="Resources\frames\zombie_run_anim_f2.png" />
     <Content Include="Resources\frames\zombie_run_anim_f3.png" />
-    <Content Include="Resources\Tilemap\Floors\00.png" />
-    <Content Include="Resources\Tilemap\Floors\01.png" />
-    <Content Include="Resources\Tilemap\Floors\02.png" />
-    <Content Include="Resources\Tilemap\Floors\03.png" />
-    <Content Include="Resources\Tilemap\Floors\04.png" />
-    <Content Include="Resources\Tilemap\Floors\05.png" />
-    <Content Include="Resources\Tilemap\Floors\06.png" />
-    <Content Include="Resources\Tilemap\Floors\07.png" />
-    <None Include="Resources\Tilemap\Walls\WallUp.png" />
-    <None Include="Resources\Tilemap\Walls\WallRight.png" />
-    <None Include="Resources\Tilemap\Walls\WallLeft.png" />
-    <None Include="Resources\Tilemap\Walls\WallDown.png" />
-    <None Include="Resources\Tilemap\Walls\CornerDownRight.png" />
-    <None Include="Resources\Tilemap\Walls\CornerLeftDown.png" />
-    <None Include="Resources\Tilemap\Walls\CornerRightUp.png" />
-    <None Include="Resources\Tilemap\Walls\cornerUpLeft.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallLeftUp.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallUpRight.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallDownRight.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallLeftDown.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallRightUp.png" />
-    <None Include="Resources\Tilemap\Walls\CornerWallUpLeft.png" />
-    <Content Include="Resources\Tilemap\Walls\down.png" />
-    <Content Include="Resources\Tilemap\Walls\left.png" />
-    <Content Include="Resources\Tilemap\Walls\right.png" />
-    <Content Include="Resources\Tilemap\Walls\up.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Items\sword.png" />

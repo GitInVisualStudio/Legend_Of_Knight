@@ -13,27 +13,28 @@ namespace Legend_Of_Knight.Utils
 {
     public class ResourceManager
     {
-        private const int ANIMATION_LENGTH = 2;
-
         public static Bitmap GetImage(string path)
         {
             var assembly = Assembly.GetExecutingAssembly();
             var resourceName = "Legend_Of_Knight.Resources." + path;
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
-                return new Bitmap(stream);
+                if (stream == null)
+                    return null;
+                else
+                    return new Bitmap(stream);
         }
 
-        public static Bitmap[][] GetImages<T>(T t)
+        public static Bitmap[] GetImages<T>(T t, string name)
         {
-            Bitmap[][] images = new Bitmap[ANIMATION_LENGTH][];
-            for(int i = 0; i < images.Length; i++)
-                images[i] = new Bitmap[ANIMATION_LENGTH];
+            List<Bitmap> images = new List<Bitmap>();
             string pathName = t.GetType().Name;
-            for (int i = 0; i < ANIMATION_LENGTH; i++)
-                images[0][i] = GetImage($"{pathName}.Right.{i}.png");
-            for (int i = 0; i < ANIMATION_LENGTH; i++)
-                images[1][i] = GetImage($"{pathName}.Left.{i}.png");
-            return images;
+            Bitmap bmp = GetImage($"{pathName}.{name}.00.png");
+            for (int i = 1; bmp != null; i++)
+            {
+                images.Add(bmp);
+                bmp = GetImage($"{pathName}.{name}.{String.Format("{0:00}", i)}.png");
+            }
+            return images.ToArray(); ;
         }
     }
 }

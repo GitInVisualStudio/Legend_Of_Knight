@@ -103,7 +103,7 @@ namespace Legend_Of_Knight.Entities
 
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
-            Bitmap[][] images = ResourceManager.GetImages(this);
+            Bitmap[][] images = new Bitmap[][] { ResourceManager.GetImages(this, "Left"), ResourceManager.GetImages(this, "Right") };
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];

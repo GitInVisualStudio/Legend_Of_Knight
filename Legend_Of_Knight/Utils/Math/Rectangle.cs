@@ -24,7 +24,7 @@ namespace Legend_Of_Knight.Utils.Math
         {
             get
             {
-                return pos.X * pos.Y;
+                return size.X * size.Y;
             }
         }
 
