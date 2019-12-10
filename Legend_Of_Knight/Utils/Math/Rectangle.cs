@@ -10,6 +10,7 @@ namespace Legend_Of_Knight.Utils.Math
     {
         private Vector pos;
         private Vector size;
+        private Vector centerPos;
 
         public Vector Pos { get => pos; set => pos = value; }
         public Vector Size { get => size; set => size = value; }
@@ -17,7 +18,11 @@ namespace Legend_Of_Knight.Utils.Math
         {
             get
             {
-                return pos + size / 2;
+                return centerPos;
+            }
+            set
+            {
+                centerPos = value;
             }
         }
         public float Area
@@ -32,6 +37,7 @@ namespace Legend_Of_Knight.Utils.Math
         {
             Pos = pos;
             Size = size;
+            CenterPos = pos + size / 2;
         }
 
         public bool PointInRectangle(Vector p)

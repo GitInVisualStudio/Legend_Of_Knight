@@ -17,11 +17,16 @@ namespace Legend_Of_Knight.World
         private int y;
         private int sizeX;
         private int sizeY;
+        private Vector centerPos;
         public Vector CenterPos
         {
             get
             {
-                return new Vector(X + (int)(SizeX / 2), Y + (int)(SizeY / 2));
+                return centerPos;
+            }
+            set
+            {
+                centerPos = value;
             }
         }
 
@@ -103,7 +108,7 @@ namespace Legend_Of_Knight.World
             this.Y = y;
             this.SizeX = sizeX;
             this.SizeY = sizeY;
-
+            centerPos = new Vector(X + (int)(SizeX / 2), Y + (int)(SizeY / 2));
             Bounds = new Rectangle[] 
             {
                 new Rectangle(new Vector(x, y), new Vector(sizeX, sizeY))

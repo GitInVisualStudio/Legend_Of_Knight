@@ -125,6 +125,7 @@ namespace Legend_Of_Knight.Entities
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
+            Vector position = MathUtils.Interpolate(PrevPosition, this.position, partialTicks);
             Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
             StateManager.Push();
             StateManager.Translate(position);
@@ -139,8 +140,6 @@ namespace Legend_Of_Knight.Entities
             }
             //float offset = Width * itemOffset;
             //StateManager.Translate(EntityItem.Width / 2, 0);
-            //EntityItem.Position = new Vector(2);
-            StateManager.Pop();
 
             if (swing.Finished)
                 return;
@@ -148,10 +147,11 @@ namespace Legend_Of_Knight.Entities
             float yaw = Yaw + (MathUtils.Sin(120 * swing.Value) * 80 - 80) * itemOffset;
             EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
             EntityItem.Rotation = yaw;
-            EntityItem.Position = position.Copy();
+            EntityItem.Position = Size / 2;
             EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
             EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
             EntityItem.OnRender(partialTicks);
+            StateManager.Pop();
         }
 
         public override void OnTick()

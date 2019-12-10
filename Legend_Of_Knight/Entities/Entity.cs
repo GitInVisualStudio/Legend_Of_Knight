@@ -16,7 +16,7 @@ namespace Legend_Of_Knight.Entities
 
         protected Vector position;
         protected Vector velocity;
-        protected Vector prevPosition;
+        private Vector prevPosition;
         protected float rotation;
         private BoundingBox box;
         protected float movingTime;
@@ -53,7 +53,8 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position = value;
-                prevPosition = position;
+                PrevPosition = position.Copy();
+                Moved(this, position);
             }
         }
 
@@ -123,17 +124,19 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public Vector PrevPosition { get => prevPosition; set => prevPosition = value; }
+
         public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
             velocity = new Vector(2);
-            prevPosition = new Vector(2);
+            PrevPosition = new Vector(2);
             this.bounds = bounds;
         }
 
         public virtual void OnRender(float partialTicks)
         {
-            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            Vector position = MathUtils.Interpolate(this.PrevPosition, this.position, partialTicks);
             if (Game.DEBUG)
                 RenderBoundingBox();
             StateManager.Push();
@@ -164,11 +167,11 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
-            prevPosition = position;
 
             //TODO: Guck ob das Entity außerhalb der Map geht wenn Velocity addiert wird
             PushInBounds();
 
+            PrevPosition = position;
             position += Velocity;
             velocity *= 0.7f;
 
@@ -189,15 +192,15 @@ namespace Legend_Of_Knight.Entities
         {
             if (rectangle == null)
                 rectangle = FindCurrentRect();
-            if (corner >= box.Corners.Length)
+            if (corner >= box.Corners.Length || rectangle == null)
                 return;
             int last = IsOutOfBox(corner);
             if (last != -1)
                 PushInBounds(rectangle, last);
             if (corner == -1)
                 return;
-            Vector pos = rectangle.Pos * 15;
-            Vector size = rectangle.Size * 15;
+            Vector pos = rectangle.Pos;
+            Vector size = rectangle.Size;
             Vector next = box.Corners[corner] + velocity;
             if (next.X > pos.X + size.X && velocity.X > 0)
                 velocity.X = 0;
@@ -221,7 +224,7 @@ namespace Legend_Of_Knight.Entities
                 bool isOut = true;
                 for (int k = 0; k < bounds.Length; k++)
                 {
-                    if (bounds[k].PointInRectangle((box.Corners[i] + velocity) / 15))
+                    if (bounds[k].PointInRectangle((box.Corners[i] + velocity)))
                     {
                         isOut = false;
                         break;
@@ -237,7 +240,7 @@ namespace Legend_Of_Knight.Entities
         {
             for (int i = 0; i < bounds.Length; i++)
                 foreach (Vector c in box.Corners)
-                    if (bounds[i].PointInRectangle(c / 15))
+                    if (bounds[i].PointInRectangle(c))
                         return bounds[i];
             return null;
         }

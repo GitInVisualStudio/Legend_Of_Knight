@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight
 {
@@ -27,6 +28,7 @@ namespace Legend_Of_Knight
         private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
         public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
+        public static Vector SIZE => new Vector(WIDTH, HEIGHT);
         public const string NAME = "Legend of Knight";
         public const bool DEBUG = false;
 
@@ -95,8 +97,16 @@ namespace Legend_Of_Knight
             {
                 CorridorWidth = 6
             });
-            thePlayer = new EntityPlayer(d.Bounds);
-            thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
+            foreach(Rectangle r in d.Bounds)
+            {
+                r.Pos *= 15;
+                r.Size *= 15;
+                r.CenterPos *= 15;
+            }
+            thePlayer = new EntityPlayer(d.Bounds)
+            {
+                Position = (new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 15).Copy()
+            };
         }
 
         private void AddKeybinds()
@@ -139,7 +149,7 @@ namespace Legend_Of_Knight
                 currentScreen.Move(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
                 return;
             }
-            zoom.End += e.Delta / 120;
+            zoom.End += e.Delta / 120 / 2f;
             if (zoom.Finished)
                 zoom.Fire();
         }
@@ -159,7 +169,7 @@ namespace Legend_Of_Knight
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
             thePlayer.Swing();
-            Vector yaw = InputManager.mousePosition - thePlayer.Position;
+            Vector yaw = InputManager.mousePosition - SIZE / 2;
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
             currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
         }
@@ -216,10 +226,11 @@ namespace Legend_Of_Knight
             StateManager.Push();
             //Translating the Player to the center
             StateManager.Scale(zoom.Value);
-            StateManager.Translate(-thePlayer.Position);
+            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
             StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
             RenderDungeon();
             currentScreen?.OnRender(partialTicks);
+            thePlayer.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
             {
@@ -233,7 +244,7 @@ namespace Legend_Of_Knight
                 //StateManager.Scale(0.5f);
                 StateManager.SetColor(255, 0, 0);
                 foreach (Utils.Math.Rectangle r in d.Bounds)
-                    StateManager.DrawRect(r.Pos * 16, r.Size.X * 16, r.Size.Y * 16, 5);
+                    StateManager.DrawRect(r.Pos * 15, r.Size.X * 15, r.Size.Y * 15, 5);
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
@@ -241,7 +252,6 @@ namespace Legend_Of_Knight
                 
             }
             #endregion
-            thePlayer.OnRender(partialTicks);
         }
 
         public void RenderDungeon()
@@ -255,7 +265,8 @@ namespace Legend_Of_Knight
                     if (d.Fields[x, y].Anim != null)
                     {
                         int xx = x * 15, yy = y * 15;
-                        if (xx < thePlayer.X - width / 2 - 15 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 15 || yy > thePlayer.Y + height / 2)
+                        //30 weil wegen der Interpolation die Anzeige hinterherhängt und damit vielleicht tiles im screen doch nicht gerendert werden
+                        if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
                             continue;
                         StateManager.DrawImage(d.Fields[x, y].Anim.Image, xx, yy);
                     }
