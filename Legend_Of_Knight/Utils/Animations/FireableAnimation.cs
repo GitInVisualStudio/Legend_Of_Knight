@@ -15,6 +15,12 @@ namespace Legend_Of_Knight.Utils.Animations
             return this;
         }
 
+        public override void Reverse()
+        {
+            base.Reverse();
+            Fire();
+        }
+
         public abstract void OnRender(float partialTicks);
     }
 }

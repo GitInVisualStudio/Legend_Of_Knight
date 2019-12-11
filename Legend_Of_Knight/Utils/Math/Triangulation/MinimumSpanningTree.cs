@@ -11,8 +11,31 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         private Vector[] points;
         private Edge[] edges;
 
-        public Vector[] Points { get => points; set => points = value; }
-        public Edge[] Edges { get => edges; set => edges = value; }
+        public Vector[] Points
+        {
+            get
+            {
+                return points;
+            }
+
+            set
+            {
+                points = value;
+            }
+        }
+
+        public Edge[] Edges
+        {
+            get
+            {
+                return edges;
+            }
+
+            set
+            {
+                edges = value;
+            }
+        }
 
         public MinimumSpanningTree(Vector[] points, Edge[] edges)
         {

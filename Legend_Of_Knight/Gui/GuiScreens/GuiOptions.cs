@@ -13,9 +13,14 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         public override void Init(Game game)
         {
             base.Init(game);
-            Components.Add(new GuiButton("TEST", Width / 2 - 50, Height / 2, 100, 20)
+            Components.Add(new GuiButton("TEST1", Width / 2 - 50, Height / 2, 100, 20)
             {
                 Background = Color.Gray
+            });
+            Components.Add(new GuiCheckbox("TEST2", true)
+            {
+                Position = new Utils.Math.Vector(Width / 2 - 50, Height / 2 - 20),
+                Size = new Utils.Math.Vector(100, 20)
             });
         }
     }

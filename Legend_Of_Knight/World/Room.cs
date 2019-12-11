@@ -12,24 +12,89 @@ namespace Legend_Of_Knight.World
     /// </summary>
     public class Room : Area
     {
-        private Corridor[] connections;
+        private List<Corridor> connections;
         private int x;
         private int y;
         private int sizeX;
         private int sizeY;
-        public Corridor[] Connections { get => connections; set => connections = value; }
-        public int X { get => x; set => x = value; }
-        public int Y { get => y; set => y = value; }
+        private Vector centerPos;
         public Vector CenterPos
         {
             get
             {
-                return new Vector(x + (int)(sizeX / 2), y + (int)(sizeY / 2));
+                return centerPos;
+            }
+            set
+            {
+                centerPos = value;
             }
         }
-        public int SizeX { get => sizeX; set => sizeX = value; }
-        public int SizeY { get => sizeY; set => sizeY = value; }
-        
+
+        public int SizeY
+        {
+            get
+            {
+                return sizeY;
+            }
+
+            set
+            {
+                sizeY = value;
+            }
+        }
+
+        public List<Corridor> Connections
+        {
+            get
+            {
+                return connections;
+            }
+
+            set
+            {
+                connections = value;
+            }
+        }
+
+        public int X
+        {
+            get
+            {
+                return x;
+            }
+
+            set
+            {
+                x = value;
+            }
+        }
+
+        public int Y
+        {
+            get
+            {
+                return y;
+            }
+
+            set
+            {
+                y = value;
+            }
+        }
+
+        public int SizeX
+        {
+            get
+            {
+                return sizeX;
+            }
+
+            set
+            {
+                sizeX = value;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -39,10 +104,16 @@ namespace Legend_Of_Knight.World
         /// <param name="size"></param>
         public Room(Field[] fields, int x, int y, int sizeX, int sizeY) : base(fields)
         {
-            this.x = x;
-            this.y = y;
-            this.sizeX = sizeX;
-            this.sizeY = sizeY;
+            this.X = x;
+            this.Y = y;
+            this.SizeX = sizeX;
+            this.SizeY = sizeY;
+            centerPos = new Vector(X + (int)(SizeX / 2), Y + (int)(SizeY / 2));
+            Bounds = new Rectangle[] 
+            {
+                new Rectangle(new Vector(x, y), new Vector(sizeX, sizeY))
+            };
+            Connections = new List<Corridor>();
         }
 
         public static Room GetRoomByPosition(IEnumerable<Room> rooms, Vector pos)

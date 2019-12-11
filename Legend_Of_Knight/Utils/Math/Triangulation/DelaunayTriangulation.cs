@@ -11,14 +11,59 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         private Triangle[] triangles;
         private Edge[] edges;
         private Triangle super;
-
         private Vector[] points;
 
-        public Triangle[] Triangles { get => triangles; set => triangles = value; }
-        public Triangle Super { get => super; set => super = value; }
-        public Edge[] Edges { get => edges; set => edges = value; }
+        public Triangle[] Triangles
+        {
+            get
+            {
+                return triangles;
+            }
 
-        public Vector[] Points { get => points; set => points = value; }
+            set
+            {
+                triangles = value;
+            }
+        }
+
+        public Edge[] Edges
+        {
+            get
+            {
+                return edges;
+            }
+
+            set
+            {
+                edges = value;
+            }
+        }
+
+        public Triangle Super
+        {
+            get
+            {
+                return super;
+            }
+
+            set
+            {
+                super = value;
+            }
+        }
+
+        public Vector[] Points
+        {
+            get
+            {
+                return points;
+            }
+
+            set
+            {
+                points = value;
+            }
+        }
 
         /// <summary>
         /// Trianguliert gegebene Punkte zu einem unstrukturierten Delaunay-Gitter mithilfe des Bowyer-Watson Algorithmus
@@ -30,8 +75,8 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             Vector superA = new Vector(-100, -100);
             Vector superB = new Vector(2 * size.X + 100, -100);
             Vector superC = new Vector(-100, 2 * size.Y + 100);
-            super = new Triangle(superA, superB, superC); // Dreieck, dass alle Punkte enthält
-            tempTriangles.Add(super);
+            Super = new Triangle(superA, superB, superC); // Dreieck, dass alle Punkte enthält
+            tempTriangles.Add(Super);
 
             foreach (Vector point in points) // inkrementelles Hinzufügen der Punkte
             {
@@ -72,7 +117,7 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
                 if (!tempUniqueEdges.Contains(e))
                     tempUniqueEdges.Add(e);
 
-            edges = tempUniqueEdges.ToArray();
+            Edges = tempUniqueEdges.ToArray();
 
             List<Triangle> toRemove = new List<Triangle>();
             for(int i = 0; i < tempTriangles.Count; i++)

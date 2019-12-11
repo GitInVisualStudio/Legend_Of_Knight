@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +70,15 @@ namespace Legend_Of_Knight.Utils.Render
         public static void DrawImage(Bitmap img, float x, float y)
         {
             g.DrawImage(img, x, y);
+        }
+
+        public static void DrawImage(Bitmap img, float x, float y, float opacity)
+        {
+            ColorMatrix matrix = new ColorMatrix();
+            matrix.Matrix33 = opacity;
+            ImageAttributes attributes = new ImageAttributes();
+            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+            g.DrawImage(img, new System.Drawing.Rectangle(0, 0, (int)(img.Width / 3f), (int)(img.Height / 3f)), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, attributes);
         }
 
         public static void DrawImage(Bitmap img, Vector pos) => DrawImage(img, pos.X, pos.Y);
@@ -206,8 +216,8 @@ namespace Legend_Of_Knight.Utils.Render
         {
             g.ResetTransform();
             state = state.PrevState;
-            Translate(-state.TranslateX, -state.TranslateY);
             Scale(state.ScaleX, state.ScaleY);
+            Translate(state.TranslateX, state.TranslateY);
             Rotate(state.Rotation);
         }
 

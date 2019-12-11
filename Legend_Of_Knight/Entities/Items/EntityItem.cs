@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.Entities.Items
         private Item item;
         private float delta, prevDelta;
 
-        public EntityItem(Item item)
+        public EntityItem(Item item) : base(new Rectangle[0])
         {
             this.item = item;
             this.Box = new BoundingBox(this, item.Image.Width / 3, item.Image.Height / 3);
@@ -29,12 +29,14 @@ namespace Legend_Of_Knight.Entities.Items
         {
             if (Game.DEBUG)
                 RenderBoundingBox();
-            Vector position = MathUtils.Interpolate(prevPosition, this.position, partialTicks);
+            Vector position = MathUtils.Interpolate(PrevPosition, this.position, partialTicks);
             Vector hover = new Vector(0, (float)Math.Sin(MathUtils.Interpolate(prevDelta, delta, partialTicks)));
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(Rotation);
-            StateManager.Translate(Size / -2);
+            StateManager.Translate(Size / 2);
+            StateManager.Scale(1, Scale);
+            StateManager.Translate(-Size);
             StateManager.DrawImage(item.Image, 0, 0);
             StateManager.Pop();
         }

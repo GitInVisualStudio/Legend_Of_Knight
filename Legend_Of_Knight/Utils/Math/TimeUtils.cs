@@ -33,7 +33,7 @@ namespace Legend_Of_Knight.Utils.Math
         public void Reset() => time = delay.Elapsed.TotalMilliseconds;
         
 
-        public static bool Check(float milli, [CallerMemberName] string memberName = "")
+        public static bool Check(float milli, [CallerFilePath] string memberName = "")
         {
             if (!utils.Keys.Contains(memberName))
             {

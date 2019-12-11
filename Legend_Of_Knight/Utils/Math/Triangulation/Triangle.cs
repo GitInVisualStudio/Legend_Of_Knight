@@ -24,17 +24,89 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
         private Vector circumcenter;
         private float radius;
 
-        public Vector A { get => a; set => a = value; }
-        public Vector B { get => b; set => b = value; }
-        public Vector C { get => c; set => c = value; }
-        public Edge Ab { get => ab; set => ab = value; }
-        public Edge Bc { get => bc; set => bc = value; }
-        public Edge Ac { get => ac; set => ac = value; }
         public Edge[] Edges
         {
             get
             {
-                return new Edge[] { ab, bc, ac };
+                return new Edge[] { Ab, Bc, Ac };
+            }
+        }
+
+        public Vector A
+        {
+            get
+            {
+                return a;
+            }
+
+            set
+            {
+                a = value;
+            }
+        }
+
+        public Vector B
+        {
+            get
+            {
+                return b;
+            }
+
+            set
+            {
+                b = value;
+            }
+        }
+
+        public Vector C
+        {
+            get
+            {
+                return c;
+            }
+
+            set
+            {
+                c = value;
+            }
+        }
+
+        public Edge Ab
+        {
+            get
+            {
+                return ab;
+            }
+
+            set
+            {
+                ab = value;
+            }
+        }
+
+        public Edge Bc
+        {
+            get
+            {
+                return bc;
+            }
+
+            set
+            {
+                bc = value;
+            }
+        }
+
+        public Edge Ac
+        {
+            get
+            {
+                return ac;
+            }
+
+            set
+            {
+                ac = value;
             }
         }
 
@@ -65,7 +137,7 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
         public bool ContainsPoint(Vector point)
         {
-            return a.Equals(point) || b.Equals(point) || c.Equals(point);
+            return A.Equals(point) || B.Equals(point) || C.Equals(point);
         }
     }
 }

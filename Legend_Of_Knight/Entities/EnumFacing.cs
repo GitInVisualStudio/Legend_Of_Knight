@@ -9,8 +9,8 @@ namespace Legend_Of_Knight.Entities
 {
     public enum EnumFacing
     {
-        [Facing(0)] RIGHT = 0,
-        [Facing(1)] LEFT = 1,
+        [Facing(1)] RIGHT = 0,
+        [Facing(-1)] LEFT = 1,
     }
 
     public class FacingAttribute : Attribute

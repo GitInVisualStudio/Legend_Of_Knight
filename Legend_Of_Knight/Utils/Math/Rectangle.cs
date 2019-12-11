@@ -1,0 +1,50 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Legend_Of_Knight.Utils.Math
+{
+    public class Rectangle
+    {
+        private Vector pos;
+        private Vector size;
+        private Vector centerPos;
+
+        public Vector Pos { get => pos; set => pos = value; }
+        public Vector Size { get => size; set => size = value; }
+        public Vector CenterPos
+        {
+            get
+            {
+                return centerPos;
+            }
+            set
+            {
+                centerPos = value;
+            }
+        }
+        public float Area
+        {
+            get
+            {
+                return size.X * size.Y;
+            }
+        }
+
+        public Rectangle(Vector pos, Vector size)
+        {
+            Pos = pos;
+            Size = size;
+            CenterPos = pos + size / 2;
+        }
+
+        public bool PointInRectangle(Vector p)
+        {
+            if (p.X > pos.X && p.Y > pos.Y && p.X < pos.X + size.X && p.Y < pos.Y + size.Y)
+                return true;
+            return false;
+        }
+    }
+}

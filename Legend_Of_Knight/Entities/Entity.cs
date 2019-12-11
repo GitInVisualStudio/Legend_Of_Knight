@@ -16,11 +16,13 @@ namespace Legend_Of_Knight.Entities
 
         protected Vector position;
         protected Vector velocity;
-        protected Vector prevPosition;
-        private float rotation;
+        private Vector prevPosition;
+        protected float rotation;
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
+        private float scale;
+        protected Rectangle[] bounds;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -51,7 +53,8 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position = value;
-                prevPosition = position;
+                PrevPosition = position.Copy();
+                Moved(this, position);
             }
         }
 
@@ -108,22 +111,39 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public Entity()
+        public float Scale
+        {
+            get
+            {
+                return scale;
+            }
+
+            set
+            {
+                scale = value;
+            }
+        }
+
+        public Vector PrevPosition { get => prevPosition; set => prevPosition = value; }
+
+        public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
             velocity = new Vector(2);
-            prevPosition = new Vector(2);
+            PrevPosition = new Vector(2);
+            this.bounds = bounds;
         }
 
         public virtual void OnRender(float partialTicks)
         {
-            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            Vector position = MathUtils.Interpolate(this.PrevPosition, this.position, partialTicks);
             if (Game.DEBUG)
                 RenderBoundingBox();
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(rotation);
             StateManager.Translate(Size / -2);
+            StateManager.Scale(Scale);
             StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
         }
@@ -147,7 +167,11 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
-            prevPosition = position;
+
+            //TODO: Guck ob das Entity außerhalb der Map geht wenn Velocity addiert wird
+            PushInBounds();
+
+            PrevPosition = position;
             position += Velocity;
             velocity *= 0.7f;
 
@@ -161,14 +185,69 @@ namespace Legend_Of_Knight.Entities
                 movingTime = 0;
                 animation.Reset();
             }
-
             Moved?.Invoke(this, position);
         }
 
-        public void SetVelocity(float x, float y)
+        private void PushInBounds(Rectangle rectangle = null, int corner = -1)
         {
-            velocity.X = x;
-            velocity.Y = y;
+            if (rectangle == null)
+                rectangle = FindCurrentRect();
+            if (corner >= box.Corners.Length || rectangle == null)
+                return;
+            int last = IsOutOfBox(corner);
+            if (last != -1)
+                PushInBounds(rectangle, last);
+            if (corner == -1)
+                return;
+            Vector pos = rectangle.Pos;
+            Vector size = rectangle.Size;
+            Vector next = box.Corners[corner] + velocity;
+            if (next.X > pos.X + size.X && velocity.X > 0)
+                velocity.X = 0;
+            if (next.X < pos.X && velocity.X < 0)
+                velocity.X = 0;
+            if (next.Y > pos.Y + size.Y && velocity.Y > 0)
+                velocity.Y = 0;
+            if (next.Y < pos.Y && velocity.Y < 0)
+                velocity.Y = 0;
+        }
+
+        /// <summary>
+        /// Guckt ob ein Ecke der BoundingBox im nächsten Tick außerhalb der Map sein wird
+        /// Current: Falls mehrere außerhalb der Map liegen
+        /// </summary>
+        /// <returns></returns>
+        private int IsOutOfBox(int current)
+        {
+            for(int i = 0; i < box.Corners.Length; i++)
+            {
+                bool isOut = true;
+                for (int k = 0; k < bounds.Length; k++)
+                {
+                    if (bounds[k].PointInRectangle((box.Corners[i] + velocity)))
+                    {
+                        isOut = false;
+                        break;
+                    }
+                }
+                if (isOut && current < i)
+                    return i;
+            }
+            return -1;
+        }
+
+        protected Rectangle FindCurrentRect()
+        {
+            for (int i = 0; i < bounds.Length; i++)
+                foreach (Vector c in box.Corners)
+                    if (bounds[i].PointInRectangle(c))
+                        return bounds[i];
+            return null;
+        }
+
+        public void AddVelocity(Vector delta)
+        {
+            velocity += delta;
         }
 
         public abstract void OnCollision(object sender, CollisionArgs e);

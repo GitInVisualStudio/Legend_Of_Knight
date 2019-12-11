@@ -12,13 +12,13 @@ namespace Legend_Of_Knight.Gui
 {
     public class GuiScreen : Gui
     {
-        private List<Gui> components;
+        private List<GuiLabel> components;
         private bool onClose;
         private GuiScreen prevScreen;
-        private Game game;
+        protected Game game;
         public bool IsClosed => Animation.Finished && onClose;
 
-        public List<Gui> Components
+        public List<GuiLabel> Components
         {
             get
             {
@@ -63,7 +63,7 @@ namespace Legend_Of_Knight.Gui
         public virtual void Init(Game game)
         {
             this.game = game;
-            components = new List<Gui>();
+            components = new List<GuiLabel>();
             Resize();
         }
 
@@ -85,9 +85,10 @@ namespace Legend_Of_Knight.Gui
 
         public virtual void Close()
         {
+            if (onClose)
+                return;
             onClose = true;
             Animation.Reverse();
-            Animation.Fire();
         }
 
         public override void OnRender(float partialTicks)

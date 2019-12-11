@@ -92,7 +92,18 @@ namespace Legend_Of_Knight.Utils
                 }
             }
 
-            public bool FireOnce { get => fireOnce; set => fireOnce = value; }
+            public bool FireOnce
+            {
+                get
+                {
+                    return fireOnce;
+                }
+
+                set
+                {
+                    fireOnce = value;
+                }
+            }
         }
     }
 }
