@@ -23,11 +23,6 @@ namespace Legend_Of_Knight.Entities.Items
 
         public Item Item { get => item; protected set => item = value; }
 
-        public override void OnCollision(object sender, CollisionArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         public override void OnRender(float partialTicks)
         {
             if (Game.DEBUG)

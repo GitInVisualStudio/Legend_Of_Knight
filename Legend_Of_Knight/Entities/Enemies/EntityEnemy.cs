@@ -8,60 +8,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
+using Legend_Of_Knight.Utils;
 
 namespace Legend_Of_Knight.Entities.Enemies
 {
     public abstract class EntityEnemy : EntityLivingBase
     {
         private FrameAnimation idle;
-        private FrameAnimation run;
         protected Entity aggro;
         protected float aggroRange;
 
         public EntityEnemy(Rectangle[] bounds) : base(bounds)
         {   
-            idle = GetAnim("Idle");
-            run = GetAnim("Run");
-            Animation = idle;
-        }
-
-        private FrameAnimation GetAnim(string name)
-        {
-            List<Bitmap> imgs = new List<Bitmap>();
-            Bitmap bmp = (Bitmap)Properties.Resources.ResourceManager.GetObject(GetType().Name + "_" + name + "_00");
-            for (int i = 1; bmp != null; i++)
-            {
-                imgs.Add(bmp);
-                bmp = (Bitmap)Properties.Resources.ResourceManager.GetObject(GetType().Name + "_" + name + "_" + String.Format("{0:00}", i));
-            }
-            return new FrameAnimation(0, false, imgs.ToArray());
+            idle = new FrameAnimation(FPS, false, ResourceManager.GetImages(this, "Idle"));
         }
 
         public override void OnTick()
         {
             base.OnTick();
-
-            if (MathUtils.Abs(Game.Player.Position - Position).Length <= aggroRange) // IN UNTERKLASSE
-                aggro = Game.Player;
-            else
-                aggro = null;
-
             if (aggro != null)
             {
-                velocity = (aggro.Position - Position).Normalize() * 0.75f;
-                if (Animation == idle)
-                    Animation = run;
+                velocity += (aggro.Position - Position).Normalize() * 0.75f; // -> Pathfinding wäre schön (after release patch)
+                //if (Animation == idle)
+                //    Animation = animations[(int)Facing];
             }
-            else if (Animation == run)
+            else if (Animation != idle)
                 Animation = idle;
+
+            if (SwingAnimation.Finished && aggro != null)
+            {
+                Vector yaw = Game.Player.Position - Position;
+                Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
+                Swing();
+            }
                 
+            if (HurtTime == 0 && !Game.Player.SwingAnimation.Finished && Box.Collides(Game.Player.EntityItem.Box))
+            {
+                Health -= Game.Player.Item.Damage;
+                velocity -= (Game.Player.Position - Position).Normalize() * 20; // Rückstoß
+                HurtTime = 30;
+            }
         }
 
-        public override void OnCollision(object sender, CollisionArgs e)
+        protected override void UpdateAnimation()
         {
-            BoundingBox other = (e.Boxes.First() == Box ? e.Boxes[1] : e.Boxes[0]);
-            if (other.Owner is EntityItem && (EntityItem)other.Owner == Game.Player.EntityItem && !Game.Player.SwingAnimation.Finished)
-                Health -= ((EntityItem)other.Owner).Item.Damage;
+            if (aggro == null)
+                Animation = idle;
+            animation.Update();
         }
     }
 }

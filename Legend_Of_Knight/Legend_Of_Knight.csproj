@@ -132,20 +132,16 @@
     <None Include="Resources\player_3.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\EntityPlayer\Left\0.png" />
-    <EmbeddedResource Include="Resources\EntityPlayer\Left\1.png" />
-    <EmbeddedResource Include="Resources\EntityPlayer\Right\0.png" />
-    <EmbeddedResource Include="Resources\EntityPlayer\Right\1.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Left\00.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Left\01.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Right\00.png" />
+    <EmbeddedResource Include="Resources\EntityPlayer\Right\01.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\EnemyJens\Idle\00.png" />
     <EmbeddedResource Include="Resources\EnemyJens\Idle\01.png" />
     <EmbeddedResource Include="Resources\EnemyJens\Idle\02.png" />
     <EmbeddedResource Include="Resources\EnemyJens\Idle\03.png" />
-    <EmbeddedResource Include="Resources\EnemyJens\Run\00.png" />
-    <EmbeddedResource Include="Resources\EnemyJens\Run\01.png" />
-    <EmbeddedResource Include="Resources\EnemyJens\Run\02.png" />
-    <EmbeddedResource Include="Resources\EnemyJens\Run\03.png" />
     <EmbeddedResource Include="Resources\Field\CornerDownRight\00.png" />
     <EmbeddedResource Include="Resources\Field\CornerLeftDown\00.png" />
     <EmbeddedResource Include="Resources\Field\CornerRightUp\00.png" />
@@ -166,6 +162,14 @@
     <EmbeddedResource Include="Resources\Field\WallLeft\00.png" />
     <EmbeddedResource Include="Resources\Field\WallRight\00.png" />
     <EmbeddedResource Include="Resources\Field\WallUp\00.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Left\00.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Left\01.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Left\02.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Left\03.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Right\00.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Right\01.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Right\02.png" />
+    <EmbeddedResource Include="Resources\EnemyJens\Right\03.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f0.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f1.png" />
     <Content Include="Resources\frames\big_demon_idle_anim_f2.png" />

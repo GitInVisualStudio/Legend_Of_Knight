@@ -18,7 +18,6 @@ namespace Legend_Of_Knight.Entities
         private Vector[] original;
 
         public Vector[] Corners => corners;
-        public event EventHandler<CollisionArgs> Collided;
 
         public Entity Owner
         {
@@ -95,11 +94,6 @@ namespace Legend_Of_Knight.Entities
                 if (!ProjectionOverlaps(ProjectOnto(angle), box.ProjectOnto(angle)))
                     return false;
 
-
-            Collided?.Invoke(this, new CollisionArgs()
-            {
-                Boxes = new BoundingBox[] { this, box },
-            });
             return true;
         }
 

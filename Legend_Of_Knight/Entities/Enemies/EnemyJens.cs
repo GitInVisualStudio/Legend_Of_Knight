@@ -11,11 +11,17 @@ namespace Legend_Of_Knight.Entities.Enemies
     {
         public EnemyJens(Rectangle[] bounds) : base(bounds)
         {
-            aggroRange = 10;
+            aggroRange = 50;
+            Item = new Legend_Of_Knight.Items.Item("sword.png", 10);
         }
 
         public override void OnTick()
         {
+            if ((Game.Player.Position - Position).Length <= aggroRange) // IN UNTERKLASSE
+                aggro = Game.Player;
+            else
+                aggro = null;
+
             base.OnTick();
         }
     }

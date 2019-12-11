@@ -12,7 +12,7 @@ namespace Legend_Of_Knight.Entities
 {
     public abstract class Entity
     {
-        protected const int FPS = (int)(1000.0f / 5);
+        protected const int FPS = (int)(1000.0f / 10);
 
         protected Vector position;
         protected Vector velocity;
@@ -107,7 +107,6 @@ namespace Legend_Of_Knight.Entities
             protected set
             {
                 box = value;
-                box.Collided += OnCollision;
             }
         }
 
@@ -171,16 +170,7 @@ namespace Legend_Of_Knight.Entities
             position += Velocity;
             velocity *= 0.7f;
 
-            if (velocity.Length > 0.2f)
-            {
-                movingTime += Game.TPT / 1000.0f;
-                //animation.Update();
-            }
-            else
-            {
-                movingTime = 0;
-                animation.Reset();
-            }
+            UpdateAnimation();
 
             int oobCounter = 0;
             while (!InBounds())
@@ -205,6 +195,20 @@ namespace Legend_Of_Knight.Entities
             }
             outOfBounds = false;
             Moved?.Invoke(this, position);
+        }
+
+        protected virtual void UpdateAnimation()
+        {
+            if (velocity.Length > 0.2f)
+            {
+                movingTime += Game.TPT / 1000.0f;
+                animation.Update();
+            }
+            else
+            {
+                movingTime = 0;
+                animation.Reset();
+            }
         }
 
         protected bool InBounds()
@@ -236,7 +240,5 @@ namespace Legend_Of_Knight.Entities
             if (InBounds())
                 velocity += delta;
         }
-
-        public abstract void OnCollision(object sender, CollisionArgs e);
     }
 }

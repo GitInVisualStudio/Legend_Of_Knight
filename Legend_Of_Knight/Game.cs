@@ -98,17 +98,20 @@ namespace Legend_Of_Knight
 
             d = new Dungeon(new DungeonGenArgs()
             {
-                CorridorWidth = 6
+                CorridorWidth = 6,
+                Seed = -753157498
             });
+            Console.WriteLine("Seed: " + d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
             player = thePlayer;
             entities = new List<Entity>();
-            entities.Add(thePlayer);
+            
 
             EnemyJens enem = new EnemyJens(d.Bounds);
-            enem.Position = player.Position + new Vector(20, 20);
+            enem.Position = thePlayer.Position + new Vector(20, 20);
             entities.Add(enem);
+            entities.Add(thePlayer);
         }
 
         private void AddKeybinds()
@@ -227,7 +230,7 @@ namespace Legend_Of_Knight
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
             //StateManager.Scale(zoom.Value);
-            StateManager.Scale(0.5f);
+            StateManager.Scale(1f);
             RenderDungeon();
             currentScreen?.OnRender(partialTicks);
             #region DEBUG

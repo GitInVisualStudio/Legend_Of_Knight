@@ -34,7 +34,7 @@ namespace Legend_Of_Knight.Utils
                 images.Add(bmp);
                 bmp = GetImage($"{pathName}.{name}.{String.Format("{0:00}", i)}.png");
             }
-            return images.ToArray(); ;
+            return images.ToArray();
         }
     }
 }
