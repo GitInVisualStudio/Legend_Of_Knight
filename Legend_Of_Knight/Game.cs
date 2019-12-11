@@ -1,4 +1,5 @@
 ﻿using Legend_Of_Knight.Entities;
+using Legend_Of_Knight.Entities.Enemies;
 using Legend_Of_Knight.Gui;
 using Legend_Of_Knight.Gui.GuiScreens;
 using Legend_Of_Knight.Properties;
@@ -39,9 +40,13 @@ namespace Legend_Of_Knight
         private EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
-
         private Dungeon d;
+        private List<Entity> entities;
+
+        private static EntityPlayer player;
         public InputManager InputManager => inputManager;
+
+        public static EntityPlayer Player { get => player; }
 
         public Game()
         {
@@ -93,10 +98,20 @@ namespace Legend_Of_Knight
 
             d = new Dungeon(new DungeonGenArgs()
             {
-                CorridorWidth = 6
+                CorridorWidth = 6,
+                Seed = -753157498
             });
+            Console.WriteLine("Seed: " + d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
+            player = thePlayer;
+            entities = new List<Entity>();
+            
+
+            EnemyJens enem = new EnemyJens(d.Bounds);
+            enem.Position = thePlayer.Position + new Vector(20, 20);
+            entities.Add(enem);
+            entities.Add(thePlayer);
         }
 
         private void AddKeybinds()
@@ -215,7 +230,7 @@ namespace Legend_Of_Knight
             animationHandler.OnRender(partialTicks);
             StateManager.Push();
             //StateManager.Scale(zoom.Value);
-            StateManager.Scale(0.5f);
+            StateManager.Scale(1f);
             RenderDungeon();
             currentScreen?.OnRender(partialTicks);
             #region DEBUG
@@ -239,7 +254,7 @@ namespace Legend_Of_Knight
                 
             }
             #endregion
-            thePlayer.OnRender(partialTicks);
+            entities.ForEach(x => x.OnRender(partialTicks));
         }
 
         public void RenderDungeon()
@@ -254,7 +269,7 @@ namespace Legend_Of_Knight
         {
             animationHandler.Update();
             inputManager.Update();
-            thePlayer.OnTick();
+            entities.ForEach(x => x.OnTick());
         }
     }
 }

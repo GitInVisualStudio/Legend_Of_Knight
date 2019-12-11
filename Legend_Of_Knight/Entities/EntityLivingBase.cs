@@ -16,7 +16,7 @@ using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.Entities
 {
-    public class EntityLivingBase : Entity
+    public abstract class EntityLivingBase : Entity
     {
         protected FrameAnimation[] animations;
         private float health;
@@ -99,26 +99,27 @@ namespace Legend_Of_Knight.Entities
 
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
 
+        public CustomAnimation<float> SwingAnimation { get => swing; }
+
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
-            Bitmap[][] images = ResourceManager.GetImages(this);
+            Bitmap[][] images = new Bitmap[][] { ResourceManager.GetImages(this, "Right"), ResourceManager.GetImages(this, "Left") };
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
-            Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
+            Box = new BoundingBox(this, animation.Image.Width / 1, animation.Image.Height / 1);
             swing = new CustomAnimation<float>(0.0f, 1.0f, (float current, float delta) => current + delta/2)
             {
                 Toleranz = 1E-4f,
             };
-        }
-
-        public override void OnCollision(object sender, CollisionArgs e)
-        {
-            throw new NotImplementedException();
+            swing.Fire();
+            Health = 20;
         }
 
         public override void OnRender(float partialTicks)
         {
+            if (health <= 0)
+                return;
             if (Game.DEBUG)
                 RenderBoundingBox();
 
@@ -134,7 +135,7 @@ namespace Legend_Of_Knight.Entities
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
 
-            if (item == null)
+            if (item == null || swing.Finished)
             {
                 StateManager.Pop();
                 return;
@@ -143,8 +144,6 @@ namespace Legend_Of_Knight.Entities
             //StateManager.Translate(EntityItem.Width / 2, 0);
             //EntityItem.Position = new Vector(2);
             StateManager.Pop();
-            if (swing.Finished)
-                return;
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             float yaw = Yaw + (MathUtils.Sin(120 * swing.Value) * 80 - 80) * itemOffset;
             EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
@@ -157,6 +156,8 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnTick()
         {
+            if (health <= 0)
+                return;
             base.OnTick();
 
             Vector direction = velocity.Normalize();
