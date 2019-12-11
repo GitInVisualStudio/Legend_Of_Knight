@@ -17,36 +17,38 @@ namespace Legend_Of_Knight.Entities.Enemies
         private FrameAnimation idle;
         protected Entity aggro;
         protected float aggroRange;
+        protected float swingCooldown; // Wartezeit zwischen Angriffen
+        protected float maxSwingCooldown; // swingCooldown = maxSwingCooldown wenn gerade angegriffen wurde
 
         public EntityEnemy(Rectangle[] bounds) : base(bounds)
         {   
-            idle = new FrameAnimation(FPS, false, ResourceManager.GetImages(this, "Idle"));
+            idle = new FrameAnimation(FPS, false, ResourceManager.GetImages(this, "Idle")); // Animation für wenn der Gegner sich nicht bewegt
+            maxSwingCooldown = 60;
         }
 
         public override void OnTick()
         {
             base.OnTick();
             if (aggro != null)
-            {
-                velocity += (aggro.Position - Position).Normalize() * 0.75f; // -> Pathfinding wäre schön (after release patch)
-                //if (Animation == idle)
-                //    Animation = animations[(int)Facing];
-            }
+                velocity += (aggro.Position - Position).Normalize() * 0.75f; // verfolgt den Spieler // -> Pathfinding wäre schön (after release patch)
             else if (Animation != idle)
                 Animation = idle;
 
-            if (SwingAnimation.Finished && aggro != null)
+            if (swingCooldown > 0)
+                swingCooldown--;
+            if (SwingAnimation.Finished && aggro != null && swingCooldown == 0) // falls das Schwert momentan nicht geschwungen wird
             {
-                Vector yaw = Game.Player.Position - Position;
-                Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
                 Swing();
+                Vector yaw = Game.Player.Position - Position; // setzt Ausrichtung des Schwertes in Richtung Spieler
+                Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90; 
+                swingCooldown = maxSwingCooldown;
             }
                 
-            if (HurtTime == 0 && !Game.Player.SwingAnimation.Finished && Box.Collides(Game.Player.EntityItem.Box))
-            {
+            if (HurtTime == 0 && !Game.Player.SwingAnimation.Finished && Box.Collides(Game.Player.EntityItem.Box)) // falls der Spieler gerade angreift und sein Schwert diesen Gegner trifft // Kollision funktioniert nicht => positionen falsch aber durch translation "richtig" angezeigt?? // -> IN OBERKLASSE
+            { 
                 Health -= Game.Player.Item.Damage;
                 velocity -= (Game.Player.Position - Position).Normalize() * 20; // Rückstoß
-                HurtTime = 30;
+                HurtTime = maxHurtTime;
             }
         }
 

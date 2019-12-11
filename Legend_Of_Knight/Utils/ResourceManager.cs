@@ -13,6 +13,10 @@ namespace Legend_Of_Knight.Utils
 {
     public class ResourceManager
     {
+        /// <summary>
+        /// Bestimmt ein Bild für einen angegebenen Resourcenpfad.
+        /// </summary>
+        /// <returns>Gibt null zurück, falls Datei nicht existiert</returns>
         public static Bitmap GetImage(string path)
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -24,6 +28,9 @@ namespace Legend_Of_Knight.Utils
                     return new Bitmap(stream);
         }
 
+        /// <summary>
+        /// Bestimmt für einen Typ und einen Namen alle Bilder, die für diesen Typ unter diesem Namen in den Resourcen eingebettet sind
+        /// </summary>
         public static Bitmap[] GetImages<T>(T t, string name)
         {
             List<Bitmap> images = new List<Bitmap>();

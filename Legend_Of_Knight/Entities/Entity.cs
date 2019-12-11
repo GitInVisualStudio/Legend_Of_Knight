@@ -12,11 +12,11 @@ namespace Legend_Of_Knight.Entities
 {
     public abstract class Entity
     {
-        protected const int FPS = (int)(1000.0f / 10);
+        protected const int FPS = (int)(1000.0f / 10); // FPS für alle Animationen
 
         protected Vector position;
         protected Vector velocity;
-        private Vector prevPosition;
+        private Vector prevPosition; // für Interpolation
         protected float rotation;
         private BoundingBox box;
         protected float movingTime;
@@ -27,7 +27,10 @@ namespace Legend_Of_Knight.Entities
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
 
-        public Vector Velocity => velocity;//Kann sowieso nicht geil geändert werden lol
+        /// <summary>
+        /// Momentangeschwindigkeit der Entity. Read-Only -> SetVelocity() sollte genutzt werden
+        /// </summary>
+        public Vector Velocity => velocity;
         public float Width => box.Width;
         public float Height => box.Height;
         public Vector Size => box.Size;
@@ -59,7 +62,7 @@ namespace Legend_Of_Knight.Entities
         }
 
         /// <summary>
-        /// Drehwinkel in Grad (Einfacher für das Rendern)
+        /// Drehwinkel in Grad
         /// </summary>
         public float Rotation
         {
@@ -125,6 +128,7 @@ namespace Legend_Of_Knight.Entities
 
         public Vector PrevPosition { get => prevPosition; set => prevPosition = value; }
 
+        /// <param name="bounds">Rechtecke, in denen die Entity sich bewegen darf</param>
         public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
@@ -166,7 +170,6 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
-
             //TODO: Guck ob das Entity außerhalb der Map geht wenn Velocity addiert wird
             PushInBounds();
 
@@ -239,6 +242,9 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        /// <summary>
+        /// Findet das Bounding-Rechteck, in dem sich die Entity momentan befindet
+        /// </summary>
         protected Rectangle FindCurrentRect()
         {
             for (int i = 0; i < bounds.Length; i++)

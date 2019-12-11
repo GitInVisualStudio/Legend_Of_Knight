@@ -22,88 +22,43 @@ namespace Legend_Of_Knight.World
 
         private CRandom rnd;
 
-        public FrameAnimation Anim
+        /// <summary>
+        /// Animation, die dieses Feld darstellen soll (ein Frame)
+        /// </summary>
+        public FrameAnimation Anim { get => anim; set => anim = value; }
+        /// <summary>
+        /// Raum oder Korridor, der dieses Feld einnimmt
+        /// </summary>
+        public Area Area { get => area; set => area = value; }
+        /// <summary>
+        /// X-Koordinate dieses Feldes im Dungeon 
+        /// </summary>
+        public int X { get => x; set => x = value; }
+        /// <summary>
+        /// X-Koordinate dieses Feldes im Dungeon 
+        /// </summary>
+        public int Y { get => y; set => y = value; }
+        public FieldType Type { get => type; set => type = value; }
+
+        public Field(int x, int y, CRandom rnd)
         {
-            get
-            {
-                return anim;
-            }
-
-            set
-            {
-                anim = value;
-            }
-        }
-
-        public Area Area
-        {
-            get
-            {
-                return area;
-            }
-
-            set
-            {
-                area = value;
-            }
-        }
-
-        public int X
-        {
-            get
-            {
-                return x;
-            }
-
-            set
-            {
-                x = value;
-            }
-        }
-
-        public int Y
-        {
-            get
-            {
-                return y;
-            }
-
-            set
-            {
-                y = value;
-            }
-        }
-
-        public FieldType Type
-        {
-            get
-            {
-                return type;
-            }
-
-            set
-            {
-                type = value;
-            }
-        }
-
-        public Field(FrameAnimation anim, int x, int y, CRandom rnd)
-        {
-            this.Anim = anim;
             this.X = x;
             this.Y = y;
             this.rnd = rnd;
             Type = FieldType.Nothing;
         }
 
+        /// <summary>
+        /// Bestimmt, was für eine Art Feld dieses anhand des Raum-Layouts sein soll (Wand, Ecke, Boden, etc)
+        /// </summary>
+        /// <param name="fields">Alle Felder des Dungeons</param>
         public void SetFieldTypeAndAnimation(Field[,] fields)
         {
             if (Area == null)
                 return;
 
-            Field[] neighbors = GetNeighbors(fields);
-
-            Rectangle[] maxRects = FindValidMaxRectangles(neighbors);
+            Field[] neighbors = GetNeighbors(fields); // Array der 8 Nachbarfelder, angefangen bei dem linken auf der selben Y Höhe und im Uhrzeigersinn fortlaufend
+            Rectangle[] maxRects = FindValidMaxRectangles(neighbors); // sucht die Rechtecke, die aus besetzten Nachbarsfeldern gemacht werden können, mit maximaler Flächer
             if (maxRects.Length == 0)
                 throw new FieldAloneException();
 
@@ -112,13 +67,11 @@ namespace Legend_Of_Knight.World
                 if (maxRects[0].Area < 6)
                     throw new FieldAloneException();
                     
-
                 for (int i = 1; i < neighbors.Length; i += 2) // Betrachten aller diagonalen Ecken bei zwei Rechtecken mit Größe 6
                 { 
                     if (neighbors[i].Area == null)
-                        this.Type = (FieldType)(9 + (((i - 1) / 2 + 2) % 4)); // bestimmt manche Ecken
+                        this.Type = (FieldType)(9 + (((i - 1) / 2 + 2) % 4)); // bestimmt innere Ecken
                 }
-                    
             }
             else
             {
@@ -129,19 +82,22 @@ namespace Legend_Of_Knight.World
                         if (neighbors[i].Area == null && neighbors[(i + 2) % neighbors.Length].Area == null)
                             Type = (FieldType)(5 + i / 2);
                 }
-                else if (rect.Area == 6)
+                else if (rect.Area == 6) // Feld ist eine Wand
                 {
                     for (int i = 0; i < neighbors.Length; i += 2)
                         if (neighbors[i].Area == null)
                             Type = (FieldType)(1 + i / 2);
                 }
-                else if (rect.Area == 9)
+                else if (rect.Area == 9) // Feld ist Boden
                     Type = FieldType.Floor;
             }
-            if (Type != FieldType.Nothing)
-                SetAnimation();
+            
+            SetAnimation();
         }
 
+        /// <summary>
+        /// Sucht zufällig anhand des bestimmten Feldtypus ein passendes Bild aus
+        /// </summary>
         private void SetAnimation()
         {
             Bitmap[] imgs = ResourceManager.GetImages(this, Type.ToString());
@@ -154,7 +110,7 @@ namespace Legend_Of_Knight.World
         /// <param name="origFields">Array der 8 umliegenden Felder</param>
         private Rectangle[] FindValidMaxRectangles(Field[] origFields)
         {
-            Field[,] fields = new Field[3, 3];
+            Field[,] fields = new Field[3, 3]; // Array der umliegenden Nachbarn und diesem Feld
             fields[1, 1] = this;
             foreach (Field f in origFields)
                 fields[f.X - X + 1, f.Y - Y + 1] = f;
@@ -169,7 +125,7 @@ namespace Legend_Of_Knight.World
                     int width = 1;
                     int height = 1;
 
-                    for (int i = 1; x + i < fields.GetLength(0) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width + 1, height))); i++)
+                    for (int i = 1; x + i < fields.GetLength(0) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width + 1, height))); i++) // falls bei einer um eins größeren Breite ein Rechteck gebildet werden kann
                         width++;
 
                     for (int i = 1; y + i < fields.GetLength(1) && AllFieldsInRectangleDefined(fields, new Rectangle(new Vector(x, y), new Vector(width, height + 1))); i++)
@@ -187,7 +143,7 @@ namespace Legend_Of_Knight.World
                         width++;
 
                     Rectangle rectVertical = new Rectangle(new Vector(x, y), new Vector(width, height));
-                    if (rectHorizontal.Size != rectVertical.Size)
+                    if (rectHorizontal.Size != rectVertical.Size) // in genau einem Fall gehen von einem Feld zwei maximal große Rechtecke aus
                         rects.Add(rectVertical);
                     rects.Add(rectHorizontal);
                 }
@@ -198,7 +154,7 @@ namespace Legend_Of_Knight.World
 
             List<Rectangle> maxRects = new List<Rectangle>();
             maxRects.Add(rects[0]);
-            for (int i = 1; i < rects.Count; i++)
+            for (int i = 1; i < rects.Count; i++) // Bestimmung der Rechtecke mit maximaler Fläche
                 if (rects[i].Area > maxRects[0].Area)
                 {
                     maxRects.Clear();
@@ -210,6 +166,9 @@ namespace Legend_Of_Knight.World
             return maxRects.ToArray();
         }
 
+        /// <summary>
+        /// Überprüft, ob in einem angegebenen Rechteck alle Felder innerhalb der Grenzen und von einem Raum/Korridor besetzt sind
+        /// </summary>
         private bool AllFieldsInRectangleDefined(Field[,] fields, Rectangle rect)
         {
             for (int x = (int)rect.Pos.X; x < rect.Pos.X + rect.Size.X; x++)
@@ -225,7 +184,7 @@ namespace Legend_Of_Knight.World
             for (int i = 0; i < neighbors.Length; i++)
             {
                 int[] coords = GetCoordinatesByDirection((Direction)i);
-                neighbors[i] = GetNeighbor(fields, (Direction)i) ?? new Field(null, coords[0], coords[1], rnd);
+                neighbors[i] = GetNeighbor(fields, (Direction)i) ?? new Field(coords[0], coords[1], rnd);
             }
                 
             return neighbors;

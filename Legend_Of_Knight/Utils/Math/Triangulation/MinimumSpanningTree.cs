@@ -6,36 +6,16 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Math.Triangulation
 {
+    /// <summary>
+    /// Ein Satz von Punkten und Verbindungen, bei dem jeder Punkt mit einem anderen verbunden ist und die Gesamtlänge aller Verbindungen am kleinsten ist 
+    /// </summary>
     public class MinimumSpanningTree
     {
         private Vector[] points;
         private Edge[] edges;
 
-        public Vector[] Points
-        {
-            get
-            {
-                return points;
-            }
-
-            set
-            {
-                points = value;
-            }
-        }
-
-        public Edge[] Edges
-        {
-            get
-            {
-                return edges;
-            }
-
-            set
-            {
-                edges = value;
-            }
-        }
+        public Vector[] Points { get => points; set => points = value; }
+        public Edge[] Edges { get => edges; set => edges = value; }
 
         public MinimumSpanningTree(Vector[] points, Edge[] edges)
         {
@@ -49,30 +29,30 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
         private void Calculate(Vector[] points, Edge[] edges)
         {
-            // https://en.wikipedia.org/wiki/Prim's_algorithm#Description
-            Dictionary<Vector, float> c = new Dictionary<Vector, float>(); // 1
+            // implementiert nach https://en.wikipedia.org/wiki/Prim's_algorithm#Description
+            Dictionary<Vector, float> c = new Dictionary<Vector, float>(); // Dictionary, das für einen Punkt die Kosten für eine Verbindung mit ihm angibt
             for (int i = 0; i < points.Length; i++)
                 c.Add(points[i], float.MaxValue);
 
-            Dictionary<Vector, Edge> e = new Dictionary<Vector, Edge>();
+            Dictionary<Vector, Edge> e = new Dictionary<Vector, Edge>(); // Dictionary, das für einen Punkt die kürzeste (=> günstigste) Verbindung mit ihm angibt
             for (int i = 0; i < points.Length; i++)
                 e.Add(points[i], Edge.Null);
 
-            Forest forest = new Forest(); // 2
-            List<Vector> q = points.ToList();
+            Forest forest = new Forest();
+            List<Vector> q = points.ToList(); // alle noch nicht verbundenen Punkte
 
-            while (q.Count > 0) // 3
+            while (q.Count > 0)
             {
-                Vector v = MinKey(q, c); // Punkt, zu dem die Verbindung am billigsten ist | 3.a
+                Vector v = MinKey(q, c); // Punkt, zu dem die Verbindung am billigsten ist
                 q.Remove(v);
-                forest.Verticies.Add(v); // 3.b
-                if (e[v] != Edge.Null)
+                forest.Verticies.Add(v);
+                if (e[v] != Edge.Null) // falls eine Verbindung zu einem vorher hinzugefügten Punkt existiert (sollte nur beim ersten Punkt false sein)
                     forest.Edges.Add(e[v]);
 
-                Edge[] connectingEdges = GetConnectingEdges(v, edges); // 3.c
-                foreach (Edge vw in connectingEdges)
+                Edge[] connectingEdges = GetConnectingEdges(v, edges);
+                foreach (Edge vw in connectingEdges) // bestimmt die günstigste Verbindung, die den momentanen Punkt mit anderen, noch nicht behandelten Punkten verbindet
                 {
-                    Vector w = vw.A == v ? vw.B : vw.A;
+                    Vector w = vw.A == v ? vw.B : vw.A; // der andere Punkt der Verbindung
                     if (q.Contains(w) && vw.Length < c[w])
                     {
                         c[w] = vw.Length;
@@ -85,6 +65,10 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             Edges = forest.Edges.ToArray();
         }
 
+        /// <summary>
+        /// Sucht den Schlüssel, der das minimalste Ergebnis aus einem Dictionary von Vektoren und Floats liefert
+        /// </summary>
+        /// <param name="acceptable">Alle Vektoren, die als Ergebnis in Frage kommen</param>
         private Vector MinKey(IEnumerable<Vector> acceptable, Dictionary<Vector, float> dict)
         {
             if (dict.Count == 0)
@@ -96,21 +80,9 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             return minKey;
         }
 
-        private int MinIndex(IEnumerable<float> array)
-        {
-            if (array.Count() == 0)
-                return -1;
-            int min = 0;
-            for (int i = 1; i < array.Count(); i++)
-                min = array.ElementAt(i) < array.ElementAt(min) ? i : min;
-            return min;
-        }
-
-        private float Min(IEnumerable<float> array)
-        {
-            return array.ElementAt(MinIndex(array));
-        }
-
+        /// <summary>
+        /// Gibt für einen Punkt alle Verbindungen mit diesem Punkt zurück
+        /// </summary>
         private Edge[] GetConnectingEdges(Vector vertex, IEnumerable<Edge> edges)
         {
             List<Edge> connectingEdges = new List<Edge>(); // alle Kanten, die mit point verbinden
@@ -118,15 +90,6 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
                 if (e.A == vertex || e.B == vertex)
                     connectingEdges.Add(e);
             return connectingEdges.ToArray();
-        }
-
-        private Edge FindCheapestConnection(Vector vertex, IEnumerable<Edge> edges)
-        {
-            Edge[] connectingEdges = GetConnectingEdges(vertex, edges);
-            Edge cheapest = connectingEdges[0];
-            for (int i = 0; i < connectingEdges.Length; i++)
-                cheapest = cheapest.Length > connectingEdges[i].Length ? connectingEdges[i] : cheapest;
-            return cheapest;
         }
     }
 }

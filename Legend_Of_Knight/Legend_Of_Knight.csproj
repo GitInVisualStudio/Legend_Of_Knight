@@ -77,7 +77,6 @@
     <Compile Include="Utils\Animations\FrameAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackAnimation.cs" />
     <Compile Include="Utils\Animations\MeleeAttackFrame.cs" />
-    <Compile Include="Utils\Math\CollisionArgs.cs" />
     <Compile Include="Utils\InputManager.cs" />
     <Compile Include="Utils\Math\CRandom.cs" />
     <Compile Include="Utils\Math\MathUtils.cs" />

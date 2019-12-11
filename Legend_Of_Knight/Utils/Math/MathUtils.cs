@@ -57,13 +57,5 @@ namespace Legend_Of_Knight.Utils.Math
         {
             return list.Sum() / list.Count();
         }
-
-        public static Vector Abs(Vector a)
-        {
-            float[] values = new float[a.Values.Length];
-            for (int i = 0; i < values.Length; i++)
-                values[i] = s::Math.Abs(a[i]);
-            return new Vector(values);
-        }
     }
 }

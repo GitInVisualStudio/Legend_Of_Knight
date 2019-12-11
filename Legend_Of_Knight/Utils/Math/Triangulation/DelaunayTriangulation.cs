@@ -103,15 +103,14 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
                             polygon.Add(e);
                     }
                         
-
-                tempTriangles.RemoveAll(x => badTriangles.Contains(x));
-                foreach (Edge e in polygon)
+                tempTriangles.RemoveAll(x => badTriangles.Contains(x)); // entfernt alle nichtkonformen Dreiecke
+                foreach (Edge e in polygon) // Verbindet jede Ecke des gebildeten Polygons mit dem neuen Punkt
                     tempTriangles.Add(new Triangle(e.A, e.B, point));
             }
             List<Edge> tempEdges = new List<Edge>();
             foreach (Triangle t in tempTriangles)
                 tempEdges.AddRange(t.Edges);
-            tempEdges.RemoveAll(x => x.A == superA || x.B == superB || x.A == superB || x.B == superB || x.A == superC || x.B == superC);
+            tempEdges.RemoveAll(x => x.A == superA || x.B == superB || x.A == superB || x.B == superB || x.A == superC || x.B == superC); // entfernt alle Verbindungen, die mit dem Super-Dreieck verbinden
             List<Edge> tempUniqueEdges = new List<Edge>();
             foreach (Edge e in tempEdges) // entfernt alle zweifach enthaltenen Kanten
                 if (!tempUniqueEdges.Contains(e))
@@ -121,7 +120,7 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
 
             List<Triangle> toRemove = new List<Triangle>();
             for(int i = 0; i < tempTriangles.Count; i++)
-                if (tempTriangles[i].ContainsPoint(superA) || tempTriangles[i].ContainsPoint(superB) || tempTriangles[i].ContainsPoint(superC))
+                if (tempTriangles[i].ContainsPoint(superA) || tempTriangles[i].ContainsPoint(superB) || tempTriangles[i].ContainsPoint(superC)) // entfernt alle Dreiecke, die mit dem Super-Dreieck verbinden
                 {
                     toRemove.Add(tempTriangles[i]);
                 }

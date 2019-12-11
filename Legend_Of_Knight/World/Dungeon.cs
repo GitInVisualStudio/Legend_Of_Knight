@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.World
     public class Dungeon
     {
         private Field[,] fields;
-        private MinimumSpanningTree mst;
+        private MinimumSpanningTree mst; // verbindet die Mittelpunkte aller Räume miteinander
         private Room[] rooms;
         private DungeonGenArgs args;
         private CRandom rnd;
@@ -22,7 +22,6 @@ namespace Legend_Of_Knight.World
         private Rectangle[] bounds;
 
         public Field[,] Fields { get => fields; set => fields = value; }
-        public MinimumSpanningTree Mst { get => mst; set => mst = value; }
         public Room[] Rooms { get => rooms; set => rooms = value; }
         public Rectangle[] Bounds { get => bounds; set => bounds = value; }
         public DungeonGenArgs Args { get => args; set => args = value; }
@@ -36,7 +35,7 @@ namespace Legend_Of_Knight.World
             {
                 for (int y = 0; y < Fields.GetLength(1); y++)
                 {
-                    Fields[x, y] = new Field(null, x, y, rnd);
+                    Fields[x, y] = new Field(x, y, rnd);
                 }
             }
 
@@ -45,7 +44,7 @@ namespace Legend_Of_Knight.World
 
         public void Generate()
         {
-            // implementiert annhähernd nach https://www.gamasutra.com/blogs/AAdonaac/20150903/252889/Procedural_Dungeon_Generation_Algorithm.php
+            // Dungeongeneration implementiert annhähernd nach https://www.gamasutra.com/blogs/AAdonaac/20150903/252889/Procedural_Dungeon_Generation_Algorithm.php
             List<Room> rooms = new List<Room>(); // erstes Erstellen der Räume
             for (int i = 0; i < Args.Rooms; i++)
             {
@@ -61,9 +60,9 @@ namespace Legend_Of_Knight.World
             MinimumSpanningTree mst = new MinimumSpanningTree(triang);
             List<Edge> edges = new List<Edge>();
             edges.AddRange(mst.Edges);
-            edges.AddRange(rnd.PickElements(triang.Edges.Where(x => !mst.Edges.Contains(x)), Args.LeaveConnectionPercentage));
+            edges.AddRange(rnd.PickElements(triang.Edges.Where(x => !mst.Edges.Contains(x)), Args.LeaveConnectionPercentage)); // lässt manche redundante Verbindungen da, damit Dungeon nicht linear ist
             List<Corridor> corridors = new List<Corridor>();
-            foreach (Edge e in edges)
+            foreach (Edge e in edges) // versucht, Räume anhand der bestimmten Verbindungen mit Korridoren zu verbinden
             {
                 Corridor c = ConnectRooms(Room.GetRoomByPosition(rooms, e.A), Room.GetRoomByPosition(rooms, e.B));
                 if (c != null)
@@ -73,24 +72,19 @@ namespace Legend_Of_Knight.World
                     c.B.Connections.Add(c);
                 }
             }
-            rooms.RemoveAll(x => x.Connections.Count == 0);
+            List<Room> lonesomeRooms = rooms.Where(x => x.Connections.Count == 0).ToList(); // Räume ohne Verbindungen, die "allein" stehen
+            lonesomeRooms.ForEach(x => x.Fields.ToList().ForEach(f => f.Area = null));
+            rooms.RemoveAll(x => lonesomeRooms.Contains(x));
             Rooms = rooms.ToArray();
-            try
-            {
-                for (int x = 0; x < Fields.GetLength(0); x++)
-                    for (int y = 0; y < Fields.GetLength(1); y++)
-                        Fields[x, y].SetFieldTypeAndAnimation(Fields);
-            }
-            catch (FieldAloneException) // DEBUG
-            {
-                Console.WriteLine("Something went wrong! Seed: " + Args.Seed);
-            }
+            for (int x = 0; x < Fields.GetLength(0); x++)
+                for (int y = 0; y < Fields.GetLength(1); y++)
+                    Fields[x, y].SetFieldTypeAndAnimation(Fields);
 
-            List<Rectangle> b = new List<Rectangle>();
+            List<Rectangle> b = new List<Rectangle>(); // Bounding-Rechtecke der Räume und Korridore
             foreach (Room r in rooms)
                 b.AddRange(r.Bounds);
-            foreach (Corridor r in corridors)
-                b.AddRange(r.Bounds);
+            foreach (Corridor c in corridors)
+                b.AddRange(c.Bounds);
             Bounds = b.ToArray();
         }
 
@@ -115,6 +109,10 @@ namespace Legend_Of_Knight.World
             return new Room(occFields, posX, posY, sizeX, sizeY);
         }
 
+        /// <summary>
+        /// Verbindet zwei Räume mit einem Korridor. Falls möglich gerade, falls nicht in einer L-Form
+        /// </summary>
+        /// <returns>Gibt null zurück, wenn Verbindung nicht möglich war</returns>
         private Corridor ConnectRooms(Room a, Room b)
         {
             int startX;
@@ -128,8 +126,8 @@ namespace Legend_Of_Knight.World
             Room left = a.X < b.X ? a : b;
             Room right = left.Equals(a) ? b : a;
 
-            int avgX = (int)MathUtils.Average(new float[] { a.CenterPos.X, b.CenterPos.X });
-            if (avgX > a.X + (int)(Args.CorridorWidth / 2) && avgX < a.X + a.SizeX - (int)(Args.CorridorWidth / 2) && avgX > b.X + (int)(Args.CorridorWidth / 2) && avgX < b.X + b.SizeX - (int)(Args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich
+            int avgX = (int)MathUtils.Average(new float[] { a.CenterPos.X, b.CenterPos.X }); // Durchschnittliche X-Position der zwei Mittelpunkte
+            if (avgX > a.X + (int)(Args.CorridorWidth / 2) && avgX < a.X + a.SizeX - (int)(Args.CorridorWidth / 2) && avgX > b.X + (int)(Args.CorridorWidth / 2) && avgX < b.X + b.SizeX - (int)(Args.CorridorWidth / 2)) // gerade vertikale Verbindung möglich, wenn durchschnittlicher Mittelpunkt weit genug in beiden Rechtecken liegt, dass ein Korridor platz hätte
             {
                 startX = avgX - (int)(Args.CorridorWidth / 2);
                 startY = up.Y + up.SizeY;
@@ -139,7 +137,7 @@ namespace Legend_Of_Knight.World
                 return new Corridor(a, b, new Vector(startX, startY), new Vector(sizeX, sizeY), fs);
             }
 
-            int avgY = (int)MathUtils.Average(new float[] { a.CenterPos.Y, b.CenterPos.Y });
+            int avgY = (int)MathUtils.Average(new float[] { a.CenterPos.Y, b.CenterPos.Y }); // siehe vertikale Verbindung
             if (avgY > a.Y + (int)(Args.CorridorWidth / 2) && avgY < a.Y + a.SizeY - (int)(Args.CorridorWidth / 2) && avgY > b.Y + (int)(Args.CorridorWidth / 2) && avgY < b.Y + b.SizeY  - (int)(Args.CorridorWidth / 2))
             {
                 startX = left.X + left.SizeX;
@@ -153,13 +151,18 @@ namespace Legend_Of_Knight.World
             List<Field> cFields = new List<Field>();
             Corridor c;
             if (rnd.NextFloat() > 0.5)
-                c = MakeTrueL(left, up, right, down);
+                c = MakeFlippedL(left, up, right, down);
             else
-                c = MakeTurnedL(left, up, right, down);
+                c = MakeTrueL(left, up, right, down);
             return c;
         }
 
-        private Corridor MakeTrueL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
+        /// <param name="left">Der linkere der zwei Räume</param>
+        /// <param name="up">Der obere der zwei Räume</param>
+        /// <param name="right">Der rechtere der zwei Räume</param>
+        /// <param name="down">Der untere der zwei Räume</param>
+        /// <param name="beforeFailed">Falls auf den Kopf gedrehte L-Verbindung bereits fehlgeschlagen ist</param>
+        private Corridor MakeFlippedL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
         {
             List<Field> cFields = new List<Field>();
             Vector posA;
@@ -184,7 +187,7 @@ namespace Legend_Of_Knight.World
                 sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
-            else
+            else // felder von links nach rechts, dann von oben nach unten
             {
                 int startX = left.X + left.SizeX;
                 int startY = (int)left.CenterPos.Y - Args.CorridorWidth / 2;
@@ -203,14 +206,14 @@ namespace Legend_Of_Knight.World
             }
 
             if (cFields.Any(x => x.Area != null) && !beforeFailed)
-                return MakeTurnedL(left, up, right, down, true);
+                return MakeTrueL(left, up, right, down, true);
             else if (cFields.Any(x => x.Area != null))
                 return null;
             else
                 return new Corridor(left, right, posA, sizeA, posB, sizeB, cFields.ToArray());
         }
 
-        private Corridor MakeTurnedL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
+        private Corridor MakeTrueL(Room left, Room up, Room right, Room down, bool beforeFailed = false)
         {
             List<Field> cFields = new List<Field>();
             Vector posA;
@@ -234,9 +237,9 @@ namespace Legend_Of_Knight.World
                 sizeB = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
             }
-            else
+            else // Felder von oben nach unten, dann von links nach rechts nehmen
             {
-                int startX = (int)left.CenterPos.X - Args.CorridorWidth / 2;
+                int startX = (int)left.CenterPos.X - Args.CorridorWidth / 2; // von oben nach unten
                 int startY = left.Y + left.SizeY;
                 int sizeX = Args.CorridorWidth;
                 int sizeY = (int)right.CenterPos.Y - startY;
@@ -244,7 +247,7 @@ namespace Legend_Of_Knight.World
                 sizeA = new Vector(sizeX, sizeY);
                 cFields.AddRange(GetFieldsInBounds(startX, startY, sizeX, sizeY));
 
-                startY = (int)right.CenterPos.Y - Args.CorridorWidth / 2;
+                startY = (int)right.CenterPos.Y - Args.CorridorWidth / 2; // von links nach rechts
                 sizeX = right.X - startX;
                 sizeY = Args.CorridorWidth;
                 posB = new Vector(startX, startY);
@@ -253,13 +256,16 @@ namespace Legend_Of_Knight.World
             }
 
             if (cFields.Any(x => x.Area != null) && !beforeFailed)
-                return MakeTrueL(left, up, right, down, true);
+                return MakeFlippedL(left, up, right, down, true);
             else if (cFields.Any(x => x.Area != null))
                 return null;
             else
                 return new Corridor(left, right, posA, sizeA, posB, sizeB, cFields.ToArray());
         }
 
+        /// <summary>
+        /// Gibt alle Felder im angegebenen Bereich zurück, die sich innerhalb der Dungeon-Grenzen befinden
+        /// </summary>
         private Field[] GetFieldsInBounds(int startX, int startY, int sizeX, int sizeY)
         {
             List<Field> res = new List<Field>();

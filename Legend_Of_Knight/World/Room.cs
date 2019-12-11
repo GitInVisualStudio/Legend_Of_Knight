@@ -95,13 +95,8 @@ namespace Legend_Of_Knight.World
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fields"></param>
         /// <param name="x">X-Koordinate des Feldes oben links</param>
         /// <param name="y">Y-Koordinate des Feldes oben links</param>
-        /// <param name="size"></param>
         public Room(Field[] fields, int x, int y, int sizeX, int sizeY) : base(fields)
         {
             this.X = x;

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Math
 {
+    /// <summary>
+    /// Eine Custom-Random Klasse, die die normale Random-Klasse um PickElements() und eine Gaussche Zufallsfunktion erweitert
+    /// </summary>
     public class CRandom : Random
     {
         public CRandom() : base()

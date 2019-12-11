@@ -8,14 +8,15 @@ using Legend_Of_Knight.Utils.Math;
 
 namespace Legend_Of_Knight.Entities
 {
+    /// <summary>
+    /// Stellt eine Hitbox für eine Entity dar.
+    /// </summary>
     public class BoundingBox
     {
         private Entity owner;
-        private float width;
-        private float height;
         private Vector size;
-        private Vector[] corners;
-        private Vector[] original;
+        private Vector[] corners; // Ecken der Box absolut
+        private Vector[] original; // Ecken der Box relativ zum Mittelpunkt
 
         public Vector[] Corners => corners;
 
@@ -31,7 +32,7 @@ namespace Legend_Of_Knight.Entities
         {
             get
             {
-                return width;
+                return size.X;
             }
         }
 
@@ -39,17 +40,21 @@ namespace Legend_Of_Knight.Entities
         {
             get
             {
-                return height;
+                return size.Y;
             }
         }
 
-        public Vector Size => size;
+        public Vector Size
+        {
+            get
+            {
+                return size;
+            }
+        }
 
         public BoundingBox(Entity owner, float width, float height)
         {
             this.owner = owner;
-            this.width = width;
-            this.height = height;
             this.size = new Vector(width, height);
             owner.Rotated += Owner_Rotated;
             owner.Moved += Owner_Moved;
@@ -62,17 +67,25 @@ namespace Legend_Of_Knight.Entities
                 new Vector(-width / 2, height / 2)
             };
             corners = new Vector[4];
-            Owner_Rotated(this, Owner.Rotation);
+            UpdateCorners(owner.Rotation);
         }
 
         private void Owner_Moved(object sender, Vector e)
         {
-            Owner_Rotated(owner, owner.Rotation);
+            UpdateCorners(owner.Rotation);
         }
 
         private void Owner_Rotated(object sender, float angle)
         {
+            UpdateCorners(angle);
+        }
 
+        /// <summary>
+        /// Setzt die Ecken der Box absolut, wenn die Besitzer-Entity sich bewegt oder rotiert hat
+        /// </summary>
+        /// <param name="angle">Der Winkel, in dem die Box gedreht ist</param>
+        private void UpdateCorners(float angle)
+        {
             for (int i = 0; i < corners.Length; i++)
             {
                 Vector current = original[i];
@@ -82,10 +95,15 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        /// <summary>
+        /// Überprüft mithilfe des Separating-Axes-Theorem, ob diese und eine andere Box kollidieren
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns></returns>
         public bool Collides(BoundingBox box)
         {
-            float[] angles;
-            if (owner.Rotation == box.Owner.Rotation)
+            float[] angles; // Array der Winkel der Achsen, die überprüft werden müssen
+            if (owner.Rotation == box.Owner.Rotation) // falls beide Boxen gleich ausgerichtet sind, sind ihre Achsen die selben
                 angles = new float[] { owner.Rotation, owner.Rotation + (float)Math.PI / 2.0f };
             else
                 angles = new float[] { owner.Rotation, owner.Rotation + (float)Math.PI / 2.0f, box.Owner.Rotation, box.Owner.Rotation + (float)Math.PI / 2.0f };
@@ -101,6 +119,7 @@ namespace Legend_Of_Knight.Entities
         /// Projiziert diese Box auf eine Achse
         /// </summary>
         /// <param name="angle">Der Winkel der Achse im Bogenmaß</param>
+        /// <returns>Array von zwei floats, die die relativ gesehen linkste und rechteste Stelle auf der Achse darstellen</returns>
         public float[] ProjectOnto(float angle)
         {
             float min = Int32.MaxValue;
@@ -117,6 +136,9 @@ namespace Legend_Of_Knight.Entities
             return new float[] { min, max };
         }
 
+        /// <summary>
+        /// Überprüft, ob sich zwei Projektionen überlappen
+        /// </summary>
         private bool ProjectionOverlaps(float[] a, float[] b)
         {
             if ((a[0] < b[0] && a[1] > b[0]) || (b[0] < a[0] && b[1] > a[0]))

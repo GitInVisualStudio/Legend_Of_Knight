@@ -19,17 +19,17 @@ namespace Legend_Of_Knight.Entities
 {
     public abstract class EntityLivingBase : Entity
     {
-        protected FrameAnimation[] animations;
+        protected FrameAnimation[] animations; // zwei Laufanimationen, eine für Links und eine für Rechts
         protected FrameAnimation[] hurtTimeAnimation;
         private float health;
-        private Item item;
-        private EntityItem entityItem;
-        private float yaw;
-        private int maxHurtTime = 30; //Damit die HurtTime 1 sekunde gezeigt wird
+        private Item item; // Waffe der Entity
+        private EntityItem entityItem; // Waffen-Entity dieser Entity
+        private float yaw; // Ausrichtung der Waffe
+        protected int maxHurtTime = 30; // damit die HurtTime 1 sekunde gezeigt wird
         private int hurtTime;
         private bool usingItem;
         private EnumFacing facing;
-        private CustomAnimation<float> swing;
+        private CustomAnimation<float> swing; // Attackanimation
 
         public int ItemCount => EntityItem.Animation.Index;
         public float Yaw
@@ -122,7 +122,7 @@ namespace Legend_Of_Knight.Entities
 
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
-            Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
+            Box = new BoundingBox(this, animation.Image.Width, animation.Image.Height);
             swing = CustomAnimation<float>.CreateDefaultAnimation(1.0f);
             swing.Toleranz = 1E-2f;
             swing.OnFinish += (object sender, EventArgs args) =>
@@ -136,8 +136,6 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            if (health <= 0)
-                return;
             if (Game.DEBUG)
                 RenderBoundingBox();
 
@@ -152,7 +150,7 @@ namespace Legend_Of_Knight.Entities
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
 
-            if (hurtTime != 0)
+            if (hurtTime != 0) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
             {
                 float opacity = hurtTime / (float)maxHurtTime;
                 StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, opacity);
@@ -165,6 +163,8 @@ namespace Legend_Of_Knight.Entities
             }
             //float offset = Width * itemOffset;
             //StateManager.Translate(EntityItem.Width / 2, 0);
+
+            // Rendert das Item
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             float yaw = Yaw + (MathUtils.Sin(90 * swing.Value) * 80 - 80) * itemOffset;
             EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
@@ -204,6 +204,9 @@ namespace Legend_Of_Knight.Entities
                 EntityItem?.Animation?.Update();
         }
 
+        /// <summary>
+        /// Attackiert mit der Waffe
+        /// </summary>
         public void Swing()
         {
             if(item != null)

@@ -11,13 +11,13 @@ namespace Legend_Of_Knight.Entities.Enemies
     {
         public EnemyJens(Rectangle[] bounds) : base(bounds)
         {
-            aggroRange = 50;
+            aggroRange = 200;
             Item = new Legend_Of_Knight.Items.Item("sword.png", 10);
         }
 
         public override void OnTick()
         {
-            if ((Game.Player.Position - Position).Length <= aggroRange) // IN UNTERKLASSE
+            if ((Game.Player.Position - Position).Length <= aggroRange) // falls der Spieler in aggroRange ist, fokussiere ihn, ansonsten werd idle
                 aggro = Game.Player;
             else
                 aggro = null;

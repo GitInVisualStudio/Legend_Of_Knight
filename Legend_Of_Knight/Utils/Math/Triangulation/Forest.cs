@@ -37,6 +37,9 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             }
         }
 
+        /// <summary>
+        /// Satz von Punkten und Verbindungen ihrer
+        /// </summary>
         public Forest()
         {
             Verticies = new List<Vector>();

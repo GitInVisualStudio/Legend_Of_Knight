@@ -22,6 +22,21 @@ namespace Legend_Of_Knight
 {
     public class Game : Form
     {
+        // TODO: Kommentare
+        // Entity teilweise
+        // EntityItem
+        // EntityLivingBase teilweise
+        // der gesamte GUI-Namespace lol
+        // alles in Utils.Animations
+        // TimeUtils
+        // alles in Utils.Render
+
+        // TODO: sonstiges
+        // Darstellung fixen
+        // Spawnen der Gegner (bleiben immer in ihrem Raum?)
+        // Kollisionsdetektion der EntityLivingBases verallgemeinern und implementieren
+        // evtl: Gewinnabfrage
+
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
@@ -46,12 +61,13 @@ namespace Legend_Of_Knight
         private GuiIngame ingameGui;
 
         private Dungeon d;
-        private List<Entity> entities;
+        private static List<Entity> entities;
 
         private static EntityPlayer player;
         public InputManager InputManager => inputManager;
 
         public static EntityPlayer Player { get => player; }
+        public static List<Entity> Entities { get => entities; }
 
         public Game()
         {
@@ -63,6 +79,7 @@ namespace Legend_Of_Knight
             Text = NAME;
             Width = (int)WIDTH;
             Height = (int)HEIGHT;
+            BackColor = Color.FromArgb(20, 3, 7);
             DoubleBuffered = true; //Verhindert Flackern
 
             renderTimer = new Timer()
@@ -110,6 +127,8 @@ namespace Legend_Of_Knight
             d = new Dungeon(new DungeonGenArgs()
             {
                 CorridorWidth = 6,
+                Rooms = 10,
+                LeaveConnectionPercentage = 0.25f
             });
             foreach (Rectangle r in d.Bounds)
             {
@@ -125,11 +144,11 @@ namespace Legend_Of_Knight
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
             player = thePlayer;
+            Entities.Add(thePlayer);
 
             EnemyJens enem = new EnemyJens(d.Bounds);
             enem.Position = thePlayer.Position + new Vector(20, 20);
-            entities.Add(enem);
-            entities.Add(thePlayer);
+            Entities.Add(enem);
             ingameGui = new GuiIngame(this);
             isIngame = true;
         }
@@ -198,10 +217,11 @@ namespace Legend_Of_Knight
             currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
             if (!isIngame || currentScreen != null)
                 return;
+
             thePlayer.Swing();
-            Vector yaw = InputManager.mousePosition - SIZE / 2;
+            //Vector yaw = InputManager.mousePosition - SIZE / 2;
+            Vector yaw = (InputManager.mousePosition - thePlayer.Position).Normalize(); // DEBUG: für wenn der spieler nicht in der genauen mitte gemalt wird
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
-            thePlayer.HurtTime = 30;
         }
 
         private void TickTimer_Tick(object sender, EventArgs e)
@@ -238,7 +258,7 @@ namespace Legend_Of_Knight
                 }; //CheckBox, Label, Textbox, Slider
                 return;
             }
-            screen.Init(this);
+            screen.Init(this);// wirft alle jubeljahre eine null reference exception ?????
             if (currentScreen == null)
             {
                 currentScreen = screen.Open(currentScreen);
@@ -257,18 +277,24 @@ namespace Legend_Of_Knight
                 RenderIngame(partialTicks);
             ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
-            
         }
 
         private void RenderIngame(float partialTicks)
         {
             StateManager.Push();
             //Translating the Player to the center
-            StateManager.Scale(zoom.Value);
-            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
-            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            //StateManager.Scale(zoom.Value);
+            //StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
+            //StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
             RenderDungeon();
-            entities.ForEach(x => x.OnRender(partialTicks));
+            StateManager.Push();
+            player.OnRender(partialTicks);
+            StateManager.Pop();
+            for (int i = 1; i < Entities.Count; i++)
+            {
+                Entities[i].OnRender(partialTicks);
+            }
+            //thePlayer.OnRender(partialTicks);
             //TODO: Translating back to top-left and scale back to normal
             StateManager.Pop();
 
@@ -284,15 +310,17 @@ namespace Legend_Of_Knight
                 StateManager.Push();
 
                 StateManager.Push();
-                StateManager.SetColor(255, 0, 0);
+                
                 //Translating the to the center
                 StateManager.Scale(zoom.Value);
                 StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
                 StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+                StateManager.Pop();
+                StateManager.SetColor(255, 0, 0);
                 //TODO: Translating back to top-left and scale back to normal
                 foreach (Rectangle r in d.Bounds)
                     StateManager.DrawRect(r.Pos, r.Size.X, r.Size.Y, 2);
-                StateManager.Pop();
+                
 
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
@@ -315,8 +343,8 @@ namespace Legend_Of_Knight
                     {
                         int xx = x * 15, yy = y * 15;
                         //30 weil wegen der Interpolation die Anzeige hinterherhängt und damit vielleicht tiles im screen doch nicht gerendert werden
-                        if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
-                            continue;
+                        //if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
+                        //    continue;
                         StateManager.DrawImage(d.Fields[x, y].Anim.Image, xx, yy);
                     }
                 }
@@ -327,7 +355,12 @@ namespace Legend_Of_Knight
         {
             animationHandler.Update();
             inputManager.Update();
-            entities.ForEach(x => x.OnTick());
+            for (int i = 0; i < Entities.Count; i++)
+            {
+                Entities[i].OnTick();
+                if (((EntityLivingBase)Entities[i]).Health <= 0)
+                    Entities.RemoveAt(i);
+            }
         }
     }
 }

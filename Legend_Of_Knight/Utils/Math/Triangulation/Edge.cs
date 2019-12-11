@@ -51,6 +51,9 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             }
         }
 
+        /// <summary>
+        /// Kante, die zwei Punkte miteinander verbindet
+        /// </summary>
         public Edge(Vector pointA, Vector pointB)
         {
             a = pointA;

@@ -120,7 +120,7 @@ namespace Legend_Of_Knight.Utils.Math.Triangulation
             Bc = new Edge(b, c);
             Ac = new Edge(a, c);
 
-            alpha = MathUtils.Acos((MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ac.Length, 2) - MathUtils.Pow(Ab.Length, 2)) / (-2 * Ac.Length * Ab.Length));
+            alpha = MathUtils.Acos((MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ac.Length, 2) - MathUtils.Pow(Ab.Length, 2)) / (-2 * Ac.Length * Ab.Length)); // Winkelberechnung mit Kosinussatz
             beta = MathUtils.Acos((MathUtils.Pow(Ac.Length, 2) - MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ab.Length, 2)) / (-2 * Bc.Length * Ab.Length));
             gamma = MathUtils.Acos((MathUtils.Pow(Ab.Length, 2) - MathUtils.Pow(Bc.Length, 2) - MathUtils.Pow(Ac.Length, 2)) / (-2 * Bc.Length * Ac.Length));
 
