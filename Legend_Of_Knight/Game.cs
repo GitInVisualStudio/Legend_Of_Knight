@@ -31,7 +31,7 @@ namespace Legend_Of_Knight
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
         public static Vector SIZE => new Vector(WIDTH, HEIGHT);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = false;
+        public const bool DEBUG = true;
 
         private int fps = 0;
         private int currentFrames = 0;
@@ -102,6 +102,7 @@ namespace Legend_Of_Knight
             isIngame = false;
             SetScreen(new GuiStartScreen());
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
+            entities = new List<Entity>();
         }
 
         public void LoadIngame()
@@ -124,8 +125,6 @@ namespace Legend_Of_Knight
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
             player = thePlayer;
-            entities = new List<Entity>();
-            
 
             EnemyJens enem = new EnemyJens(d.Bounds);
             enem.Position = thePlayer.Position + new Vector(20, 20);
@@ -258,6 +257,21 @@ namespace Legend_Of_Knight
                 RenderIngame(partialTicks);
             ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
+            
+        }
+
+        private void RenderIngame(float partialTicks)
+        {
+            StateManager.Push();
+            //Translating the Player to the center
+            StateManager.Scale(zoom.Value);
+            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
+            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            RenderDungeon();
+            entities.ForEach(x => x.OnRender(partialTicks));
+            //TODO: Translating back to top-left and scale back to normal
+            StateManager.Pop();
+
             #region DEBUG
             if (DEBUG)
             {
@@ -284,22 +298,9 @@ namespace Legend_Of_Knight
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
                 StateManager.Pop();
-                
+
             }
             #endregion
-        }
-
-        private void RenderIngame(float partialTicks)
-        {
-            StateManager.Push();
-            //Translating the Player to the center
-            StateManager.Scale(zoom.Value);
-            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
-            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
-            RenderDungeon();
-            thePlayer.OnRender(partialTicks);
-            //TODO: Translating back to top-left and scale back to normal
-            StateManager.Pop();
         }
 
         public void RenderDungeon()
