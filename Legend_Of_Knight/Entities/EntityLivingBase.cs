@@ -13,16 +13,19 @@ using System.Drawing;
 using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Entities.Items;
 using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
+using System.Drawing.Imaging;
 
 namespace Legend_Of_Knight.Entities
 {
     public class EntityLivingBase : Entity
     {
         protected FrameAnimation[] animations;
+        protected FrameAnimation[] hurtTimeAnimation;
         private float health;
         private Item item;
         private EntityItem entityItem;
         private float yaw;
+        private int maxHurtTime = 30; //Damit die HurtTime 1 sekunde gezeigt wird
         private int hurtTime;
         private bool usingItem;
         private EnumFacing facing;
@@ -102,14 +105,31 @@ namespace Legend_Of_Knight.Entities
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
             Bitmap[][] images = ResourceManager.GetImages(this);
+            Bitmap[][] hurtTimeImages = new Bitmap[images.Length][];
+            for(int i = 0; i < images.Length; i++)
+            {
+                hurtTimeImages[i] = new Bitmap[images[i].Length];
+                for(int j = 0; j < images[i].Length; j++)
+                {
+                    hurtTimeImages[i][j] = RenderUtils.PaintBitmap(images[i][j], Color.Red, true);
+                }
+            }
+
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
+            this.hurtTimeAnimation = new FrameAnimation[] { new FrameAnimation(FPS, false, hurtTimeImages[0]), new FrameAnimation(FPS, false, hurtTimeImages[1]) };
+
             Facing = EnumFacing.RIGHT; //Weil immer rechts
             animation = animations[0];
             Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
-            swing = new CustomAnimation<float>(0.0f, 1.0f, (float current, float delta) => current + delta/2)
+            swing = CustomAnimation<float>.CreateDefaultAnimation(1.0f);
+            swing.Toleranz = 1E-2f;
+            swing.OnFinish += (object sender, EventArgs args) =>
             {
-                Toleranz = 1E-4f,
+                if (swing.Increments)
+                    swing.Reverse();
             };
+            swing.Reverse();
+            Health = 20;
         }
 
         public override void OnCollision(object sender, CollisionArgs e)
@@ -133,18 +153,21 @@ namespace Legend_Of_Knight.Entities
             StateManager.Translate(Size / -2);
             StateManager.DrawImage(animation.Image, 0, 0);
 
-            if (item == null)
+            if (hurtTime != 0)
+            {
+                float opacity = hurtTime / (float)maxHurtTime;
+                StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, opacity);
+            }
+
+            if (item == null || swing.Finished)
             {
                 StateManager.Pop();
                 return;
             }
             //float offset = Width * itemOffset;
             //StateManager.Translate(EntityItem.Width / 2, 0);
-
-            if (swing.Finished)
-                return;
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
-            float yaw = Yaw + (MathUtils.Sin(120 * swing.Value) * 80 - 80) * itemOffset;
+            float yaw = Yaw + (MathUtils.Sin(90 * swing.Value) * 80 - 80) * itemOffset;
             EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
             EntityItem.Rotation = yaw;
             EntityItem.Position = Size / 2;
@@ -168,7 +191,10 @@ namespace Legend_Of_Knight.Entities
             animation = animations[(int)Facing];
 
             if (hurtTime != 0)
+            {
                 hurtTime--;
+                hurtTimeAnimation[(int)Facing].Index = animation.Index;
+            }
 
             if (item == null)
                 return;
@@ -181,8 +207,7 @@ namespace Legend_Of_Knight.Entities
         {
             if(item != null)
                 usingItem = true;
-            swing.Reset();
-            swing.Fire();
+            swing.Reverse();
         }
 
         public static TAttribute GetAttribute<TAttribute>(Enum value) where TAttribute : Attribute

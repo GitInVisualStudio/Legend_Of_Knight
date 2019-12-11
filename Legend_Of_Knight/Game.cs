@@ -34,13 +34,15 @@ namespace Legend_Of_Knight
 
         private int fps = 0;
         private int currentFrames = 0;
+        private bool isIngame;
         private Timer renderTimer, tickTimer;
         private Stopwatch watch;
         private InputManager inputManager;
         private AnimationHandler animationHandler;
-        private EntityPlayer thePlayer;
+        public EntityPlayer thePlayer;
         private CustomAnimation<float> zoom;
         private GuiScreen currentScreen;
+        private GuiIngame ingameGui;
 
         private Dungeon d;
         public InputManager InputManager => inputManager;
@@ -91,13 +93,18 @@ namespace Legend_Of_Knight
             AddKeybinds();
             renderTimer.Start();
             tickTimer.Start();
+            isIngame = false;
+            SetScreen(new GuiStartScreen());
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
+        }
 
+        public void LoadIngame()
+        {
             d = new Dungeon(new DungeonGenArgs()
             {
                 CorridorWidth = 6
             });
-            foreach(Rectangle r in d.Bounds)
+            foreach (Rectangle r in d.Bounds)
             {
                 r.Pos *= 15;
                 r.Size *= 15;
@@ -107,6 +114,10 @@ namespace Legend_Of_Knight
             {
                 Position = (new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 15).Copy()
             };
+
+            ingameGui = new GuiIngame(this);
+
+            isIngame = true;
         }
 
         private void AddKeybinds()
@@ -114,22 +125,22 @@ namespace Legend_Of_Knight
             inputManager.Add('W', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.AddVelocity(new Vector(0, -1) * 1f); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
+                    thePlayer?.AddVelocity(new Vector(0, -1) * 1f); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
             });
             inputManager.Add('A', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.AddVelocity(new Vector(-1, 0) * 1f);
+                    thePlayer?.AddVelocity(new Vector(-1, 0) * 1f);
             });
             inputManager.Add('S', () =>
             {
                 if (currentScreen == null)
-                    thePlayer.AddVelocity(new Vector(0, 1) * 1f);
+                    thePlayer?.AddVelocity(new Vector(0, 1) * 1f);
             });
             inputManager.Add('D', () =>
             {
                 if(currentScreen == null)
-                    thePlayer.AddVelocity(new Vector(1, 0) * 1f);
+                    thePlayer?.AddVelocity(new Vector(1, 0) * 1f);
             });
             inputManager.Add(27, () =>
             {
@@ -150,6 +161,8 @@ namespace Legend_Of_Knight
                 return;
             }
             zoom.End += e.Delta / 120 / 2f;
+            if (zoom.End < 0.5f)
+                zoom.End = 0.5f;
             if (zoom.Finished)
                 zoom.Fire();
         }
@@ -168,10 +181,13 @@ namespace Legend_Of_Knight
         private void Game_MouseClick(object sender, MouseEventArgs e)
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
+            currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
+            if (!isIngame || currentScreen != null)
+                return;
             thePlayer.Swing();
             Vector yaw = InputManager.mousePosition - SIZE / 2;
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
-            currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
+            thePlayer.HurtTime = 30;
         }
 
         private void TickTimer_Tick(object sender, EventArgs e)
@@ -218,19 +234,15 @@ namespace Legend_Of_Knight
             currentScreen.Animation.OnFinish += (object sender, EventArgs args) =>
             {
                 currentScreen = screen.Open(currentScreen);
-            }; //CheckBox, Label, Textbox, Slider
+            };
         }
         public void OnRender(float partialTicks)
         {
             animationHandler.OnRender(partialTicks);
-            StateManager.Push();
-            //Translating the Player to the center
-            StateManager.Scale(zoom.Value);
-            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
-            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
-            RenderDungeon();
+            if(isIngame)
+                RenderIngame(partialTicks);
+            ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
-            thePlayer.OnRender(partialTicks);
             #region DEBUG
             if (DEBUG)
             {
@@ -241,10 +253,18 @@ namespace Legend_Of_Knight
                     currentFrames = 0;
                 }
                 StateManager.Push();
-                //StateManager.Scale(0.5f);
+
+                StateManager.Push();
                 StateManager.SetColor(255, 0, 0);
-                foreach (Utils.Math.Rectangle r in d.Bounds)
-                    StateManager.DrawRect(r.Pos * 15, r.Size.X * 15, r.Size.Y * 15, 5);
+                //Translating the to the center
+                StateManager.Scale(zoom.Value);
+                StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
+                StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+                //TODO: Translating back to top-left and scale back to normal
+                foreach (Rectangle r in d.Bounds)
+                    StateManager.DrawRect(r.Pos, r.Size.X, r.Size.Y, 2);
+                StateManager.Pop();
+
                 StateManager.SetColor(0, 0, 0);
                 StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
                 StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
@@ -252,6 +272,19 @@ namespace Legend_Of_Knight
                 
             }
             #endregion
+        }
+
+        private void RenderIngame(float partialTicks)
+        {
+            StateManager.Push();
+            //Translating the Player to the center
+            StateManager.Scale(zoom.Value);
+            StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
+            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            RenderDungeon();
+            thePlayer.OnRender(partialTicks);
+            //TODO: Translating back to top-left and scale back to normal
+            StateManager.Pop();
         }
 
         public void RenderDungeon()
@@ -278,7 +311,7 @@ namespace Legend_Of_Knight
         {
             animationHandler.Update();
             inputManager.Update();
-            thePlayer.OnTick();
+            thePlayer?.OnTick();
         }
     }
 }
