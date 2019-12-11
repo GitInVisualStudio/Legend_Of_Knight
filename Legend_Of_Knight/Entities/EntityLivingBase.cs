@@ -106,7 +106,7 @@ namespace Legend_Of_Knight.Entities
 
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
-            Bitmap[][] images = ResourceManager.GetImages(this);
+            Bitmap[][] images = ResourceManager.GetImages("");//TODO: miriam
             Bitmap[][] hurtTimeImages = new Bitmap[images.Length][];
             for(int i = 0; i < images.Length; i++)
             {

@@ -131,10 +131,7 @@ namespace Legend_Of_Knight
             enem.Position = thePlayer.Position + new Vector(20, 20);
             entities.Add(enem);
             entities.Add(thePlayer);
-        }
-
             ingameGui = new GuiIngame(this);
-
             isIngame = true;
         }
 

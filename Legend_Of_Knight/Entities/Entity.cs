@@ -175,6 +175,7 @@ namespace Legend_Of_Knight.Entities
             velocity *= 0.7f;
 
             UpdateAnimation();
+        }
 
         private void PushInBounds(Rectangle rectangle = null, int corner = -1)
         {
