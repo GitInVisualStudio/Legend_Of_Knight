@@ -22,7 +22,7 @@ namespace Legend_Of_Knight.Utils.Math
             time = delay.Elapsed.TotalMilliseconds;
         }
 
-        public bool Check(float milli, bool autoReset)
+        public bool Check(float milli, bool autoReset = true)
         {
             bool result = delay.Elapsed.TotalMilliseconds - time > milli;
             if (autoReset && result)
@@ -32,14 +32,5 @@ namespace Legend_Of_Knight.Utils.Math
 
         public void Reset() => time = delay.Elapsed.TotalMilliseconds;
         
-
-        public static bool Check(float milli, [CallerFilePath] string memberName = "")
-        {
-            if (!utils.Keys.Contains(memberName))
-            {
-                utils.Add(memberName, new TimeUtils());
-            }
-            return utils[memberName].Check(milli, true);
-        }
     }
 }

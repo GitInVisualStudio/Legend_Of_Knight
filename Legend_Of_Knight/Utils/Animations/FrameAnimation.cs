@@ -17,6 +17,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public int Delay { get { return delay; } set { delay = value; } }
         public int Length => images.Length;
         public Bitmap Image => images[Index];
+        private TimeUtils timeUtils;
 
         public int Index { get => index; set => index = value; }
 
@@ -31,6 +32,7 @@ namespace Legend_Of_Knight.Utils.Animations
             this.stop = stop;
             Delay = delay;
             Index = 0;
+            this.timeUtils = new TimeUtils();
         }
 
         public override void Update()
@@ -38,7 +40,7 @@ namespace Legend_Of_Knight.Utils.Animations
             if (Finished)
                 return;
 
-            if (TimeUtils.Check(Delay))
+            if (timeUtils.Check(Delay))
             {
                 Index += increase ? 1 : -1;
                 if(Index == images.Length || Index < 0)

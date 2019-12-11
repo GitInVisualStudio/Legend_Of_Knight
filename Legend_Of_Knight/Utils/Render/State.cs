@@ -128,6 +128,8 @@ namespace Legend_Of_Knight.Utils.Render
 
             ScaleX = StateManager.ScaleX;
             ScaleY = StateManager.ScaleY;
+            TranslateX = StateManager.TranslateX;
+            TranslateY = StateManager.TranslateY;
             Font = StateManager.Font;
             Rotation = StateManager.Rotation;
             PrevState = StateManager.State;

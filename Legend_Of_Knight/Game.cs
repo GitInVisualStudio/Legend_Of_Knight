@@ -46,10 +46,7 @@ namespace Legend_Of_Knight
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
         public static Vector SIZE => new Vector(WIDTH, HEIGHT);
         public const string NAME = "Legend of Knight";
-        public const bool DEBUG = true;
 
-        private int fps = 0;
-        private int currentFrames = 0;
         private bool isIngame;
         private Timer renderTimer, tickTimer;
         private Stopwatch watch;
@@ -219,8 +216,7 @@ namespace Legend_Of_Knight
                 return;
 
             thePlayer.Swing();
-            //Vector yaw = InputManager.mousePosition - SIZE / 2;
-            Vector yaw = (InputManager.mousePosition - thePlayer.Position).Normalize(); // DEBUG: für wenn der spieler nicht in der genauen mitte gemalt wird
+            Vector yaw = InputManager.mousePosition - SIZE / 2;
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
         }
 
@@ -277,58 +273,27 @@ namespace Legend_Of_Knight
                 RenderIngame(partialTicks);
             ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
+
         }
 
         private void RenderIngame(float partialTicks)
         {
             StateManager.Push();
-            //Translating the Player to the center
-            //StateManager.Scale(zoom.Value);
-            //StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
-            //StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            StateManager.Scale(zoom.Value);
+            Vector player = -MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks);
+            StateManager.Translate(player);
+            StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
             RenderDungeon();
-            StateManager.Push();
-            player.OnRender(partialTicks);
             StateManager.Pop();
-            for (int i = 1; i < Entities.Count; i++)
+            for (int k = 0; k < entities.Count; k++)
             {
-                Entities[i].OnRender(partialTicks);
-            }
-            //thePlayer.OnRender(partialTicks);
-            //TODO: Translating back to top-left and scale back to normal
-            StateManager.Pop();
-
-            #region DEBUG
-            if (DEBUG)
-            {
-                currentFrames++;
-                if (TimeUtils.Check(1000))
-                {
-                    fps = currentFrames;
-                    currentFrames = 0;
-                }
                 StateManager.Push();
-
-                StateManager.Push();
-                
-                //Translating the to the center
                 StateManager.Scale(zoom.Value);
-                StateManager.Translate(-MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks));
+                StateManager.Translate(player);
                 StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+                entities[k].OnRender(partialTicks);
                 StateManager.Pop();
-                StateManager.SetColor(255, 0, 0);
-                //TODO: Translating back to top-left and scale back to normal
-                foreach (Rectangle r in d.Bounds)
-                    StateManager.DrawRect(r.Pos, r.Size.X, r.Size.Y, 2);
-                
-
-                StateManager.SetColor(0, 0, 0);
-                StateManager.DrawString("PartialTIcks: " + partialTicks, 0, 0);
-                StateManager.DrawString("FPS: " + fps, 0, StateManager.GetStringHeight("PartialTicsk"));
-                StateManager.Pop();
-
             }
-            #endregion
         }
 
         public void RenderDungeon()

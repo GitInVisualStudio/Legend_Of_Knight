@@ -14,9 +14,11 @@ namespace Legend_Of_Knight.Gui.GuiScreens
     {
         private bool loading;
         private string loadingText;
+        private TimeUtils timeUtils;
 
         public GuiStartScreen()
         {
+            this.timeUtils = new TimeUtils();
         }
 
         public override void Init(Game game)
@@ -34,7 +36,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         public override void OnRender(float partialTicks)
         {
             base.OnRender(partialTicks);
-            if (TimeUtils.Check(500) && loading)
+            if (timeUtils.Check(500) && loading)
             {
                 loadingText += ".";
                 if(loadingText.Length > 10)
@@ -46,6 +48,8 @@ namespace Legend_Of_Knight.Gui.GuiScreens
 
         private void Start_OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
+            if (loading)
+                return;
             new Thread(() =>
             {
                 loadingText = "Loading";

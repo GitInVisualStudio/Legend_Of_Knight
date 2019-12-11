@@ -140,8 +140,6 @@ namespace Legend_Of_Knight.Entities
         public virtual void OnRender(float partialTicks)
         {
             Vector position = MathUtils.Interpolate(this.PrevPosition, this.position, partialTicks);
-            if (Game.DEBUG)
-                RenderBoundingBox();
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(rotation);

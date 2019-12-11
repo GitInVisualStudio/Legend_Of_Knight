@@ -136,9 +136,6 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            if (Game.DEBUG)
-                RenderBoundingBox();
-
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);

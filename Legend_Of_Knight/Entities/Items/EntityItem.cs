@@ -25,8 +25,6 @@ namespace Legend_Of_Knight.Entities.Items
 
         public override void OnRender(float partialTicks)
         {
-            if (Game.DEBUG)
-                RenderBoundingBox();
             Vector position = MathUtils.Interpolate(PrevPosition, this.position, partialTicks);
             Vector hover = new Vector(0, (float)Math.Sin(MathUtils.Interpolate(prevDelta, delta, partialTicks)));
             StateManager.Push();
