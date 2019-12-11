@@ -44,7 +44,7 @@ namespace Legend_Of_Knight.Entities.Enemies
                 swingCooldown = maxSwingCooldown;
             }
                 
-            if (HurtTime == 0 && !Game.Player.SwingAnimation.Finished && Box.Collides(Game.Player.EntityItem.Box)) // falls der Spieler gerade angreift und sein Schwert diesen Gegner trifft // Kollision funktioniert nicht => positionen falsch aber durch translation "richtig" angezeigt?? // -> IN OBERKLASSE
+            if (HurtTime == 0 && !Game.Player.SwingAnimation.Finished && Box.Collides(Game.Player.EntityItem.Box)) // falls der Spieler gerade angreift und sein Schwert diesen Gegner trifft // Kollision funktioniert nicht => positionen falsch aber durch translation "richtig" angezeigt // -> IN OBERKLASSE
             { 
                 Health -= Game.Player.Item.Damage;
                 velocity -= (Game.Player.Position - Position).Normalize() * 20; // Rückstoß

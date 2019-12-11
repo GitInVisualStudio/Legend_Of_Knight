@@ -30,6 +30,7 @@ namespace Legend_Of_Knight.Entities
         private bool usingItem;
         private EnumFacing facing;
         private CustomAnimation<float> swing; // Attackanimation
+        protected List<EntityItem> enemyItems; // Waffen der Gegner dieser Entity (falls Enemy: player Item, falls Player: Items aller Enemies)
 
         public int ItemCount => EntityItem.Animation.Index;
         public float Yaw
@@ -67,7 +68,7 @@ namespace Legend_Of_Knight.Entities
 
             set
             {
-                EntityItem = new EntityItem(value);
+                EntityItem = new EntityItem(value, this);
                 item = value;
             }
         }
@@ -199,6 +200,15 @@ namespace Legend_Of_Knight.Entities
 
             if (IsUsingItem)
                 EntityItem?.Animation?.Update();
+
+            List<EntityItem> enemyItems = Game.GetEnemyItems(!(this is EntityPlayer));
+            foreach (EntityItem item in enemyItems)
+                if (HurtTime == 0 && !item.Owner.SwingAnimation.Finished && Box.Collides(item.Box))
+                {
+                    HurtTime = maxHurtTime;
+                    Health -= item.Item.Damage;
+                    velocity -= (item.Owner.Position - Position).Normalize() * 20f; // Rückstoß
+                }
         }
 
         /// <summary>

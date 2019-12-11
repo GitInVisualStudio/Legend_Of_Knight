@@ -15,6 +15,7 @@ namespace Legend_Of_Knight.World
         private Vector roomSize;
         private float leaveConnectionPercentage;
         private int corridorWidth;
+        private int enemiesPerRoom;
 
         /// <summary>
         /// Seed, aufgrunddessen ein Dungeon generiert werden soll (Default: Momentane Zeit in Minuten geteilt durch die überstehenden Milisekunden)
@@ -40,6 +41,10 @@ namespace Legend_Of_Knight.World
         /// Breite der verbindenden Korridore in Feldern (Default: 3)
         /// </summary>
         public int CorridorWidth { get => corridorWidth; set => corridorWidth = value; }
+        /// <summary>
+        /// Durchschnittliche Anzahl an Gegnern, die pro Raum spawnen sollen. Variiert leicht. (Default: 2)
+        /// </summary>
+        public int EnemiesPerRoom { get => enemiesPerRoom; set => enemiesPerRoom = value; }
 
         public DungeonGenArgs()
         {
@@ -50,6 +55,7 @@ namespace Legend_Of_Knight.World
             RoomSize = new Vector(30, 30);
             LeaveConnectionPercentage = 0.1f;
             CorridorWidth = 3;
+            EnemiesPerRoom = 2;
         }
 
         

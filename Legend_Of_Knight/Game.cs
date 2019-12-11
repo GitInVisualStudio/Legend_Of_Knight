@@ -1,5 +1,6 @@
 ﻿using Legend_Of_Knight.Entities;
 using Legend_Of_Knight.Entities.Enemies;
+using Legend_Of_Knight.Entities.Items;
 using Legend_Of_Knight.Gui;
 using Legend_Of_Knight.Gui.GuiScreens;
 using Legend_Of_Knight.Properties;
@@ -32,10 +33,7 @@ namespace Legend_Of_Knight
         // alles in Utils.Render
 
         // TODO: sonstiges
-        // Darstellung fixen
-        // Spawnen der Gegner (bleiben immer in ihrem Raum?)
-        // Kollisionsdetektion der EntityLivingBases verallgemeinern und implementieren
-        // evtl: Gewinnabfrage
+        // Kollisionsdetektion fixen
 
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
@@ -59,6 +57,8 @@ namespace Legend_Of_Knight
 
         private Dungeon d;
         private static List<Entity> entities;
+        private CRandom rnd;
+        private Type[] enemyTypes;
 
         private static EntityPlayer player;
         public InputManager InputManager => inputManager;
@@ -117,6 +117,7 @@ namespace Legend_Of_Knight
             SetScreen(new GuiStartScreen());
             //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
             entities = new List<Entity>();
+            enemyTypes = new Type[] { typeof(EnemyJens) };
         }
 
         public void LoadIngame()
@@ -125,7 +126,8 @@ namespace Legend_Of_Knight
             {
                 CorridorWidth = 6,
                 Rooms = 10,
-                LeaveConnectionPercentage = 0.25f
+                LeaveConnectionPercentage = 0.25f,
+                EnemiesPerRoom = 2
             });
             foreach (Rectangle r in d.Bounds)
             {
@@ -138,16 +140,33 @@ namespace Legend_Of_Knight
                 Position = (new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 15).Copy()
             };
             Console.WriteLine("Seed: " + d.Args.Seed);
+            rnd = new CRandom(d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
-            thePlayer.Position = new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 16;
+            thePlayer.Position = rnd.PickElements(d.Rooms, 1)[0].CenterPos * 16;
             player = thePlayer;
             Entities.Add(thePlayer);
 
-            EnemyJens enem = new EnemyJens(d.Bounds);
-            enem.Position = thePlayer.Position + new Vector(20, 20);
-            Entities.Add(enem);
+            SpawnEnemies();
+            
             ingameGui = new GuiIngame(this);
             isIngame = true;
+        }
+
+        /// <summary>
+        /// Erstellt anhand der in den DungeonGenArgs angegebenen Zahl pro Raum Gegner und platziert sie zufällig
+        /// </summary>
+        private void SpawnEnemies()
+        {
+            foreach (Room r in d.Rooms)
+            {
+                int enemyCount = (int)Math.Round((rnd.NextFloatGaussian(0.5f) + 0.5) * d.Args.EnemiesPerRoom);
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    EntityEnemy enem = (EntityEnemy)rnd.PickElements(enemyTypes, 1)[0].GetConstructors()[0].Invoke(new object[] { d.Bounds }); // sucht einen Gegnertyp zufällig aus und erstellt ein Objekt dessen
+                    enem.Position = (new Vector(r.X, r.Y) + new Vector(r.SizeX * rnd.NextFloatGaussian(), r.SizeY * rnd.NextFloatGaussian()) / 2) * 16;
+                    entities.Add(enem);
+                }
+            }
         }
 
         private void AddKeybinds()
@@ -155,7 +174,7 @@ namespace Legend_Of_Knight
             inputManager.Add('W', () =>
             {
                 if (currentScreen == null)
-                    thePlayer?.AddVelocity(new Vector(0, -1) * 1f); // Problem mit In-Bounds-bleiben -> Velocity hinzufügen statt setzen?
+                    thePlayer?.AddVelocity(new Vector(0, -1) * 1f);
             });
             inputManager.Add('A', () =>
             {
@@ -296,6 +315,22 @@ namespace Legend_Of_Knight
             }
         }
 
+        /// <summary>
+        /// Gibt alle Items der Gegner einer bestimmten Entity zurück.
+        /// </summary>
+        /// <param name="friendly">Falls true, wird nach den Entities auf der Seite des Protagonisten gesucht und ihre Waffen zurück. Falls nein werden die Items der Antagonisten zurückgegeben.</param>
+        public static List<EntityItem> GetEnemyItems(bool friendly)
+        {
+            List<EntityItem> res = new List<EntityItem>();
+            if (friendly)
+                res.Add(Player.EntityItem);
+            else
+                foreach (Entity e in entities)
+                    if (e is EntityLivingBase && !(e is EntityPlayer))
+                        res.Add(((EntityLivingBase)e).EntityItem);
+            return res;
+        }
+
         public void RenderDungeon()
         {
             float width = WIDTH;
@@ -325,6 +360,11 @@ namespace Legend_Of_Knight
                 Entities[i].OnTick();
                 if (((EntityLivingBase)Entities[i]).Health <= 0)
                     Entities.RemoveAt(i);
+            }
+            if (entities.Count == 1)
+            {
+                Console.WriteLine("gg");
+                Application.Exit();
             }
         }
     }

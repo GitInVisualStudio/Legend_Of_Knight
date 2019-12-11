@@ -14,14 +14,17 @@ namespace Legend_Of_Knight.Entities.Items
     {
         private Item item;
         private float delta, prevDelta;
+        private EntityLivingBase owner;
 
-        public EntityItem(Item item) : base(new Rectangle[0])
+        public Item Item { get => item; protected set => item = value; }
+        public EntityLivingBase Owner { get => owner; }
+
+        public EntityItem(Item item, EntityLivingBase owner) : base(new Rectangle[0])
         {
             this.Item = item;
             this.Box = new BoundingBox(this, item.Image.Width / 3, item.Image.Height / 3);
+            this.owner = owner;
         }
-
-        public Item Item { get => item; protected set => item = value; }
 
         public override void OnRender(float partialTicks)
         {
