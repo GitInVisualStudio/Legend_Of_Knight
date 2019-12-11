@@ -151,7 +151,7 @@ namespace Legend_Of_Knight.Entities
             if (hurtTime != 0) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
             {
                 float opacity = hurtTime / (float)maxHurtTime;
-                StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, opacity);
+                StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, opacity);
             }
 
             if (item == null || swing.Finished)
@@ -159,8 +159,6 @@ namespace Legend_Of_Knight.Entities
                 StateManager.Pop();
                 return;
             }
-            //float offset = Width * itemOffset;
-            //StateManager.Translate(EntityItem.Width / 2, 0);
 
             // Rendert das Item
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
@@ -171,6 +169,7 @@ namespace Legend_Of_Knight.Entities
             EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
             EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
             EntityItem.OnRender(partialTicks);
+            EntityItem.Position += position;
             StateManager.Pop();
         }
 

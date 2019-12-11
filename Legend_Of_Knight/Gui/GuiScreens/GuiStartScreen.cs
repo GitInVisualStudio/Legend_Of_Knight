@@ -42,7 +42,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                 if(loadingText.Length > 10)
                     loadingText = "Loading";
             }
-            StateManager.SetColor(0, 0, 0);
+            StateManager.SetColor(255, 255, 255);
             StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
         }
 
