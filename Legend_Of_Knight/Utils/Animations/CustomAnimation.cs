@@ -112,5 +112,13 @@ namespace Legend_Of_Knight.Utils.Animations
             current = End;
             base.Finish();
         }
+
+        public static CustomAnimation<T> CreateDefaultAnimation(T end)
+        {
+            return new CustomAnimation<T>(default(T), end, (T current, T delta) => {
+                dynamic var1 = current, var2 = delta;
+                return var1 + var2;
+            });
+        }
     }
 }

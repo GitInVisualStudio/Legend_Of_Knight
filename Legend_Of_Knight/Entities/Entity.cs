@@ -16,14 +16,13 @@ namespace Legend_Of_Knight.Entities
 
         protected Vector position;
         protected Vector velocity;
-        protected Vector prevPosition;
+        private Vector prevPosition;
         protected float rotation;
         private BoundingBox box;
         protected float movingTime;
         protected FrameAnimation animation;
         private float scale;
         protected Rectangle[] bounds;
-        protected bool outOfBounds;
         
         public event EventHandler<Vector> Moved;
         public event EventHandler<float> Rotated;
@@ -54,7 +53,8 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position = value;
-                prevPosition = position;
+                PrevPosition = position.Copy();
+                Moved(this, position);
             }
         }
 
@@ -123,17 +123,19 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public Vector PrevPosition { get => prevPosition; set => prevPosition = value; }
+
         public Entity(Rectangle[] bounds)
         {
             position = new Vector(2);
             velocity = new Vector(2);
-            prevPosition = new Vector(2);
+            PrevPosition = new Vector(2);
             this.bounds = bounds;
         }
 
         public virtual void OnRender(float partialTicks)
         {
-            Vector position = MathUtils.Interpolate(this.prevPosition, this.position, partialTicks);
+            Vector position = MathUtils.Interpolate(this.PrevPosition, this.position, partialTicks);
             if (Game.DEBUG)
                 RenderBoundingBox();
             StateManager.Push();
@@ -164,37 +166,62 @@ namespace Legend_Of_Knight.Entities
 
         public void Move()
         {
-            if (outOfBounds)
-                return;
-            prevPosition = position;
+
+            //TODO: Guck ob das Entity außerhalb der Map geht wenn Velocity addiert wird
+            PushInBounds();
+
+            PrevPosition = position;
             position += Velocity;
             velocity *= 0.7f;
 
             UpdateAnimation();
 
-            int oobCounter = 0;
-            while (!InBounds())
+        private void PushInBounds(Rectangle rectangle = null, int corner = -1)
+        {
+            if (rectangle == null)
+                rectangle = FindCurrentRect();
+            if (corner >= box.Corners.Length || rectangle == null)
+                return;
+            int last = IsOutOfBox(corner);
+            if (last != -1)
+                PushInBounds(rectangle, last);
+            if (corner == -1)
+                return;
+            Vector pos = rectangle.Pos;
+            Vector size = rectangle.Size;
+            Vector next = box.Corners[corner] + velocity;
+            if (next.X > pos.X + size.X && velocity.X > 0)
+                velocity.X = 0;
+            if (next.X < pos.X && velocity.X < 0)
+                velocity.X = 0;
+            if (next.Y > pos.Y + size.Y && velocity.Y > 0)
+                velocity.Y = 0;
+            if (next.Y < pos.Y && velocity.Y < 0)
+                velocity.Y = 0;
+        }
+
+        /// <summary>
+        /// Guckt ob ein Ecke der BoundingBox im nächsten Tick außerhalb der Map sein wird
+        /// Current: Falls mehrere außerhalb der Map liegen
+        /// </summary>
+        /// <returns></returns>
+        private int IsOutOfBox(int current)
+        {
+            for(int i = 0; i < box.Corners.Length; i++)
             {
-                Rectangle closest = null;
-                if (oobCounter > 50)
+                bool isOut = true;
+                for (int k = 0; k < bounds.Length; k++)
                 {
-                    closest = FindClosestBoundingRect();
-                    while (!InBounds())
+                    if (bounds[k].PointInRectangle((box.Corners[i] + velocity)))
                     {
-                        position += new Vector(closest.CenterPos.X * 16 - position.X, closest.CenterPos.Y * 16 - position.Y).Normalize();
-                        Moved?.Invoke(this, position);
+                        isOut = false;
+                        break;
                     }
                 }
-                else
-                {
-                    outOfBounds = true;
-                    position -= velocity.Normalize() * 1;
-                    Moved?.Invoke(this, position);
-                    oobCounter++;
-                }
+                if (isOut && current < i)
+                    return i;
             }
-            outOfBounds = false;
-            Moved?.Invoke(this, position);
+            return -1;
         }
 
         protected virtual void UpdateAnimation()
@@ -211,34 +238,18 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        protected bool InBounds()
+        protected Rectangle FindCurrentRect()
         {
-            foreach (Vector corner in box.Corners)
-                if (bounds.All(r => !r.PointInRectangle(corner / 16)))
-                    return false;
-            return true;
-        }
-
-        protected Rectangle FindClosestBoundingRect()
-        {
-            
             for (int i = 0; i < bounds.Length; i++)
                 foreach (Vector c in box.Corners)
-                    if (bounds[i].PointInRectangle(c / 16))
+                    if (bounds[i].PointInRectangle(c))
                         return bounds[i];
-
-            Rectangle closest = bounds[0];
-            for (int i = 1; i < bounds.Length; i++) // falls keiner der Ecken in irgendeinem Rechteck ist
-                if (MathUtils.Sqrt(MathUtils.Pow(closest.CenterPos.X - position.X, 2) + MathUtils.Pow(closest.CenterPos.Y - position.Y, 2)) < MathUtils.Sqrt(MathUtils.Pow(bounds[i].CenterPos.X - position.X, 2) + MathUtils.Pow(bounds[i].CenterPos.Y - position.Y, 2)))
-                    closest = bounds[i];
-            Console.WriteLine("Kein Punkt InBounds, nehme nächstes Rechteck");
-            return closest;
+            return null;
         }
 
         public void AddVelocity(Vector delta)
         {
-            if (InBounds())
-                velocity += delta;
+            velocity += delta;
         }
     }
 }
