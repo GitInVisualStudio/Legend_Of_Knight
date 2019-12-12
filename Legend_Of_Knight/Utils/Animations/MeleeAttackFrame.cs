@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Animations
 {
+    /// <summary>
+    /// FrameAnimation mit deligierten Status für den Schlag
+    /// </summary>
     public class MeleeAttackFrame : FrameAnimation
     {
         const int FRAME_DELAY = 20;

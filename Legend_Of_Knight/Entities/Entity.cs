@@ -20,7 +20,7 @@ namespace Legend_Of_Knight.Entities
         protected float rotation;
         private BoundingBox box;
         protected float movingTime;
-        protected FrameAnimation animation;
+        protected FrameAnimation animation; //FrameAnimation für Bewegung etc.
         private float scale;
         protected Rectangle[] bounds;
         
@@ -137,30 +137,28 @@ namespace Legend_Of_Knight.Entities
             this.bounds = bounds;
         }
 
+        /// <summary>
+        /// Zeichnet nur das Entity, berechnet keine neuen Positionen
+        /// </summary>
+        /// <param name="partialTicks"></param>
         public virtual void OnRender(float partialTicks)
         {
+            //Interpolation damit es flüssig ist
             Vector position = MathUtils.Interpolate(this.PrevPosition, this.position, partialTicks);
             StateManager.Push();
+            //Translation um Mittig zu Rotieren
             StateManager.Translate(position);
             StateManager.Rotate(rotation);
             StateManager.Translate(Size / -2);
+            //Skalierung vom Entity
             StateManager.Scale(Scale);
             StateManager.DrawImage(animation.Image, 0, 0);
             StateManager.Pop();
         }
 
-        protected virtual void RenderBoundingBox()
-        {
-            Vector prev = Box.Corners.Last();
-            StateManager.SetColor(255, 0, 0);
-            for (int i = 0; i < Box.Corners.Length; i++)
-            {
-                Vector current = Box.Corners[i];
-                StateManager.DrawLine(prev, current, 0.1f);
-                prev = current;
-            }
-        }
-
+        /// <summary>
+        /// Wird jeden Tick aufgerufen, dient zur berechnung von Position und Interaktionen
+        /// </summary>
         public virtual void OnTick()
         {
             Move();
@@ -169,15 +167,21 @@ namespace Legend_Of_Knight.Entities
         public void Move()
         {
             //TODO: Guck ob das Entity außerhalb der Map geht wenn Velocity addiert wird
+            //Wenn dies der Fall ist, Velocity auf 0 setzen
             PushInBounds();
 
-            PrevPosition = position;
+            PrevPosition = position;//Für die Interpolation
             position += Velocity;
-            velocity *= 0.7f;
+            velocity *= 0.7f;//Damit das Entity sich nicht Linear gewegt
 
             UpdateAnimation();
         }
 
+        /// <summary>
+        /// Pusht das Entity in die Begrenzungen der Map
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="corner"></param>
         private void PushInBounds(Rectangle rectangle = null, int corner = -1)
         {
             if (rectangle == null)
@@ -226,6 +230,9 @@ namespace Legend_Of_Knight.Entities
             return -1;
         }
 
+        /// <summary>
+        /// Aktualisiert die Animation des Entitys
+        /// </summary>
         protected virtual void UpdateAnimation()
         {
             if (velocity.Length > 0.2f)

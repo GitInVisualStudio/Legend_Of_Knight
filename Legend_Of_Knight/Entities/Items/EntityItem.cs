@@ -12,9 +12,10 @@ namespace Legend_Of_Knight.Entities.Items
 {
     public class EntityItem : Entity
     {
+        //Item von Entity
         private Item item;
         private float delta, prevDelta;
-        private EntityLivingBase owner;
+        private EntityLivingBase owner;//Besitzer des Items
 
         public Item Item { get => item; protected set => item = value; }
         public EntityLivingBase Owner { get => owner; }
@@ -26,6 +27,10 @@ namespace Legend_Of_Knight.Entities.Items
             this.owner = owner;
         }
 
+        /// <summary>
+        /// Zeichnet das Item
+        /// </summary>
+        /// <param name="partialTicks"></param>
         public override void OnRender(float partialTicks)
         {
             Vector position = MathUtils.Interpolate(PrevPosition, this.position, partialTicks);

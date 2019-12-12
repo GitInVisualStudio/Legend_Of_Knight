@@ -151,13 +151,14 @@ namespace Legend_Of_Knight.Entities
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
             Vector position = MathUtils.Interpolate(PrevPosition, this.position, partialTicks);
-            Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
+            Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;//Bewegungs-Animation (leichtes schwenken im laufen=
             StateManager.Push();
             StateManager.Translate(position);
             StateManager.Rotate(Rotation + death.Value * 90.0f);
             StateManager.Translate(Size / -2);
             if (death.Started)
             {
+                //Zeichnet die Sterbe-Animation
                 StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, 1 - death.Value);
                 StateManager.Pop();
                 return;
@@ -177,14 +178,15 @@ namespace Legend_Of_Knight.Entities
 
             // Rendert das Item
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
-            float yaw = Yaw + (MathUtils.Sin(90 * swing.Value) * 80 - 80) * itemOffset;
-            EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
+            float yaw = Yaw + (MathUtils.Sin(90 * swing.Value) * 80 - 80) * itemOffset;//Rotation des Entites
+            EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f; //Skalierung von 0 auf 1 im laufe der Animation
             EntityItem.Rotation = yaw; //Rotation des Items setzen auf die Blickrichtung
             EntityItem.Position = Size / 2;
             //Translation für die Rotation in die Mitte
             EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
             EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
             EntityItem.OnRender(partialTicks);
+            //Für die Kollisions-Detektion
             EntityItem.Position += position - Size / 2;
             StateManager.Pop();
         }

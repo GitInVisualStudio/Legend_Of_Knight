@@ -8,6 +8,9 @@ using static Legend_Of_Knight.Utils.Animations.MeleeAttackFrame;
 
 namespace Legend_Of_Knight.Utils.Animations
 {
+    /// <summary>
+    /// Mehrere SchlagAnimation-Stadien
+    /// </summary>
     public class MeleeAttackAnimation : Animation
     {
         private MeleeAttackFrame[] attackFrames;
@@ -22,6 +25,7 @@ namespace Legend_Of_Knight.Utils.Animations
             this.index = 0;
             this.currentFrame = attackFrames[index];
 
+            //Geht die einzelnen Stadien der Animation durch
             for(int i = 0; i < attackFrames.Length; i++)
             {
                 attackFrames[i].OnFinish += (object sender, EventArgs args) =>

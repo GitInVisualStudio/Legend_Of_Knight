@@ -7,9 +7,12 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Render
 {
+    /// <summary>
+    /// Stadie des StateManagers für die einfache Handhabung der Translation/Rotation/Skalierung der Matrix
+    /// Speicher alle Werte des StateManagers in einem State um vorherige States wieder herzustellen
+    /// </summary>
     public class State
     {
-
         private Color color;
         private Font font = new Font("System", 12);
         private float scaleX = 1, scaleY = 1, translateX = 0, translateY = 0;

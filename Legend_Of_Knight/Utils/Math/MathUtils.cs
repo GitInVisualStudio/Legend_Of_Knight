@@ -33,11 +33,24 @@ namespace Legend_Of_Knight.Utils.Math
 
         public static float ToDegree(float angle) => (float)(angle * 180.0f / s::Math.PI);
 
+        /// <summary>
+        /// Rotiert die Position um den Winkel
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="angle"></param>
+        /// <returns></returns>
         public static Vector GetRotation(Vector position, float angle)
         {
             return new Vector(position.X * Cos(angle) - position.Y * Sin(angle), position.X * Sin(angle) + position.Y * Cos(angle));
         }
 
+        /// <summary>
+        /// Interpoliert zwei Werte auf zwischenwerte
+        /// </summary>
+        /// <param name="prev"></param>
+        /// <param name="current"></param>
+        /// <param name="partialTicks">Zeit bis zum nächsten Tick(0-1)</param>
+        /// <returns></returns>
         public static dynamic Interpolate(dynamic prev, dynamic current, float partialTicks)
         {
             return current + (prev - current) * partialTicks;

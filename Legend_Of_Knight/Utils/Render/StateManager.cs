@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Render
 {
+    /// <summary>
+    /// Dient zur einfachen verwaltung des Graphics
+    /// </summary>
     public class StateManager
     {
         private static Graphics g;

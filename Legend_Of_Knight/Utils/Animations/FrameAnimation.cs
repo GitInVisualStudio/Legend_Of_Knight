@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Animations
 {
+    /// <summary>
+    /// FrameAnimation für ein Durchgehen von einzelnen Bitmaps
+    /// </summary>
     public class FrameAnimation : Animation
     {
         private Bitmap[] images;
         private int index;
         private int delay;
         private bool stop;
-        public int Delay { get { return delay; } set { delay = value; } }
+        public int Delay { get { return delay; } set { delay = value; } } //Delay in Millisekunden bis zum nächsten Bitmap
         public int Length => images.Length;
         public Bitmap Image => images[Index];
         private TimeUtils timeUtils;
@@ -22,7 +25,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public int Index { get => index; set => index = value; }
 
         /// <summary>
-        /// goes through the images
+        /// Geht durch ein Bitmap-Array als Animation
         /// </summary>
         /// <param name="delay">in millis</param>
         /// <param name="images"></param>
@@ -39,7 +42,7 @@ namespace Legend_Of_Knight.Utils.Animations
         {
             if (Finished)
                 return;
-
+            //Wenn Delay um ist, wird der Index addiert um das Nächste Bild zu setzen
             if (timeUtils.Check(Delay))
             {
                 Index += increase ? 1 : -1;

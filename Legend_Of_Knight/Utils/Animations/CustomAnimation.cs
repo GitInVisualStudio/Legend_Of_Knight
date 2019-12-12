@@ -8,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils.Animations
 {
+
+    /// <summary>
+    /// Dynamische Animation für die Annäherung von zwei Werten
+    /// </summary>
+    /// <typeparam name="T">Typ der Werte</typeparam>
     public class CustomAnimation<T> : FireableAnimation where T : struct
     {
         private Animate animate;
+        //Dynamic damit Operatoren genutzt werden können
         private dynamic start, current, end, toleranz = default(T);
         private float speed = 1.0f;
         public T Value => current;
@@ -78,6 +84,7 @@ namespace Legend_Of_Knight.Utils.Animations
             
         }
 
+        //Die Deligierte-Methode für die Annäherung der Werte
         public delegate T Animate(T current, T delta);
 
         public override void Reset()
@@ -96,7 +103,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public override void OnRender(float partialTicks)
         {
             dynamic delta = Delta;
-            delta *= Speed * StateManager.delta * 10;
+            delta *= Speed * StateManager.delta * 10;//Für eine "Smoothe" annäherung
             current = animate(current, delta);
             if (delta * delta < toleranz * toleranz && !Finished) //Quadrat für den Betrag
                 Finish();
@@ -107,12 +114,14 @@ namespace Legend_Of_Knight.Utils.Animations
             
         }
 
+        //Beendet die Animation
         protected override void Finish()
         {
             current = End;
             base.Finish();
         }
 
+        //Gibt eine standart-proportionale animation an
         public static CustomAnimation<T> CreateDefaultAnimation(T end)
         {
             return new CustomAnimation<T>(default(T), end, (T current, T delta) => {

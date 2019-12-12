@@ -8,6 +8,7 @@ namespace Legend_Of_Knight.Utils.Math
 {
     public struct Vector
     {
+        //Werte des Vectors in mehreren Dimensionen
         private float[] values;
 
         public float[] Values
@@ -23,6 +24,7 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Indexer um auf die einzelnen Dimensionen einfach zugreifen zu können
         public float this[int i]
         {
             get
@@ -36,6 +38,7 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Getter/Setter für die erste Dimension
         public float X
         {
             get
@@ -55,6 +58,7 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Getter/Setter für die zweite Dimension
         public float Y
         {
             get
@@ -74,6 +78,7 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Default Vector
         public static Vector Null
         {
             get
@@ -82,6 +87,7 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Konstruktor für einen Mehrdimensionalen Vector mit direkter Werteübergabe der Dimensionen
         public Vector(params float[] p)
         {
             values = new float[p.Length];
@@ -91,11 +97,13 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Konstruktor für einen Mehrdimensionalen
         public Vector(int dimensions)
         {
             values = new float[dimensions];
         }
 
+        //Gibt die Länge des Vectors zurück
         public float Length
         {
             get
@@ -107,14 +115,17 @@ namespace Legend_Of_Knight.Utils.Math
             }
         }
 
+        //Gibt die Dimensionen zurück
         public int Dimensions => values.Length;
 
+        //Normalisiert den Vector, so dass nur noch die Richtung vorhanden ist
         public Vector Normalize()
         {
             Vector newVector = Copy();
             return newVector / Length;
         }
 
+        //Überschreibt die Operatoren für eine einfachere Syntax
         public static Vector operator +(Vector v1, Vector v2)
         {
             Vector newVector = new Vector(v1.Dimensions);
