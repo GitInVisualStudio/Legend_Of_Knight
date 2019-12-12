@@ -109,8 +109,8 @@ namespace Legend_Of_Knight.Entities
         public bool IsDead => death.Finished;
 
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
-        public CustomAnimation<float> SwingAnimation { get => swing; }
-        public int MaxHurtTime { get => maxHurtTime; set => maxHurtTime = value; }
+        public CustomAnimation<float> SwingAnimation { get { return swing; } }
+        public int MaxHurtTime { get { return maxHurtTime; } set { maxHurtTime = value; } }
 
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {

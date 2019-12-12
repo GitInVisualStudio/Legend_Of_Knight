@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui.GuiScreens
 {
@@ -18,6 +19,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         private bool loading;
         private string loadingText;
         private TimeUtils timeUtils;
+        private bool hard;
 
         public GuiStartScreen()
         {
@@ -32,7 +34,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             {
                 Background = Color.Gray
             };
-            start.OnClick += (object sender, System.Windows.Forms.MouseEventArgs e) =>
+            start.OnClick += (object sender, MouseEventArgs e) =>
             {
                 if (loading || !start.OnHover(e)) //nur ausführen wenn auch über dem Button
                     return;
@@ -41,10 +43,20 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                 {
                     loadingText = "Loading";
                     loading = true;
-                    game.LoadIngame();//Laden des IngameSpiels
+                    game.LoadIngame(hard);//Laden des IngameSpiels
                     game.SetScreen(null);//Setzten des Ingame-Fokuses
                 }).Start();
             };
+            GuiCheckbox box = new GuiCheckbox("Hard", false)
+            {
+                Position = new Vector(Width / 2 - 50, Height / 2 - 30),
+                Size = new Vector(100, 20)
+            };
+            box.OnClick += (object sender, MouseEventArgs args) =>
+            {
+                hard = box.State;
+            };
+            Components.Add(box);
             Components.Add(start);
         }
 

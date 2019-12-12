@@ -1,4 +1,5 @@
-﻿using Legend_Of_Knight.Utils.Math;
+﻿using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Legend_Of_Knight.Gui
     public class GuiButton : GuiLabel
     {
         private Color background = Color.Transparent;
+        private Color current;
         private Bitmap image;
 
         public Color Background
@@ -63,7 +65,23 @@ namespace Legend_Of_Knight.Gui
         //Zeichnen des Buttons
         public override void OnRender(float partialTicks)
         {
-            StateManager.SetColor(Background);
+            int r = Background.R - current.R;
+            int g = Background.G - current.G;
+            int b = Background.B - current.B;
+            if (OnHover(InputManager.mouseX, InputManager.mouseY))
+            {
+                r -= 50;
+                g -= 50;
+                b -= 50;
+                if (r < 0)
+                    r = 0;
+                if (g < 0)
+                    g = 0;
+                if (b < 0)
+                    b = 0;
+            }
+            current = Color.FromArgb(current.R + (int)(r / 4f), current.G + (int)(g / 4f), current.B + (int)(b / 4f));
+            StateManager.SetColor(current);
             StateManager.FillRect(Position, Width, Height);
             if(Image != null)
                 StateManager.DrawImage(Image, Position);

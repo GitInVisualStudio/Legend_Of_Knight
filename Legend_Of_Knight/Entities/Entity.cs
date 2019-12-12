@@ -126,7 +126,7 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
-        public Vector PrevPosition { get => prevPosition; set => prevPosition = value; }
+        public Vector PrevPosition { get { return prevPosition; } set { prevPosition = value; } }
 
         /// <param name="bounds">Rechtecke, in denen die Entity sich bewegen darf</param>
         public Entity(Rectangle[] bounds)

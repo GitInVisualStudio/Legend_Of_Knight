@@ -22,7 +22,7 @@ namespace Legend_Of_Knight.Utils.Animations
         public Bitmap Image => images[Index];
         private TimeUtils timeUtils;
 
-        public int Index { get => index; set => index = value; }
+        public int Index { get { return index; } set { index = value; } }
 
         /// <summary>
         /// Geht durch ein Bitmap-Array als Animation

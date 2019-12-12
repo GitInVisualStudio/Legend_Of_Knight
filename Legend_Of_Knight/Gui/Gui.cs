@@ -84,6 +84,12 @@ namespace Legend_Of_Knight.Gui
             return args.X > X && args.Y > Y && args.X < X + Width && args.Y < Y + Height;
         }
 
+        //Prüft ob der Spieler über dem GUI ist
+        public bool OnHover(int x, int y)
+        {
+            return x > X && y > Y && x < X + Width && y < Y + Height;
+        }
+
         public abstract void OnRender(float partialTicks);
     }
 }

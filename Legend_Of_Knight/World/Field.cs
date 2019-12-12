@@ -25,20 +25,20 @@ namespace Legend_Of_Knight.World
         /// <summary>
         /// Animation, die dieses Feld darstellen soll (ein Frame)
         /// </summary>
-        public FrameAnimation Anim { get => anim; set => anim = value; }
+        public FrameAnimation Anim { get { return anim; } set { anim = value; } }
         /// <summary>
         /// Raum oder Korridor, der dieses Feld einnimmt
         /// </summary>
-        public Area Area { get => area; set => area = value; }
+        public Area Area { get { return area; } set { area = value; } }
         /// <summary>
         /// X-Koordinate dieses Feldes im Dungeon 
         /// </summary>
-        public int X { get => x; set => x = value; }
+        public int X { get { return x; } set { x = value; } }
         /// <summary>
         /// X-Koordinate dieses Feldes im Dungeon 
         /// </summary>
-        public int Y { get => y; set => y = value; }
-        public FieldType Type { get => type; set => type = value; }
+        public int Y { get { return y; } set { y = value; } }
+        public FieldType Type { get { return type; } set { type = value; } }
 
         public Field(int x, int y, CRandom rnd)
         {

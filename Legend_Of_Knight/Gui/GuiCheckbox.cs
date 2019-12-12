@@ -79,7 +79,7 @@ namespace Legend_Of_Knight.Gui
         /// <param name="partialTicks"></param>
         public override void OnRender(float partialTicks)
         {
-            StateManager.SetColor(Color);
+            StateManager.SetColor(255, 255, 255);
             Vector stringSize = StateManager.GetStringSize(token)/2;
             tokenWidth = stringSize.X * 2;
             StateManager.DrawString(Text, Position);

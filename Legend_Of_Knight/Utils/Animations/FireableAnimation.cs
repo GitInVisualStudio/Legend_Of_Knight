@@ -11,7 +11,7 @@ namespace Legend_Of_Knight.Utils.Animations
         //Ob sie gestarted wurde
         private bool started;
 
-        public bool Started { get => started; set => started = value; }
+        public bool Started { get { return started; } set { started = value; } }
 
         /// <summary>
         /// Animation die Einheitlich berechnet werden könenn

@@ -51,8 +51,8 @@ namespace Legend_Of_Knight
         private static EntityPlayer player;
         public InputManager InputManager => inputManager;
 
-        public static EntityPlayer Player { get => player; }
-        public static List<Entity> Entities { get => entities; }
+        public static EntityPlayer Player { get {return player; } }
+        public static List<Entity> Entities { get { return entities; } }
 
         public Game()
         {
@@ -117,15 +117,15 @@ namespace Legend_Of_Knight
         /// <summary>
         /// Läd das Ingame-Spiel
         /// </summary>
-        public void LoadIngame()
+        public void LoadIngame(bool hard)
         {
             //Erstellen des Dungeons
             d = new Dungeon(new DungeonGenArgs()
             {
                 CorridorWidth = 6,
-                Rooms = 10,
+                Rooms = hard ? 15 : 10,
                 LeaveConnectionPercentage = 0.25f,
-                EnemiesPerRoom = 3
+                EnemiesPerRoom = hard ? 6 : 3
             });
             //Resize der Rectangle für Performanz
             foreach (Rectangle r in d.Bounds)
@@ -141,7 +141,7 @@ namespace Legend_Of_Knight
 
             rnd = new CRandom(d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
-            thePlayer.Position = rnd.PickElements(d.Rooms, 1)[0].CenterPos * 16;
+            thePlayer.Position = rnd.PickElements(d.Rooms, 1)[0].CenterPos * 15;
             player = thePlayer;
             Entities.Add(thePlayer);
 
@@ -339,11 +339,11 @@ namespace Legend_Of_Knight
             StateManager.Push();
             //Skalierung um den Zoom
             StateManager.Scale(zoom.Value);
-            //Translation des Spielers in FensterMitte
+            //Translation des Spielers in die FensterMitte
             Vector player = -MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks);
             StateManager.Translate(player);
             StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
-            //Shaken des Screens wenn Spieler getroffen wurde
+            //Shaken des Screens wenn der Spieler getroffen wurde
             float shake = MathUtils.Sin(thePlayer.HurtTime / (float)thePlayer.MaxHurtTime * 360 * 2) * 5;
             StateManager.Translate(shake, -shake);
             //Zeichnet den Dungeon
@@ -422,7 +422,7 @@ namespace Legend_Of_Knight
             if (entities.Count == 1)
             {
                 isIngame = false;
-                SetScreen(new GuiStartScreen());
+                SetScreen(new GuiWinScreen());
                 entities.Clear();
                 ingameGui = null;
             }

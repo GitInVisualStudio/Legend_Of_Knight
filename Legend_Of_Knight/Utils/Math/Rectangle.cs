@@ -12,8 +12,6 @@ namespace Legend_Of_Knight.Utils.Math
         private Vector size;
         private Vector centerPos;
 
-        public Vector Pos { get => pos; set => pos = value; }
-        public Vector Size { get => size; set => size = value; }
         public Vector CenterPos
         {
             get
@@ -29,7 +27,33 @@ namespace Legend_Of_Knight.Utils.Math
         {
             get
             {
-                return size.X * size.Y;
+                return Size.X * Size.Y;
+            }
+        }
+
+        public Vector Pos
+        {
+            get
+            {
+                return pos;
+            }
+
+            set
+            {
+                pos = value;
+            }
+        }
+
+        public Vector Size
+        {
+            get
+            {
+                return size;
+            }
+
+            set
+            {
+                size = value;
             }
         }
 
@@ -42,7 +66,7 @@ namespace Legend_Of_Knight.Utils.Math
 
         public bool PointInRectangle(Vector p)
         {
-            if (p.X > pos.X && p.Y > pos.Y && p.X < pos.X + size.X && p.Y < pos.Y + size.Y)
+            if (p.X > Pos.X && p.Y > Pos.Y && p.X < Pos.X + Size.X && p.Y < Pos.Y + Size.Y)
                 return true;
             return false;
         }

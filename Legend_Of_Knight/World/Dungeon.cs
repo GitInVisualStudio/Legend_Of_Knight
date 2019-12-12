@@ -14,17 +14,64 @@ namespace Legend_Of_Knight.World
     public class Dungeon
     {
         private Field[,] fields;
-        private MinimumSpanningTree mst; // verbindet die Mittelpunkte aller Räume miteinander
         private Room[] rooms;
         private DungeonGenArgs args;
-        private CRandom rnd;
-
         private Rectangle[] bounds;
 
-        public Field[,] Fields { get => fields; set => fields = value; }
-        public Room[] Rooms { get => rooms; set => rooms = value; }
-        public Rectangle[] Bounds { get => bounds; set => bounds = value; }
-        public DungeonGenArgs Args { get => args; set => args = value; }
+        private CRandom rnd;
+        private MinimumSpanningTree mst; // verbindet die Mittelpunkte aller Räume miteinander
+
+        public Field[,] Fields
+        {
+            get
+            {
+                return fields;
+            }
+
+            set
+            {
+                fields = value;
+            }
+        }
+
+        public Room[] Rooms
+        {
+            get
+            {
+                return rooms;
+            }
+
+            set
+            {
+                rooms = value;
+            }
+        }
+
+        public DungeonGenArgs Args
+        {
+            get
+            {
+                return args;
+            }
+
+            set
+            {
+                args = value;
+            }
+        }
+
+        public Rectangle[] Bounds
+        {
+            get
+            {
+                return bounds;
+            }
+
+            set
+            {
+                bounds = value;
+            }
+        }
 
         public Dungeon(DungeonGenArgs args = null)
         {

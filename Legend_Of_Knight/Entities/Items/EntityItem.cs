@@ -17,8 +17,8 @@ namespace Legend_Of_Knight.Entities.Items
         private float delta, prevDelta;
         private EntityLivingBase owner;//Besitzer des Items
 
-        public Item Item { get => item; protected set => item = value; }
-        public EntityLivingBase Owner { get => owner; }
+        public Item Item { get { return item; } protected set { item = value; } }
+        public EntityLivingBase Owner { get { return owner; } }
 
         public EntityItem(Item item, EntityLivingBase owner) : base(new Rectangle[0])
         {

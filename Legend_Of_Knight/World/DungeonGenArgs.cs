@@ -20,31 +20,31 @@ namespace Legend_Of_Knight.World
         /// <summary>
         /// Seed, aufgrunddessen ein Dungeon generiert werden soll (Default: Momentane Zeit in Minuten geteilt durch die überstehenden Milisekunden)
         /// </summary>
-        public int Seed { get => seed; set => seed = value; }
+        public int Seed { get { return seed; } set { seed = value; } }
         /// <summary>
         /// Größe des Dungeons in Feldern (Default: 100x100)
         /// </summary>
-        public Vector Size { get => size; set => size = value; }
+        public Vector Size { get { return size; } set { size = value; } }
         /// <summary>
         /// Anzahl zu generierender Räume. Es ist nicht garantiert, dass alle erstellt werden können und im Endeffekt im Dungeon auftauchen werden. (Default: 4)
         /// </summary>
-        public int Rooms { get => rooms; set => rooms = value; }
+        public int Rooms { get { return rooms; } set { rooms = value; } }
         /// <summary>
         /// Die durchschnittliche Raumgröße in Feldern. Unterscheidet sich durch Zufall leicht (Default: 30x30)
         /// </summary>
-        public Vector RoomSize { get => roomSize; set => roomSize = value; }
+        public Vector RoomSize { get { return roomSize; } set { roomSize = value; } }
         /// <summary>
         /// Prozentzahl an redundanten Verbindungen zwischen Räumen, die erhalten bleiben sollen (Default: 0.1)
         /// </summary>
-        public float LeaveConnectionPercentage { get => leaveConnectionPercentage; set => leaveConnectionPercentage = value; }
+        public float LeaveConnectionPercentage { get { return leaveConnectionPercentage; } set { leaveConnectionPercentage = value; } }
         /// <summary>
         /// Breite der verbindenden Korridore in Feldern (Default: 3)
         /// </summary>
-        public int CorridorWidth { get => corridorWidth; set => corridorWidth = value; }
+        public int CorridorWidth { get { return corridorWidth; } set { corridorWidth = value; } }
         /// <summary>
         /// Durchschnittliche Anzahl an Gegnern, die pro Raum spawnen sollen. Variiert leicht. (Default: 2)
         /// </summary>
-        public int EnemiesPerRoom { get => enemiesPerRoom; set => enemiesPerRoom = value; }
+        public int EnemiesPerRoom { get { return enemiesPerRoom; } set { enemiesPerRoom = value; } }
 
         public DungeonGenArgs()
         {

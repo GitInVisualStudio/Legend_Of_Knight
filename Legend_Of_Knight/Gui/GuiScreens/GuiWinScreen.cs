@@ -17,6 +17,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         private bool loading;
         private string loadingText;
         private TimeUtils timeUtils;
+        private bool hard;
 
         public GuiWinScreen()
         {
@@ -35,14 +36,16 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             {
                 if (loading || !start.OnHover(e))
                     return;
+                //Laden des ingame Spieles in einem anderen Thread
                 new Thread(() =>
                 {
                     loadingText = "Loading";
                     loading = true;
-                    game.LoadIngame();
+                    game.LoadIngame(hard);
                     game.SetScreen(null);
                 }).Start();
             };
+            //Erstellen eines Buttons für das Beenden des Spieles
             GuiButton quit = new GuiButton("Quit", Width / 2 - 50, Height / 2 + 30, 100, 20)
             {
                 Background = Color.White
@@ -53,6 +56,17 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                     return;
                 Application.Exit();
             };
+            //Ob der Modus Hard aktiviert werden soll
+            GuiCheckbox box = new GuiCheckbox("Hard", false)
+            {
+                Position = new Vector(Width / 2 - 50, Height / 2 - 30),
+                Size = new Vector(100, 20)
+            };
+            box.OnClick += (object sender, MouseEventArgs args) =>
+            {
+                hard = box.State;
+            };
+            Components.Add(box);
             Components.Add(start);
             Components.Add(quit);
         }
@@ -70,10 +84,8 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             }
             StateManager.SetColor(255, 255, 255);
             StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
-            StateManager.Push();
             StateManager.SetFont(new Font("System", 24));
             StateManager.DrawCenteredString("CONGRATULATIONS! YOU WIN", Width / 2, 10);
-            StateManager.Pop();
             StateManager.Pop();
         }
 

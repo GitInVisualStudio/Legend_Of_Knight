@@ -18,6 +18,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
     {
         private bool loading;
         private string loadingText;
+        private bool hard;
         private TimeUtils timeUtils;
 
         public GuiDeathScreen()
@@ -29,6 +30,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         {
             base.Init(game);
             loading = false;
+            //Button zum erneuten spielen
             GuiButton start = new GuiButton("Restart", Width / 2 - 50, Height / 2, 100, 20)
             {
                 Background = Color.White
@@ -42,10 +44,11 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                 {
                     loadingText = "Loading";
                     loading = true;
-                    game.LoadIngame();//Laden des IngameSpiels
+                    game.LoadIngame(hard);//Laden des IngameSpiels
                     game.SetScreen(null);//Setzten des Ingame-Fokuses
                 }).Start();
             };
+            //Erstellen eines Buttons für das Beenden des Spieles
             GuiButton quit = new GuiButton("Quit", Width / 2 - 50, Height / 2 + 30, 100, 20)
             {
                 Background = Color.White
@@ -56,6 +59,17 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                     return;
                 Application.Exit();
             };
+            //Ob der Modus Hard aktiviert werden soll
+            GuiCheckbox box = new GuiCheckbox("Hard", false)
+            {
+                Position = new Vector(Width / 2 - 50, Height / 2 - 30),
+                Size = new Vector(100, 20)
+            };
+            box.OnClick += (object sender, MouseEventArgs args) =>
+            {
+                hard = box.State;
+            };
+            Components.Add(box);
             Components.Add(start);
             Components.Add(quit);
         }
@@ -72,7 +86,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                     loadingText = "Loading";
             }
             StateManager.SetColor(255, 255, 255);
-            StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
+            StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3); //Zeichnen des LadeStrings
             StateManager.Push();
             StateManager.SetFont(new Font("System", 24));
             StateManager.DrawCenteredString("YOU ARE DEAD", Width / 2, 10);//Zeichnet den Status
