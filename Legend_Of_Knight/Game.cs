@@ -32,9 +32,6 @@ namespace Legend_Of_Knight
         // TimeUtils
         // alles in Utils.Render
 
-        // TODO: sonstiges
-        // Kollisionsdetektion fixen
-
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
@@ -99,6 +96,8 @@ namespace Legend_Of_Knight
             MouseWheel += Game_MouseEvent;
             Resize += (object sender, EventArgs e) =>
             {
+                A_WIDTH = Width;
+                A_HEIGHT = Height;
                 currentScreen?.Resize();
             };
 
@@ -365,16 +364,21 @@ namespace Legend_Of_Knight
                 if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
-            if (entities.Count == 1 || (isIngame && thePlayer.IsDead))
-                ReturnToStartScreen();
-        }
+            if (entities.Count == 1)
+            {
+                isIngame = false;
+                SetScreen(new GuiStartScreen());
+                entities.Clear();
+                ingameGui = null;
+            }
+            else if (isIngame && thePlayer.IsDead)
+            {
+                isIngame = false;
+                SetScreen(new GuiDeathScreen());
+                entities.Clear();
+                ingameGui = null;
+            }
 
-        private void ReturnToStartScreen()
-        {
-            isIngame = false;
-            SetScreen(new GuiStartScreen());
-            entities.Clear();
-            ingameGui = null;
         }
     }
 }
