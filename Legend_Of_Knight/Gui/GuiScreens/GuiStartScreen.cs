@@ -73,6 +73,8 @@ namespace Legend_Of_Knight.Gui.GuiScreens
                     loadingText = "Loading";
             }
             StateManager.SetColor(255, 255, 255);
+            StateManager.DrawCenteredString("Welcome to", Width / 2, Height / 4);
+            StateManager.DrawCenteredString(Game.NAME, Width / 2, Height / 4 + 20);
             StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);//Zeichnet den Ladestatus mittig
             StateManager.Pop();
         }
