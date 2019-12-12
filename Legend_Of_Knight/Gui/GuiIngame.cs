@@ -21,7 +21,7 @@ namespace Legend_Of_Knight.Gui
 
         public override void OnRender(float partialTicks)
         {
-            StateManager.SetColor(0, 0, 0);
+            StateManager.SetColor(0, 125, 0);
             StateManager.DrawRect(5, 5, 100, 10);
             StateManager.SetColor(0, 255, 0);
             health.End = game.thePlayer.Health;

@@ -38,7 +38,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 120.0f, TPS = 60.0f, TPT = (1000.0f / TPS);
+        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
         private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
         public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
@@ -126,7 +126,7 @@ namespace Legend_Of_Knight
                 CorridorWidth = 6,
                 Rooms = 10,
                 LeaveConnectionPercentage = 0.25f,
-                EnemiesPerRoom = 1
+                EnemiesPerRoom = 3
             });
             foreach (Rectangle r in d.Bounds)
             {
@@ -301,7 +301,7 @@ namespace Legend_Of_Knight
             Vector player = -MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks);
             StateManager.Translate(player);
             StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
-            float shake = MathUtils.Sin(thePlayer.HurtTime / (float)thePlayer.MaxHurtTime * 360) * 5;
+            float shake = MathUtils.Sin(thePlayer.HurtTime / (float)thePlayer.MaxHurtTime * 360 * 2) * 5;
             StateManager.Translate(shake, -shake);
             RenderDungeon();
             StateManager.Pop();
@@ -366,11 +366,15 @@ namespace Legend_Of_Knight
                 if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
-            if (entities.Count == 1)
-            {
-                isIngame = false;
-                SetScreen(new GuiStartScreen());
-            }
+            if (entities.Count == 1 || (isIngame && thePlayer.IsDead))
+                ReturnToStartScreen();
+        }
+
+        private void ReturnToStartScreen()
+        {
+            isIngame = false;
+            SetScreen(new GuiStartScreen());
+            entities.Clear();
         }
     }
 }
