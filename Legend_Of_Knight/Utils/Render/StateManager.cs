@@ -264,5 +264,9 @@ namespace Legend_Of_Knight.Utils.Render
 
         public static void SetColor(Color color) => state.Color = color;
 
+        public static void SetFont(Font f)
+        {
+            state.Font = f;
+        }
     }
 }

@@ -69,6 +69,9 @@ namespace Legend_Of_Knight.Gui
 
         public void Resize()
         {
+            Vector deltaSize = new Vector(Game.WIDTH, Game.HEIGHT) - Size;
+            foreach (Gui g in components)
+                g.Position += deltaSize / 2;
             Size = new Vector(Game.WIDTH, Game.HEIGHT);
         }
 

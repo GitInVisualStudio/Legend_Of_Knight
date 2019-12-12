@@ -65,8 +65,10 @@
     <Compile Include="Gui\GuiIngame.cs" />
     <Compile Include="Gui\GuiLabel.cs" />
     <Compile Include="Gui\GuiScreen.cs" />
+    <Compile Include="Gui\GuiScreens\GuiDeathScreen.cs" />
     <Compile Include="Gui\GuiScreens\GuiOptions.cs" />
     <Compile Include="Gui\GuiScreens\GuiStartScreen.cs" />
+    <Compile Include="Gui\GuiScreens\GuiWinScreen.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

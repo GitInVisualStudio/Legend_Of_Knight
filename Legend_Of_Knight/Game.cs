@@ -32,14 +32,11 @@ namespace Legend_Of_Knight
         // TimeUtils
         // alles in Utils.Render
 
-        // TODO: sonstiges
-        // Kollisionsdetektion fixen
-
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
         public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
-        private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
+        private static int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
         public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
         public static Vector SIZE => new Vector(WIDTH, HEIGHT);
@@ -99,6 +96,8 @@ namespace Legend_Of_Knight
             MouseWheel += Game_MouseEvent;
             Resize += (object sender, EventArgs e) =>
             {
+                A_WIDTH = Width;
+                A_HEIGHT = Height;
                 currentScreen?.Resize();
             };
 
@@ -365,16 +364,21 @@ namespace Legend_Of_Knight
                 if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
-            if (entities.Count == 1 || (isIngame && thePlayer.IsDead))
-                ReturnToStartScreen();
-        }
+            if (entities.Count == 1)
+            {
+                isIngame = false;
+                SetScreen(new GuiStartScreen());
+                entities.Clear();
+                ingameGui = null;
+            }
+            else if (isIngame && thePlayer.IsDead)
+            {
+                isIngame = false;
+                SetScreen(new GuiDeathScreen());
+                entities.Clear();
+                ingameGui = null;
+            }
 
-        private void ReturnToStartScreen()
-        {
-            isIngame = false;
-            SetScreen(new GuiStartScreen());
-            entities.Clear();
-            ingameGui = null;
         }
     }
 }

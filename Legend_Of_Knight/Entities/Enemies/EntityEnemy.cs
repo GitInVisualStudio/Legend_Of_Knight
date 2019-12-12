@@ -30,7 +30,10 @@ namespace Legend_Of_Knight.Entities.Enemies
         {
             base.OnTick();
             if (aggro != null)
-                velocity += (aggro.Position - Position).Normalize() * 0.75f; // verfolgt den Spieler // -> Pathfinding wäre schön (after release patch)
+            {
+                if ((aggro.Position - Position).Length >= Item.Image.Width * 0.9f)
+                    velocity += (aggro.Position - Position).Normalize() * 0.75f; // verfolgt den Spieler
+            }       
             else if (Animation != idle)
                 Animation = idle;
 
