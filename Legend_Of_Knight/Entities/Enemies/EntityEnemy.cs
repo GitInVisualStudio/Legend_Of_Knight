@@ -48,7 +48,7 @@ namespace Legend_Of_Knight.Entities.Enemies
             { 
                 Health -= Game.Player.Item.Damage;
                 velocity -= (Game.Player.Position - Position).Normalize() * 20; // Rückstoß
-                HurtTime = maxHurtTime;
+                HurtTime = MaxHurtTime;
             }
         }
 

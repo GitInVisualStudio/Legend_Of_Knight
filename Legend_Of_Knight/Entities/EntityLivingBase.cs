@@ -25,11 +25,12 @@ namespace Legend_Of_Knight.Entities
         private Item item; // Waffe der Entity
         private EntityItem entityItem; // Waffen-Entity dieser Entity
         private float yaw; // Ausrichtung der Waffe
-        protected int maxHurtTime = 30; // damit die HurtTime 1 sekunde gezeigt wird
+        private int maxHurtTime = 30; // damit die HurtTime 1 sekunde gezeigt wird
         private int hurtTime;
         private bool usingItem;
         private EnumFacing facing;
         private CustomAnimation<float> swing; // Attackanimation
+        private CustomAnimation<float> death;
         protected List<EntityItem> enemyItems; // Waffen der Gegner dieser Entity (falls Enemy: player Item, falls Player: Items aller Enemies)
 
         public int ItemCount => EntityItem.Animation.Index;
@@ -56,6 +57,8 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 health = value;
+                if (health <= 0)
+                    death.Fire();
             }
         }
 
@@ -101,9 +104,12 @@ namespace Legend_Of_Knight.Entities
             }
         }
 
+        public bool IsDead => death.Finished;
+
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
 
         public CustomAnimation<float> SwingAnimation { get => swing; }
+        public int MaxHurtTime { get => maxHurtTime; set => maxHurtTime = value; }
 
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
@@ -132,11 +138,15 @@ namespace Legend_Of_Knight.Entities
                     swing.Reverse();
             };
             swing.Reverse();
+            death = CustomAnimation<float>.CreateDefaultAnimation(1.0f);
+            death.Toleranz = 1e-5f;
             Health = 20;
         }
 
         public override void OnRender(float partialTicks)
         {
+            if (IsDead)
+                return;
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
                 walkingTime = MathUtils.Interpolate(this.movingTime - Game.TPT/1000.0f, this.movingTime, partialTicks);
@@ -144,13 +154,19 @@ namespace Legend_Of_Knight.Entities
             Rotation = MathUtils.Sin(walkingTime * 360 * 3) * 5.5f;
             StateManager.Push();
             StateManager.Translate(position);
-            StateManager.Rotate(Rotation);
+            StateManager.Rotate(Rotation + death.Value * 90.0f);
             StateManager.Translate(Size / -2);
-            StateManager.DrawImage(animation.Image, 0, 0);
+            if(!death.Started)
+                StateManager.DrawImage(animation.Image, 0, 0);
 
-            if (hurtTime != 0) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
+            if (death.Started)
             {
-                float opacity = hurtTime / (float)maxHurtTime;
+                StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, 1 - death.Value);
+            }
+
+            if (hurtTime != 0 && !death.Started) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
+            {
+                float opacity = hurtTime / (float)MaxHurtTime;
                 StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, opacity);
             }
 
@@ -175,7 +191,7 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnTick()
         {
-            if (health <= 0)
+            if (IsDead)
                 return;
             base.OnTick();
 
@@ -204,7 +220,7 @@ namespace Legend_Of_Knight.Entities
             foreach (EntityItem item in enemyItems)
                 if (HurtTime == 0 && !item.Owner.SwingAnimation.Finished && Box.Collides(item.Box))
                 {
-                    HurtTime = maxHurtTime;
+                    HurtTime = MaxHurtTime;
                     Health -= item.Item.Damage;
                     velocity -= (item.Owner.Position - Position).Normalize() * 20f; // Rückstoß
                 }

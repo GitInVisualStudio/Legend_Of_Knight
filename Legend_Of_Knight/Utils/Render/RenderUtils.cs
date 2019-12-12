@@ -17,9 +17,7 @@ namespace Legend_Of_Knight.Utils.Render
             Bitmap img = b;
 
             if (copy)
-            {
                 img = new Bitmap(b);
-            }
 
             BitmapData bSrc = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), ImageLockMode.ReadWrite, img.PixelFormat);
             int bytesPerPixel = Bitmap.GetPixelFormatSize(img.PixelFormat) / 8;

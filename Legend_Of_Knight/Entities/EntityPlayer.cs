@@ -19,6 +19,7 @@ namespace Legend_Of_Knight.Entities
         {
             Item = new Legend_Of_Knight.Items.Item("sword.png", 10);
             Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
+            Health *= 5;
         }
     }
 }

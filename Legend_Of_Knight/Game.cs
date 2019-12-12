@@ -38,7 +38,7 @@ namespace Legend_Of_Knight
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
-        public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
+        public const float FPS = 120.0f, TPS = 60.0f, TPT = (1000.0f / TPS);
         private const int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
         public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
@@ -76,7 +76,6 @@ namespace Legend_Of_Knight
             Text = NAME;
             Width = (int)WIDTH;
             Height = (int)HEIGHT;
-            BackColor = Color.FromArgb(20, 3, 7);
             DoubleBuffered = true; //Verhindert Flackern
 
             renderTimer = new Timer()
@@ -127,7 +126,7 @@ namespace Legend_Of_Knight
                 CorridorWidth = 6,
                 Rooms = 10,
                 LeaveConnectionPercentage = 0.25f,
-                EnemiesPerRoom = 2
+                EnemiesPerRoom = 1
             });
             foreach (Rectangle r in d.Bounds)
             {
@@ -257,6 +256,7 @@ namespace Legend_Of_Knight
             base.OnPaint(e);
             //TODO: calculate the partialTicks, set new Graphics instance
             float partialTicks = (float)(TPT - watch.Elapsed.TotalMilliseconds) / TPT;
+            e.Graphics.Clear(Color.FromArgb(20, 3, 7));
             StateManager.Update(e.Graphics);
             OnRender(partialTicks);
         }
@@ -292,7 +292,6 @@ namespace Legend_Of_Knight
                 RenderIngame(partialTicks);
             ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
-
         }
 
         private void RenderIngame(float partialTicks)
@@ -302,6 +301,8 @@ namespace Legend_Of_Knight
             Vector player = -MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks);
             StateManager.Translate(player);
             StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            float shake = MathUtils.Sin(thePlayer.HurtTime / (float)thePlayer.MaxHurtTime * 360) * 5;
+            StateManager.Translate(shake, -shake);
             RenderDungeon();
             StateManager.Pop();
             for (int k = 0; k < entities.Count; k++)
@@ -310,6 +311,7 @@ namespace Legend_Of_Knight
                 StateManager.Scale(zoom.Value);
                 StateManager.Translate(player);
                 StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+                StateManager.Translate(shake, -shake);
                 entities[k].OnRender(partialTicks);
                 StateManager.Pop();
             }
@@ -325,9 +327,12 @@ namespace Legend_Of_Knight
             if (friendly)
                 res.Add(Player.EntityItem);
             else
-                foreach (Entity e in entities)
+                for (int i = 0; i < entities.Count; i++)
+                {
+                    Entity e = entities[i];
                     if (e is EntityLivingBase && !(e is EntityPlayer))
                         res.Add(((EntityLivingBase)e).EntityItem);
+                }
             return res;
         }
 
@@ -343,8 +348,8 @@ namespace Legend_Of_Knight
                     {
                         int xx = x * 15, yy = y * 15;
                         //30 weil wegen der Interpolation die Anzeige hinterherhängt und damit vielleicht tiles im screen doch nicht gerendert werden
-                        //if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
-                        //    continue;
+                        if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
+                            continue;
                         StateManager.DrawImage(d.Fields[x, y].Anim.Image, xx, yy);
                     }
                 }
@@ -358,13 +363,13 @@ namespace Legend_Of_Knight
             for (int i = 0; i < Entities.Count; i++)
             {
                 Entities[i].OnTick();
-                if (((EntityLivingBase)Entities[i]).Health <= 0)
+                if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
             if (entities.Count == 1)
             {
-                Console.WriteLine("gg");
-                Application.Exit();
+                isIngame = false;
+                SetScreen(new GuiStartScreen());
             }
         }
     }
