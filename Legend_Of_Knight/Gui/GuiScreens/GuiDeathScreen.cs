@@ -11,6 +11,9 @@ using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui.GuiScreens
 {
+    /// <summary>
+    /// Todes Screen
+    /// </summary>
     public class GuiDeathScreen : GuiScreen
     {
         private bool loading;
@@ -32,14 +35,15 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             };
             start.OnClick += (object sender, MouseEventArgs e) =>
             {
-                if (loading || !start.OnHover(e))
+                if (loading || !start.OnHover(e)) //nur ausführen wenn auch über dem Button
                     return;
+                //In einem neuen Thread, damit die Form nicht hängt
                 new Thread(() =>
                 {
                     loadingText = "Loading";
                     loading = true;
-                    game.LoadIngame();
-                    game.SetScreen(null);
+                    game.LoadIngame();//Laden des IngameSpiels
+                    game.SetScreen(null);//Setzten des Ingame-Fokuses
                 }).Start();
             };
             GuiButton quit = new GuiButton("Quit", Width / 2 - 50, Height / 2 + 30, 100, 20)
@@ -60,10 +64,10 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         {
             base.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Translate(0, GetAnimation<float>());
+            StateManager.Translate(0, GetAnimation<float>()); //Translation für Start- und CloseAnimation
             if (timeUtils.Check(500) && loading)
             {
-                loadingText += ".";
+                loadingText += "."; //Addiert punkte bis 3 erreicht wurden
                 if (loadingText.Length > 10)
                     loadingText = "Loading";
             }
@@ -71,7 +75,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
             StateManager.Push();
             StateManager.SetFont(new Font("System", 24));
-            StateManager.DrawCenteredString("YOU ARE DEAD", Width / 2, 10);
+            StateManager.DrawCenteredString("YOU ARE DEAD", Width / 2, 10);//Zeichnet den Status
             StateManager.Pop();
             StateManager.Pop();
         }

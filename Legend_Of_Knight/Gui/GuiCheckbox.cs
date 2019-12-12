@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui
 {
+    /// <summary>
+    /// Checkbox zum auswählen setzen von Flags
+    /// </summary>
     public class GuiCheckbox : GuiLabel
     {
         private bool state;
@@ -49,9 +52,9 @@ namespace Legend_Of_Knight.Gui
             check = new CustomAnimation<float>(0.0f, 1.0f, (float current, float delta) => current + delta)
             {
                 Toleranz = 1E-3f
-            };
+            };//Animation für den Haken
             check.OnFinish += (object o, EventArgs args) => {
-                if (!check.Increments)
+                if (!check.Increments)//Soll wieder groß werden wenn es klein geworden ist
                 {
                     state = !state;
                     token = state ? ((char)10003).ToString() : ((char)10007).ToString();
@@ -70,6 +73,10 @@ namespace Legend_Of_Knight.Gui
             token = state ? ((char)10003).ToString() : ((char)10007).ToString();
         }
 
+        /// <summary>
+        /// Zeichnen der Box
+        /// </summary>
+        /// <param name="partialTicks"></param>
         public override void OnRender(float partialTicks)
         {
             StateManager.SetColor(Color);
@@ -77,10 +84,10 @@ namespace Legend_Of_Knight.Gui
             tokenWidth = stringSize.X * 2;
             StateManager.DrawString(Text, Position);
             StateManager.Push();
-            StateManager.Translate(X + Width - stringSize.X, Y + stringSize.Y);
-            StateManager.Scale(check.Value + 0.001f);
-            StateManager.Rotate(360 * check.Value);
-            StateManager.DrawString(token, -stringSize);
+            StateManager.Translate(X + Width - stringSize.X, Y + stringSize.Y);//Translation auf die Mitte des Status
+            StateManager.Scale(check.Value + 0.001f);//Skalierung
+            StateManager.Rotate(360 * check.Value);//Rotation für die Animation
+            StateManager.DrawString(token, -stringSize);//Zeichnen des Status
             StateManager.Pop();
         }
     }

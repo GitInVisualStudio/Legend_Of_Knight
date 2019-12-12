@@ -10,11 +10,13 @@ using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui
 {
+    //Dient zur verwaltung von GUI
     public class GuiScreen : Gui
     {
+        //Komponenten auf dem Screen
         private List<GuiLabel> components;
         private bool onClose;
-        private GuiScreen prevScreen;
+        private GuiScreen prevScreen;//vorheriger screen, falls diese verschachtelt sind
         protected Game game;
         public bool IsClosed => Animation.Finished && onClose;
 
@@ -33,6 +35,7 @@ namespace Legend_Of_Knight.Gui
 
         public GuiScreen()
         {
+            //Hinzufügen der Eingabe-Events für alle Komponenten
             OnClick += (object sender, MouseEventArgs e) =>
             {
                 foreach (Gui gui in Components)
@@ -60,6 +63,10 @@ namespace Legend_Of_Knight.Gui
             };
         }
 
+        /// <summary>
+        /// Erstellt alle Komponenten
+        /// </summary>
+        /// <param name="game"></param>
         public virtual void Init(Game game)
         {
             this.game = game;
@@ -67,6 +74,9 @@ namespace Legend_Of_Knight.Gui
             Resize();
         }
 
+        /// <summary>
+        /// Falls das Form Resized wird
+        /// </summary>
         public void Resize()
         {
             Vector deltaSize = new Vector(Game.WIDTH, Game.HEIGHT) - Size;
@@ -75,6 +85,11 @@ namespace Legend_Of_Knight.Gui
             Size = new Vector(Game.WIDTH, Game.HEIGHT);
         }
 
+        /// <summary>
+        /// Öffnet den Screen mit einer Animation
+        /// </summary>
+        /// <param name="prevScreen"></param>
+        /// <returns></returns>
         public virtual GuiScreen Open(GuiScreen prevScreen)
         {
             this.prevScreen = prevScreen;
@@ -86,6 +101,9 @@ namespace Legend_Of_Knight.Gui
             return this;
         }
 
+        /// <summary>
+        /// Schließt den Screen
+        /// </summary>
         public virtual void Close()
         {
             if (onClose)
@@ -94,10 +112,14 @@ namespace Legend_Of_Knight.Gui
             Animation.Reverse();
         }
 
+        /// <summary>
+        /// Rendert alle Komponenten des Screens
+        /// </summary>
+        /// <param name="partialTicks"></param>
         public override void OnRender(float partialTicks)
         {
             StateManager.Push();
-            StateManager.Translate(0, GetAnimation<float>());
+            StateManager.Translate(0, GetAnimation<float>());//Translation für Start- und CloseAnimation
             for(int i = Components.Count - 1; i >= 0; i--) //Falls Components im Rendern entfernt werden
             {
                 Components[i].OnRender(partialTicks);

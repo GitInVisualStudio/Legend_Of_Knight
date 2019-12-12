@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui
 {
+    /// <summary>
+    /// Basis für alle GUI
+    /// </summary>
     public abstract class Gui
     {
         private Vector size = new Vector(2);
@@ -59,6 +62,7 @@ namespace Legend_Of_Knight.Gui
             }
         }
 
+        //Basis-Events für Interaktionen
         public event EventHandler<MouseEventArgs> OnClick;
         public event EventHandler<MouseEventArgs> OnMove;
         public event EventHandler<MouseEventArgs> OnRelease;
@@ -74,6 +78,7 @@ namespace Legend_Of_Knight.Gui
 
         public void KeyPressed(KeyEventArgs args) => OnKeyPressed?.Invoke(this, args);
 
+        //Prüft ob der Spieler über dem GUI ist
         public bool OnHover(MouseEventArgs args)
         {
             return args.X > X && args.Y > Y && args.X < X + Width && args.Y < Y + Height;

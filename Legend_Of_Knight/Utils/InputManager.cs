@@ -7,21 +7,26 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Utils
 {
+    /// <summary>
+    /// Dient zur einfachen verwaltung von Eingaben
+    /// </summary>
     public class InputManager
     {
+        //Position der Maus
         public static int mouseX;
         public static int mouseY;
         public static Vector mousePosition = new Vector(2);
-        private List<Keybind> keys;
+        private List<Keybind> keys;//Liste der Keybinds
 
         public InputManager()
         {
             keys = new List<Keybind>();
         }
 
+        //Ruft entsprechende Events auf
         public void OnKeyPressed(int keyChar)
         {
-            Keybind key = keys.Find(x => x.KeyChar == keyChar);
+            Keybind key = keys.Find(x => x.KeyChar == keyChar);//findet gedrückten Key
             if (key != null)
             {
                 if (key.FireOnce && !key.Pressed) //WindowsForms events so geil gemacht, dass KeyPressed tatsächlich mehrfach gecalled wird ohne key los zu lassen
@@ -32,15 +37,19 @@ namespace Legend_Of_Knight.Utils
 
         public void OnKeyRelease(int keyChar)
         {
-            Keybind key = keys.Find(x => x.KeyChar == keyChar);
+            Keybind key = keys.Find(x => x.KeyChar == keyChar);//findet gedrückten Key
             if (key != null)
             { 
                 key.Pressed = false;
             }
         }
 
+        //Deligiertes Event beim drücken des Keys
         public delegate void Event();
 
+        /// <summary>
+        /// Damit das Event auch jeden Ticks aufgerufen wird
+        /// </summary>
         public void Update()
         {
             keys.ForEach(x => {
@@ -49,9 +58,12 @@ namespace Legend_Of_Knight.Utils
             });
         }
 
+        //Hinzufügen von Keybinds
         public void Add(int keyChar, Event OnPress, bool fireOnce = false) => keys.Add(new Keybind(keyChar, OnPress, fireOnce));
         
-
+        /// <summary>
+        /// Dient zur vereinfachung der KeyBinds und dessen Events
+        /// </summary>
         class Keybind
         {
 

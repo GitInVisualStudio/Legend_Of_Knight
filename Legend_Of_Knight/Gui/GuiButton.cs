@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Gui
 {
+    /// <summary>
+    /// Anklickbarer Button mit Event
+    /// </summary>
     public class GuiButton : GuiLabel
     {
         private Color background = Color.Transparent;
@@ -57,6 +60,7 @@ namespace Legend_Of_Knight.Gui
             Image = img;
         }
 
+        //Zeichnen des Buttons
         public override void OnRender(float partialTicks)
         {
             StateManager.SetColor(Background);

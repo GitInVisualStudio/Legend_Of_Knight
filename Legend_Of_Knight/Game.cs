@@ -23,27 +23,18 @@ namespace Legend_Of_Knight
 {
     public class Game : Form
     {
-        // TODO: Kommentare
-        // Entity teilweise
-        // EntityItem
-        // EntityLivingBase teilweise
-        // der gesamte GUI-Namespace lol
-        // alles in Utils.Animations
-        // TimeUtils
-        // alles in Utils.Render
-
         /// <summary>
         /// frames per Second, ticks per Second and time per tick
         /// </summary>
         public const float FPS = 120.0f, TPS = 30.0f, TPT = (1000.0f / TPS);
-        private static int A_WIDTH = 1280, A_HEIGHT = 720; //Absolut
-        public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relativ
+        private static int A_WIDTH = 1280, A_HEIGHT = 720; //Absolute Dimension der Form
+        public static float WIDTH => (A_WIDTH * 1f / StateManager.ScaleX); //Relative Width zur Skalierung, notwendig für die Translation des Spielers in die Mitte
         public static float HEIGHT => (A_HEIGHT * 1f / StateManager.ScaleY);
         public static Vector SIZE => new Vector(WIDTH, HEIGHT);
         public const string NAME = "Legend of Knight";
 
         private bool isIngame;
-        private Timer renderTimer, tickTimer;
+        private Timer renderTimer, tickTimer;//Timer für das Berechnen des Spiels
         private Stopwatch watch;
         private InputManager inputManager;
         private AnimationHandler animationHandler;
@@ -68,6 +59,9 @@ namespace Legend_Of_Knight
             Init();
         }
 
+        /// <summary>
+        /// Initialisiert die Form und die dafür notwendingen Komponenten für unser Framework
+        /// </summary>
         private void Init()
         {
             Text = NAME;
@@ -75,6 +69,7 @@ namespace Legend_Of_Knight
             Height = (int)HEIGHT;
             DoubleBuffered = true; //Verhindert Flackern
 
+            //Erstellen der Timer für aktualisierung der Form
             renderTimer = new Timer()
             {
                 Interval = (int)(1000.0f / FPS)
@@ -89,6 +84,7 @@ namespace Legend_Of_Knight
             watch = new Stopwatch();
             watch.Start();
 
+            //Hinzufügen der Events für interaktionen
             MouseClick += Game_MouseClick;
             MouseMove += Game_MouseEvent;
             KeyDown += Game_KeyDown;
@@ -111,15 +107,19 @@ namespace Legend_Of_Knight
             AddKeybinds();
             renderTimer.Start();
             tickTimer.Start();
+
             isIngame = false;
-            SetScreen(new GuiStartScreen());
-            //FormBorderStyle = FormBorderStyle.None; //TODO: Später Header selbst schreiben
+            SetScreen(new GuiStartScreen());//StartScreen setzen
             entities = new List<Entity>();
             enemyTypes = new Type[] { typeof(EnemyJens) };
         }
 
+        /// <summary>
+        /// Läd das Ingame-Spiel
+        /// </summary>
         public void LoadIngame()
         {
+            //Erstellen des Dungeons
             d = new Dungeon(new DungeonGenArgs()
             {
                 CorridorWidth = 6,
@@ -127,6 +127,7 @@ namespace Legend_Of_Knight
                 LeaveConnectionPercentage = 0.25f,
                 EnemiesPerRoom = 3
             });
+            //Resize der Rectangle für Performanz
             foreach (Rectangle r in d.Bounds)
             {
                 r.Pos *= 15;
@@ -137,7 +138,7 @@ namespace Legend_Of_Knight
             {
                 Position = (new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 15).Copy()
             };
-            Console.WriteLine("Seed: " + d.Args.Seed);
+
             rnd = new CRandom(d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = rnd.PickElements(d.Rooms, 1)[0].CenterPos * 16;
@@ -167,6 +168,10 @@ namespace Legend_Of_Knight
             }
         }
 
+        /// <summary>
+        /// Hinzufügen der Events für die Tastatur-Interaktion
+        /// Steuert den Spieler
+        /// </summary>
         private void AddKeybinds()
         {
             inputManager.Add('W', () =>
@@ -189,16 +194,22 @@ namespace Legend_Of_Knight
                 if(currentScreen == null)
                     thePlayer?.AddVelocity(new Vector(1, 0) * 1f);
             });
-            inputManager.Add(27, () =>
+            inputManager.Add(27/*Escape*/, () =>
             {
                 if (currentScreen == null)
                     SetScreen(new GuiOptions());
             }, fireOnce: true); //Sonst wird der Screen solange gesetzt bis der key released wird
         }
 
+        /// <summary>
+        /// Methoden für die Events
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         #region events
         private void Game_MouseEvent(object sender, MouseEventArgs e)
         {
+            //Anpassung auf die Skalierung
             InputManager.mouseX = (int)(e.X / StateManager.ScaleX);
             InputManager.mouseY = (int)(e.Y / StateManager.ScaleY);
             InputManager.mousePosition = new Vector(InputManager.mouseX, InputManager.mouseY);
@@ -207,6 +218,7 @@ namespace Legend_Of_Knight
                 currentScreen.Move(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
                 return;
             }
+            //Zoom
             zoom.End += e.Delta / 120 / 2f;
             if (zoom.End < 0.5f)
                 zoom.End = 0.5f;
@@ -227,15 +239,21 @@ namespace Legend_Of_Knight
 
         private void Game_MouseClick(object sender, MouseEventArgs e)
         {
-            //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
+            //Spieler Interaktion Ingame oder im Screen
             currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
             if (!isIngame || currentScreen != null || thePlayer.IsDead)
                 return;
+            //Schlagen und Zielen
             thePlayer.Swing();
             Vector yaw = InputManager.mousePosition - SIZE / 2;
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
         }
 
+        /// <summary>
+        /// Ruft Tick auf für berechnung von Position und Kollision
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TickTimer_Tick(object sender, EventArgs e)
         {
             //TODO: Call Tick, reset the StopWatch
@@ -244,11 +262,22 @@ namespace Legend_Of_Knight
             OnTick();
         }
 
+        /// <summary>
+        /// Refreshed das Form damit ein Paint-Event erzeugt werden kann um dies neu zu Zeichnen
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RenderTimer_Tick(object sender, EventArgs e)
         {
             this.Refresh();
         }
 
+        /// <summary>
+        /// Zeichnen der Form
+        /// Setzen der Graphics-Instanz für den StateManager und ausrechung von PartialTicks(zeit bis zum nächsten tick für Interpoaltion 0-1)
+        /// Ruft OnRender für das Zeichnen des Spiels auf
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
@@ -260,6 +289,10 @@ namespace Legend_Of_Knight
         }
         #endregion
 
+        /// <summary>
+        /// Setzt den momentanen Screen, schließt vorherigen und öffnet neuen
+        /// </summary>
+        /// <param name="screen"></param>
         public void SetScreen(GuiScreen screen)
         {
             if(screen == null && currentScreen != null)
@@ -283,26 +316,40 @@ namespace Legend_Of_Knight
                 currentScreen = screen.Open(currentScreen);
             };
         }
+
+        /// <summary>
+        /// Zeichnet das Spiel
+        /// </summary>
+        /// <param name="partialTicks"></param>
         public void OnRender(float partialTicks)
         {
-            animationHandler.OnRender(partialTicks);
+            animationHandler.OnRender(partialTicks); //AnimationHandler als erstes für flüssige Animationen
             if(isIngame)
                 RenderIngame(partialTicks);
             ingameGui?.OnRender(partialTicks);
             currentScreen?.OnRender(partialTicks);
         }
 
+        /// <summary>
+        /// Zeichnet das IngameSpiel
+        /// </summary>
+        /// <param name="partialTicks"></param>
         private void RenderIngame(float partialTicks)
         {
             StateManager.Push();
+            //Skalierung um den Zoom
             StateManager.Scale(zoom.Value);
+            //Translation des Spielers in FensterMitte
             Vector player = -MathUtils.Interpolate(thePlayer.PrevPosition, thePlayer.Position, partialTicks);
             StateManager.Translate(player);
             StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+            //Shaken des Screens wenn Spieler getroffen wurde
             float shake = MathUtils.Sin(thePlayer.HurtTime / (float)thePlayer.MaxHurtTime * 360 * 2) * 5;
             StateManager.Translate(shake, -shake);
+            //Zeichnet den Dungeon
             RenderDungeon();
             StateManager.Pop();
+            //Zeichnet alle Entities
             for (int k = 0; k < entities.Count; k++)
             {
                 StateManager.Push();
@@ -334,6 +381,9 @@ namespace Legend_Of_Knight
             return res;
         }
 
+        /// <summary>
+        /// Zeichnet alle TileMaps des Dungeons
+        /// </summary>
         public void RenderDungeon()
         {
             float width = WIDTH;
@@ -346,6 +396,7 @@ namespace Legend_Of_Knight
                     {
                         int xx = x * 15, yy = y * 15;
                         //30 weil wegen der Interpolation die Anzeige hinterherhängt und damit vielleicht tiles im screen doch nicht gerendert werden
+                        //Falls TileMap nicht sichtbar ist, wird diese nicht gezeichnet
                         if (xx < thePlayer.X - width / 2 - 30 || xx > thePlayer.X + width / 2 || yy < thePlayer.Y - height / 2 - 30 || yy > thePlayer.Y + height / 2)
                             continue;
                         StateManager.DrawImage(d.Fields[x, y].Anim.Image, xx, yy);
@@ -354,16 +405,20 @@ namespace Legend_Of_Knight
             }
         }
 
+        /// <summary>
+        /// Berechnung von allen notwendingen Werten
+        /// </summary>
         public void OnTick()
         {
             animationHandler.Update();
-            inputManager.Update();
+            inputManager.Update();//Updaten des InputManages für Key-Events
             for (int i = 0; i < Entities.Count; i++)
             {
                 Entities[i].OnTick();
                 if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
+            //Wenn Spiel zu ende ist, wird der Spieler wird in ein Menü geworfen
             if (entities.Count == 1)
             {
                 isIngame = false;

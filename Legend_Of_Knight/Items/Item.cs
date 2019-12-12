@@ -10,7 +10,7 @@ namespace Legend_Of_Knight.Items
 {
     public class Item
     {
-        private Bitmap image;
+        private Bitmap image;//Bild für das Item
         private string name;
         private float damage; // Schaden, die diese Waffe anrichtet
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Entities
 {
+    //Für die BlickRichtung um BewegungsAnimationen zu bestimmen
     public enum EnumFacing
     {
         [Facing(1)] RIGHT = 0,

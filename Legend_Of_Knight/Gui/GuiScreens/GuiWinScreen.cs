@@ -11,6 +11,7 @@ using System.Windows.Forms;
 
 namespace Legend_Of_Knight.Gui.GuiScreens
 {
+    //Siehe GuiDeathScreen nur mit Gewinnen
     public class GuiWinScreen : GuiScreen
     {
         private bool loading;
@@ -60,7 +61,7 @@ namespace Legend_Of_Knight.Gui.GuiScreens
         {
             base.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Translate(0, GetAnimation<float>());
+            StateManager.Translate(0, GetAnimation<float>()); //Translation für Start und Close Animation
             if (timeUtils.Check(500) && loading)
             {
                 loadingText += ".";

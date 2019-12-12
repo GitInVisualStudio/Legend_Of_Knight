@@ -13,10 +13,12 @@ using Rectangle = Legend_Of_Knight.Utils.Math.Rectangle;
 
 namespace Legend_Of_Knight.Entities
 {
+    //Spieler-Entity
     public class EntityPlayer : EntityLivingBase
     {
         public EntityPlayer(Rectangle[] bounds) : base(bounds)
         {
+            //Setzen des individuellen Items
             Item = new Legend_Of_Knight.Items.Item("sword.png", 10);
             Box = new BoundingBox(this, animation.Image.Width / 3, animation.Image.Height / 3);
         }

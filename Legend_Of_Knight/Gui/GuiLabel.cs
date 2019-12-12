@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Gui
 {
+    /// <summary>
+    /// Zeichnet einen Text
+    /// </summary>
     public class GuiLabel : Gui
     {
         private string text;
@@ -50,6 +53,7 @@ namespace Legend_Of_Knight.Gui
 
         public override void OnRender(float partialTicks)
         {
+            //Zeichnen des Textes mit Farbe
             StateManager.SetColor(Color);
             StateManager.DrawString(Text, Position);
         }

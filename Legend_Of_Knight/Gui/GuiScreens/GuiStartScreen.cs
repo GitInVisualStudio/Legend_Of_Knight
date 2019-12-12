@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Legend_Of_Knight.Gui.GuiScreens
 {
+    /// <summary>
+    /// Start
+    /// </summary>
     public class GuiStartScreen : GuiScreen
     {
         private bool loading;
@@ -31,32 +34,34 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             };
             start.OnClick += (object sender, System.Windows.Forms.MouseEventArgs e) =>
             {
-                if (loading || !start.OnHover(e))
+                if (loading || !start.OnHover(e)) //nur ausführen wenn auch über dem Button
                     return;
+                //In einem neuen Thread, damit die Form nicht hängt
                 new Thread(() =>
                 {
                     loadingText = "Loading";
                     loading = true;
-                    game.LoadIngame();
-                    game.SetScreen(null);
+                    game.LoadIngame();//Laden des IngameSpiels
+                    game.SetScreen(null);//Setzten des Ingame-Fokuses
                 }).Start();
             };
             Components.Add(start);
         }
 
+        //Zeichent die Komponenten
         public override void OnRender(float partialTicks)
         {
             base.OnRender(partialTicks);
             StateManager.Push();
-            StateManager.Translate(0, GetAnimation<float>());
+            StateManager.Translate(0, GetAnimation<float>());//Translation für Start- und CloseAnimation
             if (timeUtils.Check(500) && loading)
             {
-                loadingText += ".";
+                loadingText += ".";//Addiert Punkte bis 3 erreicht wurden
                 if(loadingText.Length > 10)
                     loadingText = "Loading";
             }
             StateManager.SetColor(255, 255, 255);
-            StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
+            StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);//Zeichnet den Ladestatus mittig
             StateManager.Pop();
         }
 

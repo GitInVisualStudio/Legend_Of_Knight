@@ -20,7 +20,7 @@ namespace Legend_Of_Knight.Entities
     public abstract class EntityLivingBase : Entity
     {
         protected FrameAnimation[] animations; // zwei Laufanimationen, eine für Links und eine für Rechts
-        protected FrameAnimation[] hurtTimeAnimation;
+        protected FrameAnimation[] hurtTimeAnimation; //Das selbe aber in rot eingefärbt für die Hurttime
         private float health;
         private Item item; // Waffe der Entity
         private EntityItem entityItem; // Waffen-Entity dieser Entity
@@ -30,10 +30,12 @@ namespace Legend_Of_Knight.Entities
         private bool usingItem;
         private EnumFacing facing;
         private CustomAnimation<float> swing; // Attackanimation
-        private CustomAnimation<float> death;
+        private CustomAnimation<float> death; // Todesanimation
         protected List<EntityItem> enemyItems; // Waffen der Gegner dieser Entity (falls Enemy: player Item, falls Player: Items aller Enemies)
 
         public int ItemCount => EntityItem.Animation.Index;
+
+        //Blickrichtung des Spielers (auf die Mausposition für das Item)
         public float Yaw
         {
             get
@@ -107,13 +109,14 @@ namespace Legend_Of_Knight.Entities
         public bool IsDead => death.Finished;
 
         public EntityItem EntityItem { get { return entityItem; } protected set { entityItem = value; } }
-
         public CustomAnimation<float> SwingAnimation { get => swing; }
         public int MaxHurtTime { get => maxHurtTime; set => maxHurtTime = value; }
 
         public EntityLivingBase(Rectangle[] bounds) : base(bounds) 
         {
+            //TileMaps für die BegweungsAnimationen
             Bitmap[][] images = new Bitmap[][] { ResourceManager.GetImages(this, "Right"), ResourceManager.GetImages(this, "Left") };
+            //Einfärben für die Hurttime 
             Bitmap[][] hurtTimeImages = new Bitmap[images.Length][];
             for(int i = 0; i < images.Length; i++)
             {
@@ -123,13 +126,15 @@ namespace Legend_Of_Knight.Entities
                     hurtTimeImages[i][j] = RenderUtils.PaintBitmap(images[i][j], Color.Red, true);
                 }
             }
-
+            //Erstellen der Bewegungs-Animation und 
             this.animations = new FrameAnimation[]{ new FrameAnimation(FPS, false, images[0]), new FrameAnimation(FPS, false, images[1])};
             this.hurtTimeAnimation = new FrameAnimation[] { new FrameAnimation(FPS, false, hurtTimeImages[0]), new FrameAnimation(FPS, false, hurtTimeImages[1]) };
 
-            Facing = EnumFacing.RIGHT; //Weil immer rechts
+            Facing = EnumFacing.RIGHT;
             animation = animations[0];
+            //Erstellen der BoundingBox für Kollisionen
             Box = new BoundingBox(this, animation.Image.Width, animation.Image.Height);
+            //Erstellen der Schlag- und TodesAnimation
             swing = CustomAnimation<float>.CreateDefaultAnimation(1.0f);
             swing.Toleranz = 1E-2f;
             swing.OnFinish += (object sender, EventArgs args) =>
@@ -145,7 +150,7 @@ namespace Legend_Of_Knight.Entities
 
         public override void OnRender(float partialTicks)
         {
-            if (IsDead)
+            if (IsDead)//wenn das Entity tod ist soll dies nicht gezeichnet werden
                 return;
             float walkingTime = this.movingTime;
             if (walkingTime != 0)
@@ -197,16 +202,15 @@ namespace Legend_Of_Knight.Entities
                 return;
             base.OnTick();
 
+            //Setzt die LaufAnimation entsprechend der Bewegungsrichtung
             Vector direction = velocity.Normalize();
-
             if (direction.X > 0)
                 Facing = EnumFacing.RIGHT;
             if (direction.X < 0)
                 Facing = EnumFacing.LEFT;
-
             animation = animations[(int)Facing];
 
-            if (hurtTime != 0)
+            if (hurtTime != 0)//für die Hurttime-Animations
             {
                 hurtTime--;
                 hurtTimeAnimation[(int)Facing].Index = animation.Index;
@@ -218,6 +222,7 @@ namespace Legend_Of_Knight.Entities
             if (IsUsingItem)
                 EntityItem?.Animation?.Update();
 
+            //Für Rückstoß und Lebens-Abzug falls Entity getroffen wird
             List<EntityItem> enemyItems = Game.GetEnemyItems(!(this is EntityPlayer));
             foreach (EntityItem item in enemyItems)
                 if (HurtTime == 0 && !item.Owner.SwingAnimation.Finished && Box.Collides(item.Box))
