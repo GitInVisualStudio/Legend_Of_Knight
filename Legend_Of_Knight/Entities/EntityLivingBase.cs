@@ -156,15 +156,14 @@ namespace Legend_Of_Knight.Entities
             StateManager.Translate(position);
             StateManager.Rotate(Rotation + death.Value * 90.0f);
             StateManager.Translate(Size / -2);
-            if(!death.Started)
-                StateManager.DrawImage(animation.Image, 0, 0);
-
             if (death.Started)
             {
                 StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, 1 - death.Value);
+                StateManager.Pop();
+                return;
             }
-
-            if (hurtTime != 0 && !death.Started) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
+            StateManager.DrawImage(animation.Image, 0, 0);
+            if (hurtTime != 0) // malt rote Treffer-Animation über die Entity, falls sie eben getroffen wurde
             {
                 float opacity = hurtTime / (float)MaxHurtTime;
                 StateManager.DrawImage(hurtTimeAnimation[(int)facing].Image, 0, 0, Width, Height, opacity);
@@ -180,12 +179,13 @@ namespace Legend_Of_Knight.Entities
             float itemOffset = GetAttribute<FacingAttribute>(Facing).offset;
             float yaw = Yaw + (MathUtils.Sin(90 * swing.Value) * 80 - 80) * itemOffset;
             EntityItem.Scale = (swing.Value * 2.5f) > 1f ? 1 : (swing.Value * 2.5f) + 0.001f;
-            EntityItem.Rotation = yaw;
+            EntityItem.Rotation = yaw; //Rotation des Items setzen auf die Blickrichtung
             EntityItem.Position = Size / 2;
+            //Translation für die Rotation in die Mitte
             EntityItem.Position -= MathUtils.GetRotation(EntityItem.Size / 2, yaw);
             EntityItem.Position += MathUtils.GetRotation(new Vector(EntityItem.Width / 2, 0), yaw);
             EntityItem.OnRender(partialTicks);
-            EntityItem.Position += position;
+            EntityItem.Position += position - Size / 2;
             StateManager.Pop();
         }
 

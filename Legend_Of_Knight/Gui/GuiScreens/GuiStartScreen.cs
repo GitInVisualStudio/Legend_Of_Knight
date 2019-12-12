@@ -29,13 +29,26 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             {
                 Background = Color.Gray
             };
-            start.OnClick += Start_OnClick;
+            start.OnClick += (object sender, System.Windows.Forms.MouseEventArgs e) =>
+            {
+                if (loading || !start.OnHover(e))
+                    return;
+                new Thread(() =>
+                {
+                    loadingText = "Loading";
+                    loading = true;
+                    game.LoadIngame();
+                    game.SetScreen(null);
+                }).Start();
+            };
             Components.Add(start);
         }
 
         public override void OnRender(float partialTicks)
         {
             base.OnRender(partialTicks);
+            StateManager.Push();
+            StateManager.Translate(0, GetAnimation<float>());
             if (timeUtils.Check(500) && loading)
             {
                 loadingText += ".";
@@ -44,19 +57,8 @@ namespace Legend_Of_Knight.Gui.GuiScreens
             }
             StateManager.SetColor(255, 255, 255);
             StateManager.DrawCenteredString(loadingText, Width / 2, Height / 3);
+            StateManager.Pop();
         }
 
-        private void Start_OnClick(object sender, System.Windows.Forms.MouseEventArgs e)
-        {
-            if (loading)
-                return;
-            new Thread(() =>
-            {
-                loadingText = "Loading";
-                loading = true;
-                game.LoadIngame();
-                game.SetScreen(null);
-            }).Start();
-        }
     }
 }

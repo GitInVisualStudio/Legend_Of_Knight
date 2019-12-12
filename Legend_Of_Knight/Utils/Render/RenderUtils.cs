@@ -15,10 +15,8 @@ namespace Legend_Of_Knight.Utils.Render
         public static Bitmap PaintBitmap(Bitmap b, Color color, bool copy = false)
         {
             Bitmap img = b;
-
             if (copy)
                 img = new Bitmap(b);
-
             BitmapData bSrc = img.LockBits(new Rectangle(0, 0, img.Width, img.Height), ImageLockMode.ReadWrite, img.PixelFormat);
             int bytesPerPixel = Bitmap.GetPixelFormatSize(img.PixelFormat) / 8;
             int byteCount = bSrc.Stride * img.Height;
@@ -33,7 +31,6 @@ namespace Legend_Of_Knight.Utils.Render
                 int currentLine = y * bSrc.Stride;
                 for (int x = 0; x < widthInBytes; x += bytesPerPixel)
                 {
-                    //Geht die umliegenden Pixel durch und berechnet eine Durchschnitt dadurch
                     if (pixels[currentLine + x + 3] == 0)
                         continue;
                     pixels[currentLine + x + 2] = color.R;
@@ -41,7 +38,6 @@ namespace Legend_Of_Knight.Utils.Render
                     pixels[currentLine + x + 0] = color.B;
                 }
             }
-
             Marshal.Copy(pixels, 0, ptrFirstPixel, pixels.Length);
             img.UnlockBits(bSrc);
             return img;

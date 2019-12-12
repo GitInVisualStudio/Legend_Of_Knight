@@ -230,9 +230,8 @@ namespace Legend_Of_Knight
         {
             //TODO: Handle events in GuiScreen & PlayerInteraction -> PlayerController?
             currentScreen?.Click(new MouseEventArgs(e.Button, e.Clicks, InputManager.mouseX, InputManager.mouseY, 0));
-            if (!isIngame || currentScreen != null)
+            if (!isIngame || currentScreen != null || thePlayer.IsDead)
                 return;
-
             thePlayer.Swing();
             Vector yaw = InputManager.mousePosition - SIZE / 2;
             thePlayer.Yaw = MathUtils.ToDegree((float)Math.Atan2(yaw.Y, yaw.X)) + 90;
@@ -375,6 +374,7 @@ namespace Legend_Of_Knight
             isIngame = false;
             SetScreen(new GuiStartScreen());
             entities.Clear();
+            ingameGui = null;
         }
     }
 }
