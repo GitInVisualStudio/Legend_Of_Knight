@@ -141,7 +141,7 @@ namespace Legend_Of_Knight
 
             rnd = new CRandom(d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
-            thePlayer.Position = rnd.PickElements(d.Rooms, 1)[0].CenterPos * 15;
+            thePlayer.Position = d.StartRoom.CenterPos *= 15;
             player = thePlayer;
             Entities.Add(thePlayer);
 

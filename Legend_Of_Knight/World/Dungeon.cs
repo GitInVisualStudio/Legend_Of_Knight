@@ -121,7 +121,7 @@ namespace Legend_Of_Knight.World
                     c.B.Connections.Add(c);
                 }
             }
-            startRoom = rnd.PickElements(rooms, 1)[0];
+            startRoom = FindRoomWithMostConnections(rooms);
             RemoveUnreacheableRooms(rooms, startRoom);
             Rooms = rooms.ToArray();
 
@@ -135,6 +135,14 @@ namespace Legend_Of_Knight.World
             foreach (Corridor c in corridors)
                 b.AddRange(c.Bounds);
             Bounds = b.ToArray();
+        }
+
+        private Room FindRoomWithMostConnections(List<Room> rooms)
+        {
+            Room best = rooms[0];
+            for (int i = 1; i < rooms.Count; i++)
+                best = best.Connections.Count < rooms[i].Connections.Count ? rooms[i] : best;
+            return best;
         }
 
         private void RemoveUnreacheableRooms(List<Room> rooms, Room start)
