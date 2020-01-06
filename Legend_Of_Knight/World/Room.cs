@@ -18,6 +18,8 @@ namespace Legend_Of_Knight.World
         private int sizeX;
         private int sizeY;
         private Vector centerPos;
+        private bool reachable;
+
         public Vector CenterPos
         {
             get
@@ -94,6 +96,8 @@ namespace Legend_Of_Knight.World
                 sizeX = value;
             }
         }
+
+        public bool Reachable { get => reachable; set => reachable = value; }
 
         /// <param name="x">X-Koordinate des Feldes oben links</param>
         /// <param name="y">Y-Koordinate des Feldes oben links</param>

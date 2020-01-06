@@ -17,9 +17,9 @@ namespace Legend_Of_Knight.World
         private Room[] rooms;
         private DungeonGenArgs args;
         private Rectangle[] bounds;
+        private Room startRoom;
 
         private CRandom rnd;
-        private MinimumSpanningTree mst; // verbindet die Mittelpunkte aller Räume miteinander
 
         public Field[,] Fields
         {
@@ -73,6 +73,8 @@ namespace Legend_Of_Knight.World
             }
         }
 
+        public Room StartRoom { get => startRoom; set => startRoom = value; }
+
         public Dungeon(DungeonGenArgs args = null)
         {
             this.Args = args ?? new DungeonGenArgs();
@@ -119,10 +121,10 @@ namespace Legend_Of_Knight.World
                     c.B.Connections.Add(c);
                 }
             }
-            List<Room> lonesomeRooms = rooms.Where(x => x.Connections.Count == 0).ToList(); // Räume ohne Verbindungen, die "allein" stehen
-            lonesomeRooms.ForEach(x => x.Fields.ToList().ForEach(f => f.Area = null));
-            rooms.RemoveAll(x => lonesomeRooms.Contains(x));
+            startRoom = rnd.PickElements(rooms, 1)[0];
+            RemoveUnreacheableRooms(rooms, startRoom);
             Rooms = rooms.ToArray();
+
             for (int x = 0; x < Fields.GetLength(0); x++)
                 for (int y = 0; y < Fields.GetLength(1); y++)
                     Fields[x, y].SetFieldTypeAndAnimation(Fields);
@@ -133,6 +135,27 @@ namespace Legend_Of_Knight.World
             foreach (Corridor c in corridors)
                 b.AddRange(c.Bounds);
             Bounds = b.ToArray();
+        }
+
+        private void RemoveUnreacheableRooms(List<Room> rooms, Room start)
+        {
+            Crawl(start);
+            List<Room> unreacheable = rooms.Where(x => !x.Reachable).ToList();
+            unreacheable.ForEach(x => 
+            {
+                x.Fields.ToList().ForEach(y => y.Area = null);
+                x.Connections.ForEach(y => y.Fields.ToList().ForEach(z => z.Area = null));
+            });
+            rooms.RemoveAll(x => unreacheable.Contains(x));
+        }
+
+        private void Crawl(Room start)
+        {
+            if (start.Reachable)
+                return;
+            start.Reachable = true;
+            foreach (Corridor c in start.Connections)
+                Crawl(c.A == start ? c.B : c.A);
         }
 
         private Room MakeRoom(int depth = 0)

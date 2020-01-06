@@ -14,7 +14,7 @@ namespace Legend_Of_Knight.World
     {
         private Field[] fields;
         private Rectangle[] bounds;
-
+        
         public Field[] Fields { get { return fields; } set { fields = value; } }
         public Rectangle[] Bounds { get { return bounds; } set { bounds = value; } }
 
