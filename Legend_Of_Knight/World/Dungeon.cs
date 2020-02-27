@@ -73,7 +73,18 @@ namespace Legend_Of_Knight.World
             }
         }
 
-        public Room StartRoom { get => startRoom; set => startRoom = value; }
+        public Room StartRoom
+        {
+            get
+            {
+                return startRoom;
+            }
+
+            set
+            {
+                startRoom = value;
+            }
+        }
 
         public Dungeon(DungeonGenArgs args = null)
         {
@@ -121,8 +132,8 @@ namespace Legend_Of_Knight.World
                     c.B.Connections.Add(c);
                 }
             }
-            startRoom = FindRoomWithMostConnections(rooms);
-            RemoveUnreacheableRooms(rooms, startRoom);
+            StartRoom = FindRoomWithMostConnections(rooms);
+            RemoveUnreacheableRooms(rooms, StartRoom);
             Rooms = rooms.ToArray();
 
             for (int x = 0; x < Fields.GetLength(0); x++)

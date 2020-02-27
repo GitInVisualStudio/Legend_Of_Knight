@@ -9,12 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils;
+using Legend_Of_Knight.Entities.Pathfinding;
 
 namespace Legend_Of_Knight.Entities.Enemies
 {
     public abstract class EntityEnemy : EntityLivingBase
     {
         private FrameAnimation idle;
+        protected Node nextNode;
         protected Entity aggro;
         protected float aggroRange;
         protected float swingCooldown; // Wartezeit zwischen Angriffen
@@ -29,10 +31,18 @@ namespace Legend_Of_Knight.Entities.Enemies
         public override void OnTick()
         {
             base.OnTick();
+            
             if (aggro != null)
             {
-                if ((aggro.Position - Position).Length >= Item.Image.Width * 0.9f)
-                    velocity += (aggro.Position - Position).Normalize() * 0.75f; // verfolgt den Spieler
+                Path path = new Path(GridPosition, Game.Player.GridPosition, Game.D);
+                nextNode = path.GetNextNode();
+                while (nextNode == CurrentGridNode)
+                    nextNode = path.GetNextNode();
+                if (nextNode != null)
+                    velocity += (nextNode.Position * 15f - position).Normalize() * 0.75f;
+
+                //if ((aggro.Position - Position).Length >= Item.Image.Width * 0.9f)
+                //    velocity += (aggro.Position - Position).Normalize() * 0.75f; // verfolgt den Spieler
             }       
             else if (Animation != idle)
                 Animation = idle;

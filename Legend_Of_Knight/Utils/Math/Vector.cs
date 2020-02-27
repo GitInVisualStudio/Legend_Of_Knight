@@ -194,6 +194,14 @@ namespace Legend_Of_Knight.Utils.Math
             return new Vector(values);
         }
 
+        public void ForEach(Func<float, float> function)
+        {
+            for (int i = 0; i < values.Length; i++)
+            {
+                values[i] = function(values[i]);
+            }
+        }
+
         public static bool operator ==(Vector v1, Vector v2)
         {
             if (v1.Values.Length != v2.Values.Length)

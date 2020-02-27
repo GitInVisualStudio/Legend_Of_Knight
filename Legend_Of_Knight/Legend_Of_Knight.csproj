@@ -56,6 +56,8 @@
     <Compile Include="Entities\EntityPlayer.cs" />
     <Compile Include="Entities\EnumFacing.cs" />
     <Compile Include="Entities\Items\EntityItem.cs" />
+    <Compile Include="Entities\Pathfinding\Node.cs" />
+    <Compile Include="Entities\Pathfinding\Path.cs" />
     <Compile Include="Game.cs">
       <SubType>Form</SubType>
     </Compile>

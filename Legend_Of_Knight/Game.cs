@@ -1,6 +1,7 @@
 ﻿using Legend_Of_Knight.Entities;
 using Legend_Of_Knight.Entities.Enemies;
 using Legend_Of_Knight.Entities.Items;
+using Legend_Of_Knight.Entities.Pathfinding;
 using Legend_Of_Knight.Gui;
 using Legend_Of_Knight.Gui.GuiScreens;
 using Legend_Of_Knight.Properties;
@@ -33,6 +34,9 @@ namespace Legend_Of_Knight
         public static Vector SIZE => new Vector(WIDTH, HEIGHT);
         public const string NAME = "Legend of Knight";
 
+        public const bool DEBUG = true;
+        private Path path;
+
         private bool isIngame;
         private Timer renderTimer, tickTimer;//Timer für das Berechnen des Spiels
         private Stopwatch watch;
@@ -43,7 +47,7 @@ namespace Legend_Of_Knight
         private GuiScreen currentScreen;
         private GuiIngame ingameGui;
 
-        private Dungeon d;
+        private static Dungeon d;
         private static List<Entity> entities;
         private CRandom rnd;
         private Type[] enemyTypes;
@@ -53,6 +57,7 @@ namespace Legend_Of_Knight
 
         public static EntityPlayer Player { get {return player; } }
         public static List<Entity> Entities { get { return entities; } }
+        public static Dungeon D => d;
 
         public Game()
         {
@@ -127,6 +132,7 @@ namespace Legend_Of_Knight
                 LeaveConnectionPercentage = 0.25f,
                 EnemiesPerRoom = hard ? 6 : 3
             });
+            
             //Resize der Rectangle für Performanz
             foreach (Rectangle r in d.Bounds)
             {
@@ -134,19 +140,17 @@ namespace Legend_Of_Knight
                 r.Size *= 15;
                 r.CenterPos *= 15;
             }
-            thePlayer = new EntityPlayer(d.Bounds)
-            {
-                Position = (new CRandom(d.Args.Seed).PickElements(d.Rooms, 1)[0].CenterPos * 15).Copy()
-            };
+            thePlayer = new EntityPlayer(d.Bounds);
 
             rnd = new CRandom(d.Args.Seed);
             thePlayer = new EntityPlayer(d.Bounds);
             thePlayer.Position = d.StartRoom.CenterPos *= 15;
             player = thePlayer;
             Entities.Add(thePlayer);
+            path = new Path(thePlayer.GridPosition, d.StartRoom.CenterPos / 15f, d);
 
             SpawnEnemies();
-            
+
             ingameGui = new GuiIngame(this);
             isIngame = true;
         }
@@ -360,6 +364,27 @@ namespace Legend_Of_Knight
                 entities[k].OnRender(partialTicks);
                 StateManager.Pop();
             }
+
+            if (DEBUG)
+            {
+                StateManager.SetColor(Color.White);
+                StateManager.DrawString("X: " + thePlayer.GridPosition.X + " Y:" + thePlayer.GridPosition.Y, new Vector(0, 100));
+
+                StateManager.Push();
+                //Skalierung um den Zoom
+                StateManager.Scale(zoom.Value);
+                StateManager.SetColor(Color.Red);
+                StateManager.Translate(player);
+                StateManager.Translate(WIDTH / 2f, HEIGHT / 2f);
+                path.Reset();
+                Node currentPathNode = path.GetNextNode();
+                while (currentPathNode != null)
+                {
+                    StateManager.DrawRect(currentPathNode.Position * 15f, 15, 15, 5);
+                    currentPathNode = path.GetNextNode();
+                }
+                StateManager.Pop();
+            }
         }
 
         /// <summary>
@@ -410,6 +435,7 @@ namespace Legend_Of_Knight
         /// </summary>
         public void OnTick()
         {
+            
             animationHandler.Update();
             inputManager.Update();//Updaten des InputManages für Key-Events
             for (int i = 0; i < Entities.Count; i++)
@@ -418,21 +444,24 @@ namespace Legend_Of_Knight
                 if (((EntityLivingBase)Entities[i]).IsDead)
                     Entities.RemoveAt(i);
             }
+
+            if (isIngame) 
+                path = new Path(thePlayer.GridPosition, d.StartRoom.CenterPos / 15f, d);
             //Wenn Spiel zu ende ist, wird der Spieler wird in ein Menü geworfen
-            if (entities.Count == 1)
-            {
-                isIngame = false;
-                SetScreen(new GuiWinScreen());
-                entities.Clear();
-                ingameGui = null;
-            }
-            else if (isIngame && thePlayer.IsDead)
-            {
-                isIngame = false;
-                SetScreen(new GuiDeathScreen());
-                entities.Clear();
-                ingameGui = null;
-            }
+            //if (entities.Count == 1)
+            //{
+            //    isIngame = false;
+            //    SetScreen(new GuiWinScreen());
+            //    entities.Clear();
+            //    ingameGui = null;
+            //}
+            //else if (isIngame && thePlayer.IsDead)
+            //{
+            //    isIngame = false;
+            //    SetScreen(new GuiDeathScreen());
+            //    entities.Clear();
+            //    ingameGui = null;
+            //}
 
         }
     }

@@ -7,6 +7,7 @@ using Legend_Of_Knight.Utils;
 using Legend_Of_Knight.Utils.Animations;
 using Legend_Of_Knight.Utils.Math;
 using Legend_Of_Knight.Utils.Render;
+using Legend_Of_Knight.Entities.Pathfinding;
 
 namespace Legend_Of_Knight.Entities
 {
@@ -15,6 +16,8 @@ namespace Legend_Of_Knight.Entities
         protected const int FPS = (int)(1000.0f / 10); // FPS für alle Animationen
 
         protected Vector position;
+        private Vector gridPosition;
+        private Node currentGridNode;
         protected Vector velocity;
         private Vector prevPosition; // für Interpolation
         protected float rotation;
@@ -58,6 +61,7 @@ namespace Legend_Of_Knight.Entities
                 position = value;
                 PrevPosition = position.Copy();
                 Moved(this, position);
+                UpdateGridPosition();
             }
         }
 
@@ -86,6 +90,7 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position.X = value;
+                UpdateGridPosition();
             }
         }
 
@@ -98,6 +103,7 @@ namespace Legend_Of_Knight.Entities
             set
             {
                 position.Y = value;
+                UpdateGridPosition();
             }
         }
 
@@ -128,6 +134,28 @@ namespace Legend_Of_Knight.Entities
 
         public Vector PrevPosition { get { return prevPosition; } set { prevPosition = value; } }
 
+        public Vector GridPosition
+        {
+            get
+            {
+                return gridPosition;
+            }
+
+            protected set
+            {
+                gridPosition = value;
+                currentGridNode = new Node(value);
+            }
+        }
+
+        public Node CurrentGridNode
+        {
+            get
+            {
+                return currentGridNode;
+            }
+        }
+
         /// <param name="bounds">Rechtecke, in denen die Entity sich bewegen darf</param>
         public Entity(Rectangle[] bounds)
         {
@@ -135,6 +163,7 @@ namespace Legend_Of_Knight.Entities
             velocity = new Vector(2);
             PrevPosition = new Vector(2);
             this.bounds = bounds;
+            UpdateGridPosition();
         }
 
         /// <summary>
@@ -173,8 +202,15 @@ namespace Legend_Of_Knight.Entities
             PrevPosition = position;//Für die Interpolation
             position += Velocity;
             velocity *= 0.7f;//Damit das Entity sich nicht Linear gewegt
+            UpdateGridPosition();
 
             UpdateAnimation();
+        }
+
+        private void UpdateGridPosition()
+        {
+            GridPosition = position.Copy();
+            GridPosition.ForEach(i => { return (int)(i / 15f); });
         }
 
         /// <summary>

@@ -97,7 +97,18 @@ namespace Legend_Of_Knight.World
             }
         }
 
-        public bool Reachable { get => reachable; set => reachable = value; }
+        public bool Reachable
+        {
+            get
+            {
+                return reachable;
+            }
+
+            set
+            {
+                reachable = value;
+            }
+        }
 
         /// <param name="x">X-Koordinate des Feldes oben links</param>
         /// <param name="y">Y-Koordinate des Feldes oben links</param>
